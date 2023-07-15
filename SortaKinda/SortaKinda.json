@@ -1,8 +1,8 @@
 {
   "Author": "MidoriKami",
-  "Name": "Mappy",
-  "Punchline": "A more versatile ingame map",
-  "Description": "Replaces the ingame map with an ImGui implementation with several additional features.",
+  "Name": "SortaKinda",
+  "Punchline": "Total customization of your inventory",
+  "Description": "Sort your inventory however you want and keep it sorted.",
   "Tags": [
     "utility"
   ],
@@ -10,7 +10,7 @@
     "Utility",
     "Other"
   ],
-  "InternalName": "mappy",
-  "RepoUrl": "https://github.com/MidoriKami/Mappy",
+  "InternalName": "sortakinda",
+  "RepoUrl": "https://github.com/MidoriKami/SortaKinda",
   "AcceptsFeedback": false
 }

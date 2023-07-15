@@ -80,9 +80,4 @@
     <ItemGroup>
       <ProjectReference Include="..\KamiLib\KamiLib.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Views\Components\" />
-      <Folder Include="Views\Tabs\" />
-    </ItemGroup>
 </Project>
