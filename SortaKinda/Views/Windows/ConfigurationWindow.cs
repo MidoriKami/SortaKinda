@@ -4,7 +4,7 @@ using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using KamiLib.Commands;
 using KamiLib.Interfaces;
-using KamiLib.Utilities;
+using SortaKinda.Views.Tabs;
 
 namespace SortaKinda.Views.Windows;
 
@@ -14,7 +14,11 @@ public class ConfigurationWindow : Window
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
-        tabs = new List<ITabItem>(Reflection.ActivateOfInterface<ITabItem>());
+        tabs = new ITabItem[]
+        {
+            new MainInventoryConfigurationTab(),
+            new ArmoryInventoryConfigurationTab(),
+        };
 
         Size = new Vector2(880, 690);
         
