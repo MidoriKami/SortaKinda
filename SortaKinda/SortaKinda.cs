@@ -12,7 +12,6 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
     public string Name => "SortaKinda";
 
     public static SortaKindaSystem System = null!;
-    private ConfigurationWindow window;
     
     public SortaKindaPlugin(DalamudPluginInterface pluginInterface)
     {
@@ -26,8 +25,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
 
         CommandController.RegisterMainCommand("/sortakinda");
 
-        window = new ConfigurationWindow();
-        KamiCommon.WindowManager.AddConfigurationWindow(window);
+        KamiCommon.WindowManager.AddConfigurationWindow(new ConfigurationWindow());
     }
 
     public void Dispose()
@@ -35,6 +33,5 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
         KamiCommon.Dispose();
         
         System.Unload();
-        window.Dispose();
     }
 }

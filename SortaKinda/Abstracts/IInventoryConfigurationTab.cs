@@ -10,10 +10,10 @@ public interface IInventoryConfigurationTab : ITabItem
     
     void ITabItem.Draw()
     {
-        if (ImGui.BeginTable("##SortaKindaInventoryConfigTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.NoSavedSettings, new Vector2(0, -1)))
+        if (ImGui.BeginTable("##SortaKindaInventoryConfigTable", 2, ImGuiTableFlags.None, new Vector2(0, -1)))
         {
-            ImGui.TableSetupColumn("##RulesColumn", ImGuiTableColumnFlags.WidthStretch, 40.0f);
-            ImGui.TableSetupColumn("##InventoryColumn", ImGuiTableColumnFlags.WidthStretch, 60.0f);
+            ImGui.TableSetupColumn("##RulesColumn", ImGuiTableColumnFlags.WidthStretch, 47.5f);
+            ImGui.TableSetupColumn("##InventoryColumn", ImGuiTableColumnFlags.WidthStretch, 52.5f);
 
             ImGui.TableNextColumn();
             if (ImGui.BeginChild("##ConfigChild", new Vector2(0, 0)))
@@ -23,7 +23,7 @@ public interface IInventoryConfigurationTab : ITabItem
             ImGui.EndChild();
             
             ImGui.TableNextColumn();
-            if (ImGui.BeginChild("##InventoryChild", new Vector2(0, 0)))
+            if (ImGui.BeginChild("##InventoryChild", new Vector2(0, 0), false, ImGuiWindowFlags.NoMove))
             {
                 DrawInventory();
             }
