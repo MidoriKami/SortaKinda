@@ -12,10 +12,10 @@ public class MainInventoryModule : InventoryModuleBase
     public override ModuleName ModuleName { get; protected set; } = ModuleName.MainInventory;
     public override IInventoryConfig ModuleConfig { get; protected set; } = new MainInventoryConfig();
 
-    private readonly InventoryGrid inventory1 = new MainInventoryGrid(InventoryType.Inventory1);
-    private readonly InventoryGrid inventory2 = new MainInventoryGrid(InventoryType.Inventory2);
-    private readonly InventoryGrid inventory3 = new MainInventoryGrid(InventoryType.Inventory3);
-    private readonly InventoryGrid inventory4 = new MainInventoryGrid(InventoryType.Inventory4);
+    private readonly InventoryGrid inventory1 = new(InventoryType.Inventory1);
+    private readonly InventoryGrid inventory2 = new(InventoryType.Inventory2);
+    private readonly InventoryGrid inventory3 = new(InventoryType.Inventory3);
+    private readonly InventoryGrid inventory4 = new(InventoryType.Inventory4);
     
     public override void DrawInventoryGrid()
     {

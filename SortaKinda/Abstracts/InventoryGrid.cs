@@ -8,24 +8,26 @@ using SortaKinda.System;
 
 namespace SortaKinda.Abstracts;
 
-public abstract unsafe class InventoryGrid
+public unsafe class InventoryGrid
 {
     private const int ItemsPerRow = 5;
 
-    protected Vector2 ItemSize => new Vector2(80.0f, 80.0f) * ImGuiHelpers.GlobalScale;
-    protected float ItemScale => 0.50f;
-    protected Vector2 ItemSpacing => ImGui.GetStyle().ItemSpacing with { Y = 7.0f };
+    private Vector2 ItemSize => new Vector2(80.0f, 80.0f) * ImGuiHelpers.GlobalScale;
+    public float Scale => 0.50f;
+    private Vector2 ItemSpacing => ImGui.GetStyle().ItemSpacing with { Y = 7.0f };
+    private int StartIndex => InventoryController.GetInventorySorterStartIndex(InventoryType);
+    private int ItemsPerPage => InventoryController.GetInventorySorter(InventoryType)->ItemsPerPage;
     
     public InventoryType InventoryType { get; init; }
     public List<InventorySlot> InventorySlots { get; set; }
+    public Vector2 InventorySize => new Vector2((ItemSize.X + ItemSpacing.X) * ItemsPerRow, (ItemSize.Y + ItemSpacing.Y) * ItemsPerPage / ItemsPerRow) * Scale;
 
-    protected InventoryGrid(InventoryType type)
+    public InventoryGrid(InventoryType type)
     {
         InventoryType = type;
 
         InventorySlots = new List<InventorySlot>();
-        var itemsPerPage = InventoryController.GetInventorySorter(InventoryType)->ItemsPerPage;
-        foreach (var index in Enumerable.Range(0, itemsPerPage))
+        foreach (var index in Enumerable.Range(0, ItemsPerPage))
         {
             InventorySlots.Add(new InventorySlot
             {
@@ -37,14 +39,11 @@ public abstract unsafe class InventoryGrid
 
     public void Draw(Vector2 drawPosition)
     {
-        var startIndex = InventoryController.GetInventorySorterStartIndex(InventoryType);
-        var itemsPerPage = InventoryController.GetInventorySorter(InventoryType)->ItemsPerPage;
-        
-        foreach(var index in Enumerable.Range(startIndex, itemsPerPage))
+        foreach(var index in Enumerable.Range(StartIndex, ItemsPerPage))
         {
-            var slotDrawPosition = drawPosition + GetDrawPositionForIndex(index - startIndex);
+            var slotDrawPosition = drawPosition + GetDrawPositionForIndex(index - StartIndex);
             
-            InventorySlots[index - startIndex].Draw(slotDrawPosition, ItemSize * ItemScale);
+            InventorySlots[index - StartIndex].Draw(slotDrawPosition, ItemSize * Scale);
         }
     }
 
@@ -53,8 +52,8 @@ public abstract unsafe class InventoryGrid
         var xPosition = index % ItemsPerRow;
         var yPosition = index / ItemsPerRow;
         
-        var drawPositionX = xPosition * (ItemSize.X + ItemSpacing.X) * ItemScale;
-        var drawPositionY = yPosition * (ItemSize.Y + ItemSpacing.Y) * ItemScale;
+        var drawPositionX = xPosition * (ItemSize.X + ItemSpacing.X) * Scale;
+        var drawPositionY = yPosition * (ItemSize.Y + ItemSpacing.Y) * Scale;
 
         return new Vector2(drawPositionX, drawPositionY);
     }

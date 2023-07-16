@@ -5,7 +5,6 @@ using ImGuiNET;
 using ImGuiScene;
 using KamiLib.Caching;
 using KamiLib.Utilities;
-using KamiLib.Windows;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.System;
 
@@ -14,9 +13,9 @@ namespace SortaKinda.Abstracts;
 public unsafe class InventorySlot
 {
     private InventoryItem* Item => InventoryController.GetItemForSlot(Type, Index);
-    private Item? LuminaData => LuminaCache<Item>.Instance.GetRow(Item->ItemID);
+    private Item? LuminaData => Item is not null ? LuminaCache<Item>.Instance.GetRow(Item->ItemID) : null;
     private TextureWrap? ItemIcon => LuminaData is not null ? IconCache.Instance.GetIcon(LuminaData.Icon) : null;
-    
+
     public int Index { get; init; }
     public InventoryType Type { get; init; }
     public Vector4 BorderColor { get; set; } = KnownColor.Aqua.AsVector4();
@@ -34,7 +33,7 @@ public unsafe class InventorySlot
         if (ItemIcon is null) return;
         
         ImGui.SetCursorPos(drawPosition);
-        ImGui.Image(ItemIcon.ImGuiHandle, size, Vector2.Zero, Vector2.One, Vector4.One ); // with { W = 0.40f }
+        ImGui.Image(ItemIcon.ImGuiHandle, size, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.33f }); 
     }
 
     private void DrawFrame(Vector2 drawPosition, Vector2 size)
