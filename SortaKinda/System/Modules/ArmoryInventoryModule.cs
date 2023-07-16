@@ -84,10 +84,10 @@ public class ArmoryInventoryModule : InventoryModuleBase
         
         selectedGrid.Draw(position);
 
-        var leftBarPosition = position - new Vector2(85.0f, 0.0f) * (selectedGrid.Scale + 0.25f);
+        var leftBarPosition = position - new Vector2(90.0f, 0.0f) * (selectedGrid.Scale + 0.25f);
         DrawLeftTabBar(leftBarPosition, selectedGrid.Scale + 0.25f);
         
-        var rightBarPosition = new Vector2(position.X + selectedGrid.InventorySize.X, position.Y);
+        var rightBarPosition = new Vector2(position.X + selectedGrid.InventorySize.X + 5.0f * (selectedGrid.Scale + 0.25f), position.Y);
         DrawRightTabBar(rightBarPosition, selectedGrid.Scale + 0.25f);
     }
 

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KamiLib.Utilities;
 using SortaKinda.Abstracts;
 using SortaKinda.Models.Enum;
-using SortaKinda.System.Modules;
 
 namespace SortaKinda.System;
 
 public class ModuleController : IDisposable
 {
-    private readonly IEnumerable<InventoryModuleBase> modules = new List<InventoryModuleBase>
+    private readonly IEnumerable<InventoryModuleBase> modules;
+
+    public ModuleController()
     {
-        new MainInventoryModule(),
-        new ArmoryInventoryModule(),
-    };
+        modules = Reflection.ActivateOfType<InventoryModuleBase>().ToList();
+    }
 
     public InventoryModuleBase GetModule(ModuleName name)
         => modules.First(eachModule => eachModule.ModuleName == name);

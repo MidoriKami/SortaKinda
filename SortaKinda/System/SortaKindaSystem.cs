@@ -1,16 +1,24 @@
 ﻿using System;
+using DailyDuty.System;
 using Dalamud.Game;
+using SortaKinda.Models;
 
 namespace SortaKinda.System;
 
 public class SortaKindaSystem : IDisposable
 {
     public static ModuleController ModuleController = null!;
-    
+    public static SortController SortController = null!;
+    public static SystemConfig SystemConfig = null!;
+
     public SortaKindaSystem()
     {
-        ModuleController = new ModuleController();
+        SystemConfig = new SystemConfig();
+        SystemConfig = LoadConfig();
         
+        SortController = new SortController();
+        ModuleController = new ModuleController();
+
         if (Service.ClientState.IsLoggedIn)
         {
             OnLogin(this, EventArgs.Empty);
@@ -44,6 +52,10 @@ public class SortaKindaSystem : IDisposable
         Service.ClientState.Login -= OnLogin;
         Service.ClientState.Logout -= OnLogout;
 
+        SortController.Dispose();
         ModuleController.Dispose();
     }
+    
+    private SystemConfig LoadConfig() => FileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
+    public void SaveConfig() => FileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);
 }

@@ -34,6 +34,8 @@ public unsafe partial class InventoryController
             InventoryType.ArmoryWrist => orderModule->ArmouryWristsSorter,
             InventoryType.ArmoryRings => orderModule->ArmouryRingsSorter,
             InventoryType.ArmorySoulCrystal => orderModule->ArmourySoulCrystalSorter,
+            InventoryType.SaddleBag1 => orderModule->SaddleBagSorter,
+            InventoryType.SaddleBag2 => orderModule->PremiumSaddleBagSorter,
             _ => throw new Exception($"Type Not Implemented: {type}")
         };
     }

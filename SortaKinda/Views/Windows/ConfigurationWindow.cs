@@ -1,24 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using KamiLib.ChatCommands;
 using KamiLib.Commands;
 using KamiLib.Interfaces;
+using KamiLib.Utilities;
+using SortaKinda.Abstracts;
 using SortaKinda.Views.Tabs;
 
 namespace SortaKinda.Views.Windows;
 
 public class ConfigurationWindow : Window
 {
-    private readonly IEnumerable<ITabItem> tabs;
+    private readonly List<ITabItem> tabs = new();
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
-        tabs = new ITabItem[]
-        {
-            new MainInventoryConfigurationTab(),
-            new ArmoryInventoryConfigurationTab(),
-        };
+        tabs.AddRange(Reflection.ActivateOfInterface<IInventoryConfigurationTab>().OrderBy(tab => tab.TabOrder));
+        tabs.Add(new GeneralConfigurationTab());
 
         Size = new Vector2(880, 690);
         
@@ -30,7 +31,15 @@ public class ConfigurationWindow : Window
         
         CommandController.RegisterCommands(this);
     }
-    
+
+    public override bool DrawConditions()
+    {
+        if (!Service.ClientState.IsLoggedIn) return false;
+        if (Service.ClientState.IsPvP) return false;
+
+        return true;
+    }
+
     public override void Draw()
     {
         if (ImGui.BeginTabBar("##SortaKindaTabBar"))
@@ -51,7 +60,12 @@ public class ConfigurationWindow : Window
     [BaseCommandHandler("OpenConfigWindow")]
     public void OpenConfigWindow()
     {
-        if (Service.ClientState.IsPvP) return;
+        if (!Service.ClientState.IsLoggedIn) return;
+        if (Service.ClientState.IsPvP)
+        {
+            Chat.PrintError("The configuration menu cannot be opened while in a PvP area");
+            return;
+        }
             
         Toggle();
     }

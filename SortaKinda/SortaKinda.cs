@@ -22,7 +22,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
                 
         System = new SortaKindaSystem();
 
-        CommandController.RegisterMainCommand("/sortakinda");
+        CommandController.RegisterMainCommand("/sortakinda", "/sorta");
 
         KamiCommon.WindowManager.AddConfigurationWindow(new ConfigurationWindow());
     }
