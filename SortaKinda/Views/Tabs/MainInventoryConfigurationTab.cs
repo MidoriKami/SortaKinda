@@ -1,6 +1,6 @@
-﻿using ImGuiNET;
-using SortaKinda.Abstracts;
-using SortaKinda.Views.Components;
+﻿using SortaKinda.Abstracts;
+using SortaKinda.Models.Enum;
+using SortaKinda.System;
 
 namespace SortaKinda.Views.Tabs;
 
@@ -9,15 +9,10 @@ public class MainInventoryConfigurationTab : IInventoryConfigurationTab
     public string TabName => "Main Inventory";
     public bool Enabled => true;
 
-    private readonly MainInventoryView mainInventoryView = new();
-    
     public void DrawRuleConfiguration()
     {
-        ImGui.Text("Config");
+        
     }
-    
-    public void DrawInventory()
-    {
-        mainInventoryView.Draw();
-    }
+
+    public void DrawInventory() => SortaKindaSystem.ModuleController.GetModule(ModuleName.MainInventory).DrawInventoryGrid();
 }

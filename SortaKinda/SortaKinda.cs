@@ -21,7 +21,6 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
         KamiCommon.RegisterLocalizationHandler(key => Strings.ResourceManager.GetString(key, Strings.Culture));
                 
         System = new SortaKindaSystem();
-        System.Load();
 
         CommandController.RegisterMainCommand("/sortakinda");
 
@@ -32,6 +31,6 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
     {
         KamiCommon.Dispose();
         
-        System.Unload();
+        System.Dispose();
     }
 }
