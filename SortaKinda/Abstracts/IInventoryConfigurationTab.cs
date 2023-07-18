@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using ImGuiNET;
 using KamiLib.Interfaces;
+using SortaKinda.System;
 
 namespace SortaKinda.Abstracts;
 
@@ -18,7 +19,7 @@ public interface IInventoryConfigurationTab : ITabItem
             ImGui.TableSetupColumn("##InventoryColumn", ImGuiTableColumnFlags.WidthStretch, 52.5f);
 
             ImGui.TableNextColumn();
-            if (ImGui.BeginChild("##ConfigChild", new Vector2(0, 0)))
+            if (ImGui.BeginChild("##ConfigChild", new Vector2(0, 0), false))
             {
                 DrawRuleConfiguration();
             }
@@ -35,7 +36,7 @@ public interface IInventoryConfigurationTab : ITabItem
         }
     }
 
-    void DrawRuleConfiguration();
+    void DrawRuleConfiguration() => SortaKindaSystem.SortController.DrawConfig();
     
     void DrawInventory();
 }

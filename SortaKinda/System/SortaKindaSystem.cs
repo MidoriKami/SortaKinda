@@ -10,6 +10,7 @@ public class SortaKindaSystem : IDisposable
     public static ModuleController ModuleController = null!;
     public static SortController SortController = null!;
     public static SystemConfig SystemConfig = null!;
+    public static WindowController WindowController = null!;
 
     public SortaKindaSystem()
     {
@@ -18,6 +19,7 @@ public class SortaKindaSystem : IDisposable
         
         SortController = new SortController();
         ModuleController = new ModuleController();
+        WindowController = new WindowController();
 
         if (Service.ClientState.IsLoggedIn)
         {
@@ -39,11 +41,13 @@ public class SortaKindaSystem : IDisposable
     private void OnLogin(object? sender, EventArgs e)
     {
         ModuleController.Load();
+        SortController.Load();
     }
     
     private void OnLogout(object? sender, EventArgs e)
     {
         ModuleController.Unload();
+        SortController.Load();
     }
     
     public void Dispose()
@@ -54,6 +58,7 @@ public class SortaKindaSystem : IDisposable
 
         SortController.Dispose();
         ModuleController.Dispose();
+        WindowController.Dispose();
     }
     
     private SystemConfig LoadConfig() => FileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);

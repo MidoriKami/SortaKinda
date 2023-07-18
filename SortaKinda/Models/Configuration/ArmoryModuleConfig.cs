@@ -4,7 +4,7 @@ using SortaKinda.Abstracts;
 
 namespace SortaKinda.Models;
 
-public class SaddlebagConfig : IModuleConfig
+public class ArmoryModuleConfig : IModuleConfig
 {
     public Dictionary<InventoryType, InventoryConfig>? Configurations { get; set; }
 }

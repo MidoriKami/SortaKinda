@@ -19,7 +19,7 @@ public class ConfigurationWindow : Window
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
         tabs.AddRange(Reflection.ActivateOfInterface<IInventoryConfigurationTab>().OrderBy(tab => tab.TabOrder));
-        tabs.Add(new GeneralConfigurationTab());
+        // tabs.Add(new GeneralConfigurationTab());
 
         Size = new Vector2(880, 690);
         
@@ -38,6 +38,11 @@ public class ConfigurationWindow : Window
         if (Service.ClientState.IsPvP) return false;
 
         return true;
+    }
+
+    public override void PreDraw()
+    {
+        RespectCloseHotkey = !ImGui.IsPopupOpen("", ImGuiPopupFlags.AnyPopup);
     }
 
     public override void Draw()

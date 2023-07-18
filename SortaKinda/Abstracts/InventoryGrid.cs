@@ -22,7 +22,7 @@ public unsafe class InventoryGrid
     public List<InventorySlot> InventorySlots { get; set; }
     public Vector2 InventorySize => new Vector2((ItemSize.X + ItemSpacing.X) * ItemsPerRow, (ItemSize.Y + ItemSpacing.Y) * ItemsPerPage / ItemsPerRow) * Scale;
 
-    public InventoryGrid(InventoryType type)
+    public InventoryGrid(InventoryType type, InventoryModuleBase sourceModule)
     {
         InventoryType = type;
 
@@ -33,6 +33,7 @@ public unsafe class InventoryGrid
             {
                 Index = index,
                 Type = InventoryType,
+                ControllingModule = sourceModule,
             });
         }
     }

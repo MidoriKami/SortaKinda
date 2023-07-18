@@ -67,27 +67,41 @@ public unsafe partial class InventoryController
         
         return inventoryContainer->GetInventorySlot(itemOrderData->Slot);
     }
-}
 
-// Helpers that shouldn't be called directly.
-public unsafe partial class InventoryController
-{
-    private static StdVector<Pointer<ItemOrderModuleSorterItemEntry>>* GetItemOrderData(InventoryType type)
+    public static InventoryItem* GetItemForSlot(InventoryType type, Pointer<ItemOrderModuleSorterItemEntry> slot)
+        => GetItemForSlot(type, *slot.Value);
+    
+    public static InventoryItem* GetItemForSlot(InventoryType type, ItemOrderModuleSorterItemEntry slot)
+    {
+        var inventoryManager = InventoryManager.Instance();
+        if (inventoryManager is null) return null;
+
+        var inventoryContainer = inventoryManager->GetInventoryContainer(type + slot.Page);
+        if (inventoryContainer is null) return null;
+        
+        return inventoryContainer->GetInventorySlot(slot.Slot);
+    }
+    
+    public static StdVector<Pointer<ItemOrderModuleSorterItemEntry>>* GetItemOrderData(InventoryType type)
     {
         var inventorySorter = GetInventorySorter(type);
         if (inventorySorter is null) return null;
         
         return (StdVector<Pointer<ItemOrderModuleSorterItemEntry>>*) &inventorySorter->Items;
     }
-
-    private static ItemOrderModuleSorterItemEntry* GetItemOrderDataForSlot(InventoryType type, int slot)
+    
+    public static ItemOrderModuleSorterItemEntry* GetItemOrderDataForSlot(InventoryType type, int slot)
     {
         var itemOrderData = GetItemOrderData(type);
         if (itemOrderData is null) return null;
         
         return GetItemOrderData(type)->Span[slot + GetInventorySorterStartIndex(type)].Value;
     }
+}
 
+// Helpers that shouldn't be called directly.
+public partial class InventoryController
+{
     private static InventoryType GetAdjustedInventoryType(InventoryType type) => type switch
     {
         InventoryType.Inventory1 => InventoryType.Inventory1,
