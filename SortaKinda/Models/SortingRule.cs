@@ -60,6 +60,8 @@ public class SortingRule : IEquatable<SortingRule>
 
     private string GetAllowedItemsString()
     {
+        if (Filter.UseSpecificName) return Filter.SpecificName;
+
         var strings = Filter.AllowedItemTypes
             .Select(type => LuminaCache<ItemUICategory>.Instance.GetRow(type)?.Name.RawString ?? "Unknown Type")
             .ToList();

@@ -39,68 +39,71 @@ public unsafe class SortController : IDisposable
         {
             SortaKindaSystem.ModuleController.SortAll();
         }
-        
         ImGui.Separator();
-        
-        foreach(var index in Enumerable.Range(0, _ruleConfig.SortingRules.Count))
+
+        if (ImGui.BeginChild("##RulesChild", new Vector2(0.0f, -40.0f), false, ImGuiWindowFlags.NoScrollbar))
         {
-            var rule = _ruleConfig.SortingRules[index];
-            
-            if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
+            foreach(var index in Enumerable.Range(0, _ruleConfig.SortingRules.Count))
             {
-                if (_ruleConfig.SortingRules.Count > 1)
+                var rule = _ruleConfig.SortingRules[index];
+            
+                if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
                 {
-                    _ruleConfig.SortingRules.Remove(rule);
-                    _ruleConfig.SortingRules.Insert(index + 1, rule);
+                    if (_ruleConfig.SortingRules.Count > 1)
+                    {
+                        _ruleConfig.SortingRules.Remove(rule);
+                        _ruleConfig.SortingRules.Insert(index + 1, rule);
+                    }
+                }
+
+                ImGui.SameLine();
+                if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp))
+                {
+                    if (_ruleConfig.SortingRules.Count > 1)
+                    {
+                        _ruleConfig.SortingRules.Remove(rule);
+                        _ruleConfig.SortingRules.Insert(index - 1, rule);
+                    }
+                }
+            
+                ImGui.SameLine();
+                if (ImGui.RadioButton($"##Selected{rule.Id}", ref selectedIndex, index))
+                {
+                    SelectedRule = rule;
+                    selectedIndex = index;
+                }
+                
+                ImGui.SameLine();
+                rule.DrawHeader();
+
+                ImGui.BeginDisabled(rule.Id is "Default");
+                ImGui.SameLine();
+                ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X - 25.0f });
+                if (ImGuiComponents.IconButton($"##EditButton{rule.Id}", FontAwesomeIcon.Cog))
+                {
+                    SortaKindaSystem.WindowController.AddNewWindow(rule);
+                }
+                ImGui.EndDisabled();
+            
+                switch (SortaKindaSystem.WindowController.UpdateWindow(rule))
+                {
+                    case ConfigurationResult.SaveAndClose:
+                        SaveConfig();
+                        break;
+                
+                    case ConfigurationResult.RemoveEntry when rule.Id is not "Default":
+                        removalRule = rule;
+                        break;
                 }
             }
 
-            ImGui.SameLine();
-            if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp))
+            if (removalRule is { } toRemove)
             {
-                if (_ruleConfig.SortingRules.Count > 1)
-                {
-                    _ruleConfig.SortingRules.Remove(rule);
-                    _ruleConfig.SortingRules.Insert(index - 1, rule);
-                }
-            }
-            
-            ImGui.SameLine();
-            if (ImGui.RadioButton($"##Selected{rule.Id}", ref selectedIndex, index))
-            {
-                SelectedRule = rule;
-                selectedIndex = index;
-            }
-                
-            ImGui.SameLine();
-            rule.DrawHeader();
-
-            ImGui.BeginDisabled(rule.Id is "Default");
-            ImGui.SameLine();
-            ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X - 25.0f });
-            if (ImGuiComponents.IconButton($"##EditButton{rule.Id}", FontAwesomeIcon.Cog))
-            {
-                SortaKindaSystem.WindowController.AddNewWindow(rule);
-            }
-            ImGui.EndDisabled();
-            
-            switch (SortaKindaSystem.WindowController.UpdateWindow(rule))
-            {
-                case ConfigurationResult.SaveAndClose:
-                    SaveConfig();
-                    break;
-                
-                case ConfigurationResult.RemoveEntry when rule.Id is not "Default":
-                    removalRule = rule;
-                    break;
+                _ruleConfig.SortingRules.Remove(toRemove);
+                SaveConfig();
             }
         }
-
-        if (removalRule is { } toRemove)
-        {
-            _ruleConfig.SortingRules.Remove(toRemove);
-            SaveConfig();
-        }
+        ImGui.EndChild();
         
         ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetContentRegionMax().Y - 32.0f });
         ImGui.PushFont(UiBuilder.IconFont);
@@ -163,8 +166,7 @@ public unsafe class SortController : IDisposable
         (from grid in grids 
             from slot in grid.InventorySlots 
             select slot.Rule)
-        .ToHashSet()
-        .Reverse();
+        .ToHashSet();
     
     private static void SortItems(IReadOnlyList<InventorySlot> targetSlots, IReadOnlyList<InventorySlot> sourceSlots)
     {
@@ -197,7 +199,7 @@ public unsafe class SortController : IDisposable
             // Get all items this rule applies to
             var itemSlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
-                .Where(slot => rule.Filter.AllowedItemTypes.Contains(slot.LuminaData?.ItemUICategory.Row ?? uint.MaxValue))
+                .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
                 .ToList();
             
             // Get all target slots this rule applies to
@@ -205,18 +207,6 @@ public unsafe class SortController : IDisposable
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Equals(rule))
                 .ToList();
-
-            // if (SortaKindaSystem.SystemConfig.FillFromBottom)
-            //     targetSlotsForRule.Reverse();
-            
-            // Order these slots, and limit to only the number of target locations possible
-            // var sourceSlotsOrdered = rule.Order
-            //     .OrderItems(itemSlotsForRule)
-            //     .Take(targetSlotsForRule.Count)
-            //     .ToList();
-
-            // if (rule.Order.FillMode is FillMode.Reverse)
-            //     targetSlotsForRule.Reverse();
             
             SortItems(targetSlotsForRule, itemSlotsForRule);
         }
@@ -270,7 +260,7 @@ public unsafe class SortController : IDisposable
             var inventorySlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Equals(rule) && slot.HasItem)
-                .Where(slot => !rule.Filter.AllowedItemTypes.Contains(slot.LuminaData?.ItemUICategory.Row ?? uint.MaxValue));
+                .Where(slot => !rule.Filter.IsItemSlotAllowed(slot));
             
             // Get all empty unsorted InventorySlots
             var emptyInventorySlots = grids

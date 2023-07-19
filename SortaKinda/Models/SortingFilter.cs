@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
@@ -7,23 +8,47 @@ using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.Caching;
 using Lumina.Excel.GeneratedSheets;
+using SortaKinda.Abstracts;
 
 namespace SortaKinda.Models;
 
 public class SortingFilter
 {
     public HashSet<uint> AllowedItemTypes { get; set; } = new();
+    public bool UseSpecificName;
+    public string SpecificName = string.Empty;
 
     private string searchString = string.Empty;
     private List<ItemUICategory>? searchResults;
 
-    public void Draw()
+    public bool IsItemSlotAllowed(InventorySlot slot)
     {
-        DrawItemTypeSearch();
-        
-        DrawCurrentlyAllowedTypes();
+        if (UseSpecificName)
+        {
+            return string.Equals(slot.LuminaData?.Name.RawString, SpecificName, StringComparison.InvariantCultureIgnoreCase);
+        }
+        else
+        {
+            return AllowedItemTypes.Contains(slot.LuminaData?.ItemUICategory.Row ?? uint.MaxValue);
+        }
     }
     
+    public void Draw()
+    {
+        ImGui.Checkbox("Only Allow Specific Item by Name", ref UseSpecificName);
+
+        if (!UseSpecificName)
+        {
+            DrawItemTypeSearch();
+
+            DrawCurrentlyAllowedTypes();
+        }
+        else
+        {
+            ImGui.InputText("Item Name", ref SpecificName, 1024);
+        }
+    }
+
     private void DrawItemTypeSearch()
     {
         ImGui.TextUnformatted("Item Type Search");
@@ -57,27 +82,27 @@ public class SortingFilter
             foreach (var result in LuminaCache<ItemUICategory>.Instance.OrderBy(item => item.OrderMajor).ThenBy(item => item.OrderMinor))
             {
                 if (result is { RowId: 0, Name.RawString: "" }) continue;
-                
+
                 var enabled = AllowedItemTypes.Contains(result.RowId);
                 if (ImGui.Checkbox($"##ItemUiCategory{result.RowId}", ref enabled))
                 {
                     if (enabled) AllowedItemTypes.Add(result.RowId);
                     if (!enabled) AllowedItemTypes.Remove(result.RowId);
                 }
-                
+
                 if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
                 {
                     ImGui.SameLine();
                     ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
                     ImGui.Image(icon.ImGuiHandle, new Vector2(20.0f, 20.0f));
                 }
-                
+
                 ImGui.SameLine();
                 ImGui.TextUnformatted(result.Name.RawString);
-                
+
                 ImGui.NextColumn();
             }
-            
+
             ImGui.Columns(1);
             ImGui.EndPopup();
         }
