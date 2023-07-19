@@ -3,13 +3,8 @@
 // public class SaddlebagInventoryConfigurationTab : IInventoryConfigurationTab
 // {
 //     public string TabName => "Saddlebag Inventory";
-//     public bool Enabled => true;
+//     public bool Enabled => false; // No Saddlebag Support for now =(
 //     public int TabOrder => 3;
-//
-//     public void DrawRuleConfiguration()
-//     {
-//         
-//     }
-//
+//     
 //     public void DrawInventory() => SortaKindaSystem.ModuleController.GetModule(ModuleName.SaddlebagInventory).DrawInventoryGrid();
 // }

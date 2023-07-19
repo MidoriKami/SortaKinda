@@ -21,8 +21,8 @@ public unsafe class InventorySlot
     public bool HasItem => Item is not null && Item->ItemID is not 0;
     public SortingRule Rule
     {
-        get => ControllingModule.ModuleConfig.Configurations![Type].Rules[Index];
-        private set => ControllingModule.ModuleConfig.Configurations![Type].Rules[Index] = value;
+        get => SortController.GetRule(ControllingModule.ModuleConfig.Configurations![Type].Rules[Index]);
+        private set => ControllingModule.ModuleConfig.Configurations![Type].Rules[Index] = value.Id;
     }
 
     public int Index { get; init; }

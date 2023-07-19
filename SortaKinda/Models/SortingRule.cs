@@ -7,7 +7,6 @@ using ImGuiNET;
 using KamiLib.Caching;
 using KamiLib.Utilities;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Models.Enum;
 
 namespace SortaKinda.Models;
 
@@ -35,42 +34,13 @@ public class SortingRule : IEquatable<SortingRule>
 
         if (Name is not "Unsorted")
         {
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), GetAllowedItemsString());
+            var allowedItems = GetAllowedItemsString();
+            
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), allowedItems[..Math.Min(allowedItems.Length, 55)]);
             ImGui.TextColored(KnownColor.Gray.AsVector4(), GetSortingModesString());
         }
 
         ImGui.EndTooltip();
-    }
-
-    public ConfigurationResult DrawConfigurationWindow()
-    {
-        var result = ConfigurationResult.None;
-        
-        if (ImGui.BeginPopup($"{Id}Config"))
-        {
-            DrawConfig();
-
-            ImGuiHelpers.ScaledDummy(10.0f);
-            
-            var region = ImGui.GetContentRegionMax();
-            ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X - 100.0f - 100.0f - ImGui.GetStyle().ItemSpacing.X });
-            if (ImGui.Button("Delete Rule", new Vector2(100.0f, 23.0f)))
-            {
-                ImGui.CloseCurrentPopup();
-                result = ConfigurationResult.RemoveEntry;
-            }
-
-            ImGui.SameLine();
-            if (ImGui.Button("Save and Close", new Vector2(100.0f, 23.0f)))
-            {
-                ImGui.CloseCurrentPopup();
-                result = ConfigurationResult.SaveAndClose;
-            }
-                
-            ImGui.EndPopup();
-        }
-        
-        return result;
     }
 
     public void DrawConfig()

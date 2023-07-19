@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Dalamud.Interface;
 using ImGuiNET;
 using SortaKinda.Abstracts;
 using SortaKinda.Models.Enum;
+using SortaKinda.System;
 
 namespace SortaKinda.Models;
 
@@ -12,6 +11,7 @@ public class SortingOrder
 {
     public SortOrderDirection Direction = SortOrderDirection.Ascending;
     public SortOrderMode Mode = SortOrderMode.Alphabetically;
+    public FillMode FillMode = FillMode.Standard;
 
     public bool Compare(InventorySlot a, InventorySlot b)
     {
@@ -22,10 +22,10 @@ public class SortingOrder
         if (!a.HasItem && !b.HasItem) return false;
 
         // first slot empty, second slot full, if Ascending we want to left justify, move the items left, if Descending right justify, leave the empty slot on the left.
-        if (!a.HasItem && b.HasItem) return Direction is SortOrderDirection.Ascending;
+        if (!a.HasItem && b.HasItem) return FillMode is FillMode.Standard;
 
         // first slot full, second slot empty, if Ascending we want to left justify, and we have that already, if Descending right justify, move the item right
-        if (a.HasItem && !b.HasItem) return Direction is SortOrderDirection.Descending;
+        if (a.HasItem && !b.HasItem) return FillMode is FillMode.Reverse;
 
         if (firstItem is not null && secondItem is not null)
         {
@@ -42,7 +42,7 @@ public class SortingOrder
                 _ => false,
             };
 
-            if (Direction is SortOrderDirection.Descending)
+            if (Direction is SortOrderDirection.Descending || (FillMode is FillMode.Reverse && SortaKindaSystem.SystemConfig.FillFromBottom))
                 shouldSwap = !shouldSwap;
 
             return shouldSwap;
@@ -51,34 +51,6 @@ public class SortingOrder
         throw new Exception("Logic Error, how tf did you get here?");
     }
     
-    public IOrderedEnumerable<InventorySlot> OrderItems(IEnumerable<InventorySlot> slots)
-        => Direction is SortOrderDirection.Ascending ? ApplyModeAscending(slots) : ApplyModeDescending(slots);
-
-    private IOrderedEnumerable<InventorySlot> ApplyModeAscending(IEnumerable<InventorySlot> collection) => Mode switch
-    {
-        SortOrderMode.ItemId => collection.OrderBy(item => item.LuminaData?.LevelItem.Row),
-        
-        SortOrderMode.ItemLevel => collection
-            .OrderBy(item => item.LuminaData?.LevelItem.Row)
-            .ThenBy(item => item.LuminaData?.Name.RawString),
-        
-        SortOrderMode.Alphabetically => collection.OrderBy(item => item.LuminaData?.Name.RawString),
-        
-        _ => throw new ArgumentOutOfRangeException(),
-    };
-    
-    private IOrderedEnumerable<InventorySlot> ApplyModeDescending(IEnumerable<InventorySlot> collection) => Mode switch
-    {
-        SortOrderMode.ItemId => collection.OrderByDescending(item => item.LuminaData?.LevelItem.Row),
-        
-        SortOrderMode.ItemLevel => collection
-            .OrderByDescending(item => item.LuminaData?.LevelItem.Row)
-            .ThenByDescending(item => item.LuminaData?.Name.RawString),
-        
-        SortOrderMode.Alphabetically => collection.OrderByDescending(item => item.LuminaData?.Name.RawString),
-        _ => throw new ArgumentOutOfRangeException(),
-    };
-
     public void Draw()
     {
         ImGui.Text("Ordering");
@@ -106,6 +78,20 @@ public class SortingOrder
                 if (ImGui.Selectable(direction.ToString(), direction == Direction))
                 {
                     Direction = direction;
+                }
+            }
+            
+            ImGui.EndCombo();
+        }
+        
+        ImGui.PushItemWidth(200.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginCombo("Fill Mode##OrderingDirectionCombo", FillMode.ToString()))
+        {
+            foreach (var fillMode in global::System.Enum.GetValues<FillMode>())
+            {
+                if (ImGui.Selectable(fillMode.ToString(), fillMode == FillMode))
+                {
+                    FillMode = fillMode;
                 }
             }
             

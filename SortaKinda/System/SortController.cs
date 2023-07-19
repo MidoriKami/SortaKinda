@@ -7,14 +7,9 @@ using DailyDuty.System;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
-using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using FFXIVClientStructs.Interop;
 using ImGuiNET;
-using KamiLib.Caching;
 using KamiLib.Utilities;
-using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Abstracts;
 using SortaKinda.Models;
 using SortaKinda.Models.Enum;
@@ -26,8 +21,11 @@ public unsafe class SortController : IDisposable
     private static RuleConfig _ruleConfig = new();
     public static SortingRule? SelectedRule;
     private int selectedIndex;
-    static Random _randomGenerator = new();
+    private static readonly Random RandomGenerator = new();
 
+    public static SortingRule GetRule(string id)
+        => _ruleConfig.SortingRules.Where(rule => rule.Id == id).FirstOrDefault() ?? _ruleConfig.SortingRules[0];
+    
     public void DrawConfig()
     {
         SortingRule? removalRule = null;
@@ -113,9 +111,9 @@ public unsafe class SortController : IDisposable
             {
                 Id = newId,
                 Color = new Vector4(
-                    _randomGenerator.Next(0, 255) / 255.0f, 
-                    _randomGenerator.Next(0, 255) / 255.0f,
-                    _randomGenerator.Next(0, 255) / 255.0f,
+                    RandomGenerator.Next(0, 255) / 255.0f, 
+                    RandomGenerator.Next(0, 255) / 255.0f,
+                    RandomGenerator.Next(0, 255) / 255.0f,
                     1.0f),
                 Name = "New Filter",
             };
@@ -143,6 +141,8 @@ public unsafe class SortController : IDisposable
                     Mode = SortOrderMode.Alphabetically
                 },
             });
+            
+            SaveConfig();
         }
     }
 
@@ -206,16 +206,19 @@ public unsafe class SortController : IDisposable
                 .Where(slot => slot.Rule.Equals(rule))
                 .ToList();
 
-            if (SortaKindaSystem.SystemConfig.FillFromBottom)
-                targetSlotsForRule.Reverse();
+            // if (SortaKindaSystem.SystemConfig.FillFromBottom)
+            //     targetSlotsForRule.Reverse();
             
             // Order these slots, and limit to only the number of target locations possible
-            var sourceSlotsOrdered = rule.Order
-                .OrderItems(itemSlotsForRule)
-                .Take(targetSlotsForRule.Count)
-                .ToList();
+            // var sourceSlotsOrdered = rule.Order
+            //     .OrderItems(itemSlotsForRule)
+            //     .Take(targetSlotsForRule.Count)
+            //     .ToList();
+
+            // if (rule.Order.FillMode is FillMode.Reverse)
+            //     targetSlotsForRule.Reverse();
             
-            SortItems(targetSlotsForRule, sourceSlotsOrdered);
+            SortItems(targetSlotsForRule, itemSlotsForRule);
         }
         
         CleanupInventory(grids);
@@ -239,6 +242,8 @@ public unsafe class SortController : IDisposable
 
     private static void ReorderItems(SortingRule rule, IReadOnlyList<InventorySlot> items)
     {
+        if (rule.Id is "Default") return;
+        
         foreach (var _ in items)
         {
             foreach (var index in Enumerable.Range(0, items.Count - 1))

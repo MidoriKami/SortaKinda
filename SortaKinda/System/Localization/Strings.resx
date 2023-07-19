@@ -18,4 +18,28 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
+    <data name="SortingOptions" xml:space="preserve">
+        <value>Sorting Options</value>
+    </data>
+    <data name="SortOnInventoryChange" xml:space="preserve">
+        <value>Sort on Inventory Change</value>
+    </data>
+    <data name="SortOnInventoryChangeHelp" xml:space="preserve">
+        <value>Triggers when the number of items in an inventory changes</value>
+    </data>
+    <data name="SortOnZoneChange" xml:space="preserve">
+        <value>Sort on Zone Change</value>
+    </data>
+    <data name="SortOnJobChange" xml:space="preserve">
+        <value>Sort on Job Change</value>
+    </data>
+    <data name="SortOnLogin" xml:space="preserve">
+        <value>Sort on Login</value>
+    </data>
+    <data name="OrderingConfig" xml:space="preserve">
+        <value>Ordering Options</value>
+    </data>
+    <data name="FillFromBottom" xml:space="preserve">
+        <value>Fill from Bottom</value>
+    </data>
 </root>

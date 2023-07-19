@@ -7,20 +7,17 @@ namespace SortaKinda.Models;
 public unsafe class InventoryConfig
 {
     public InventoryType Type { get; set; }
-    public SortingRule[] Rules { get; set; }
+    public string[] Rules { get; set; }
     
     public InventoryConfig(InventoryType type)
     {
         Type = type;
         var ruleCount = InventoryController.GetInventorySorter(type)->ItemsPerPage;
 
-        Rules = new SortingRule[ruleCount];
+        Rules = new string[ruleCount];
         foreach (var index in Enumerable.Range(0, ruleCount))
         {
-            Rules[index] = new SortingRule
-            {
-                Id = string.Empty,
-            };
+            Rules[index] = "Default";
         }
     }
 }

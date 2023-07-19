@@ -22,8 +22,9 @@ public abstract class InventoryModuleBase : IDisposable
         PluginLog.Debug($"[{ModuleName}] Loading Module");
         
         ModuleConfig = LoadConfig();
-        
+        var newConfig = ModuleConfig.Configurations is null;
         LoadModule();
+        if(newConfig) SaveConfig();
     }
 
     public void Unload()

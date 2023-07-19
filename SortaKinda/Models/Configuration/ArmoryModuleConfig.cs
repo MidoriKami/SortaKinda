@@ -6,5 +6,5 @@ namespace SortaKinda.Models;
 
 public class ArmoryModuleConfig : IModuleConfig
 {
-    public Dictionary<InventoryType, InventoryConfig>? Configurations { get; set; }
+    public Dictionary<InventoryType, InventoryConfig>? Configurations { get; set; } = null;
 }

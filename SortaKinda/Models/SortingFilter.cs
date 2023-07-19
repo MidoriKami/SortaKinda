@@ -43,6 +43,44 @@ public class SortingFilter
                     .ToList();
             }
         }
+        ImGui.SameLine();
+        if (ImGuiComponents.IconButton("##ShowAll", FontAwesomeIcon.Search))
+        {
+            ImGui.OpenPopup("ShowAllItemUiCategory");
+        }
+
+        ImGui.SetNextWindowSizeConstraints(new Vector2(1024, 700), new Vector2(1024, 800));
+        if (ImGui.BeginPopup("ShowAllItemUiCategory"))
+        {
+            ImGui.Columns(4);
+
+            foreach (var result in LuminaCache<ItemUICategory>.Instance.OrderBy(item => item.OrderMajor).ThenBy(item => item.OrderMinor))
+            {
+                if (result is { RowId: 0, Name.RawString: "" }) continue;
+                
+                var enabled = AllowedItemTypes.Contains(result.RowId);
+                if (ImGui.Checkbox($"##ItemUiCategory{result.RowId}", ref enabled))
+                {
+                    if (enabled) AllowedItemTypes.Add(result.RowId);
+                    if (!enabled) AllowedItemTypes.Remove(result.RowId);
+                }
+                
+                if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
+                {
+                    ImGui.SameLine();
+                    ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
+                    ImGui.Image(icon.ImGuiHandle, new Vector2(20.0f, 20.0f));
+                }
+                
+                ImGui.SameLine();
+                ImGui.TextUnformatted(result.Name.RawString);
+                
+                ImGui.NextColumn();
+            }
+            
+            ImGui.Columns(1);
+            ImGui.EndPopup();
+        }
 
         if (searchResults is not null)
         {
@@ -62,7 +100,6 @@ public class SortingFilter
                         {
                             AllowedItemTypes.Add(result.RowId);
                         }
-                        
 
                         if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
                         {

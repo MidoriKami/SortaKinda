@@ -58,5 +58,77 @@ namespace SortaKinda.System.Localization {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill from Bottom.
+        /// </summary>
+        internal static string FillFromBottom {
+            get {
+                return ResourceManager.GetString("FillFromBottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ordering Options.
+        /// </summary>
+        internal static string OrderingConfig {
+            get {
+                return ResourceManager.GetString("OrderingConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorting Options.
+        /// </summary>
+        internal static string SortingOptions {
+            get {
+                return ResourceManager.GetString("SortingOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Inventory Change.
+        /// </summary>
+        internal static string SortOnInventoryChange {
+            get {
+                return ResourceManager.GetString("SortOnInventoryChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triggers when the number of items in an inventory changes.
+        /// </summary>
+        internal static string SortOnInventoryChangeHelp {
+            get {
+                return ResourceManager.GetString("SortOnInventoryChangeHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Job Change.
+        /// </summary>
+        internal static string SortOnJobChange {
+            get {
+                return ResourceManager.GetString("SortOnJobChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Login.
+        /// </summary>
+        internal static string SortOnLogin {
+            get {
+                return ResourceManager.GetString("SortOnLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Zone Change.
+        /// </summary>
+        internal static string SortOnZoneChange {
+            get {
+                return ResourceManager.GetString("SortOnZoneChange", resourceCulture);
+            }
+        }
     }
 }
