@@ -1,7 +1,6 @@
 ﻿using System;
 using DailyDuty.System;
 using Dalamud.Logging;
-using KamiLib.Commands;
 using SortaKinda.Models.Enum;
 
 namespace SortaKinda.Abstracts;
@@ -15,7 +14,8 @@ public abstract class InventoryModuleBase : IDisposable
 
     public abstract void DrawInventoryGrid();
     protected abstract void LoadModule();
-    public abstract void PerformSort();
+    public abstract void SortAll();
+    public abstract void Update();
 
     public void Load()
     {
@@ -24,18 +24,11 @@ public abstract class InventoryModuleBase : IDisposable
         ModuleConfig = LoadConfig();
         
         LoadModule();
-        
-        CommandController.RegisterSingleTierCommand(DoCommand, new SingleTierCommandHandler("test", "sort"));
     }
 
     public void Unload()
     {
-        CommandController.UnregisterCommands(this);
-    }
-    
-    private void DoCommand()
-    {
-        PerformSort();
+        
     }
 
     private IModuleConfig LoadConfig() => FileController.LoadFile<IModuleConfig>($"{ModuleName}.config.json", ModuleConfig);

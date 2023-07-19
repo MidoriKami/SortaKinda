@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
-using ImGuiNET;
 using KamiLib;
 using SortaKinda.Models;
 using SortaKinda.Models.Enum;
@@ -29,8 +27,6 @@ public class WindowController : IDisposable
         {
             var newRuleWindow = new RuleConfigurationWindow(rule)
             {
-                Position = ImGui.GetMousePos(),
-                PositionCondition = ImGuiCond.Appearing,
                 IsOpen = true
             };
 

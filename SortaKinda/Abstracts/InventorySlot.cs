@@ -1,14 +1,12 @@
-﻿using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using FFXIVClientStructs.Interop;
 using ImGuiNET;
 using ImGuiScene;
 using KamiLib.Caching;
-using KamiLib.Utilities;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Models;
-using SortaKinda.Models.Enum;
 using SortaKinda.System;
 
 namespace SortaKinda.Abstracts;
@@ -16,10 +14,10 @@ namespace SortaKinda.Abstracts;
 public unsafe class InventorySlot
 {
     private InventoryItem* Item => InventoryController.GetItemForSlot(Type, Index);
-    private Item? LuminaData => Item is not null ? LuminaCache<Item>.Instance.GetRow(Item->ItemID) : null;
+    public Item? LuminaData => Item is not null ? LuminaCache<Item>.Instance.GetRow(Item->ItemID) : null;
     private TextureWrap? ItemIcon => LuminaData is not null ? IconCache.Instance.GetIcon(LuminaData.Icon) : null;
 
-    public ItemOrderModuleSorterItemEntry* ItemOrderData => InventoryController.GetItemOrderDataForSlot(Type, Index);
+    public Pointer<ItemOrderModuleSorterItemEntry> ItemOrderData => InventoryController.GetItemOrderDataForSlot(Type, Index);
     public bool HasItem => Item is not null && Item->ItemID is not 0;
     public SortingRule Rule
     {
@@ -60,11 +58,11 @@ public unsafe class InventorySlot
             }
         }
 
-        if (ImGui.IsItemHovered() && ImGui.IsMouseDown(ImGuiMouseButton.Right))
+        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
         {
             Rule = new SortingRule
             {
-                Id = string.Empty,
+                Id = "Default"
             };
             ControllingModule.SaveConfig();
         }

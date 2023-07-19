@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
@@ -59,7 +60,7 @@ public unsafe partial class InventoryController
         var inventoryManager = InventoryManager.Instance();
         if (inventoryManager is null) return null;
 
-        var itemOrderData = GetItemOrderDataForSlot(type, slot);
+        var itemOrderData = GetItemOrderDataForSlot(type, slot).Value;
         if (itemOrderData is null) return null;
 
         var inventoryContainer = inventoryManager->GetInventoryContainer(GetAdjustedInventoryType(type) + itemOrderData->Page);
@@ -87,16 +88,42 @@ public unsafe partial class InventoryController
         var inventorySorter = GetInventorySorter(type);
         if (inventorySorter is null) return null;
         
-        return (StdVector<Pointer<ItemOrderModuleSorterItemEntry>>*) &inventorySorter->Items;
+        return &inventorySorter->Items;
     }
     
-    public static ItemOrderModuleSorterItemEntry* GetItemOrderDataForSlot(InventoryType type, int slot)
+    public static Pointer<ItemOrderModuleSorterItemEntry> GetItemOrderDataForSlot(InventoryType type, int slot)
     {
         var itemOrderData = GetItemOrderData(type);
         if (itemOrderData is null) return null;
         
-        return GetItemOrderData(type)->Span[slot + GetInventorySorterStartIndex(type)].Value;
+        return GetItemOrderData(type)->Span[slot + GetInventorySorterStartIndex(type)];
     }
+
+    public static int GetInventoryItemCount(params InventoryType[] types) 
+        => types.Sum(GetInventoryItemCount);
+
+    public static int GetInventoryItemCount(InventoryType type)
+    {
+        var count = 0;
+        foreach (var item in GetInventoryItems(type))
+        {
+            if (item is not { ItemID: 0 }) count++;
+        }
+
+        return count;
+    }
+
+    private static Span<InventoryItem> GetInventoryItems(InventoryType type)
+    {
+        var instance = InventoryManager.Instance();
+        if (instance is null) return Span<InventoryItem>.Empty;
+
+        var container = instance->GetInventoryContainer(type);
+        if(container is null) return Span<InventoryItem>.Empty;
+
+        return new Span<InventoryItem>(container->Items, (int)container->Size);
+    }
+    
 }
 
 // Helpers that shouldn't be called directly.

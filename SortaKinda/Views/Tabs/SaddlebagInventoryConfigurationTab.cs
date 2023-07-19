@@ -1,8 +1,4 @@
-﻿using SortaKinda.Abstracts;
-using SortaKinda.Models.Enum;
-using SortaKinda.System;
-
-namespace SortaKinda.Views.Tabs;
+﻿namespace SortaKinda.Views.Tabs;
 
 // public class SaddlebagInventoryConfigurationTab : IInventoryConfigurationTab
 // {

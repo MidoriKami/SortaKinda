@@ -1,8 +1,4 @@
-﻿using SortaKinda.Abstracts;
-using SortaKinda.Models;
-using SortaKinda.Models.Enum;
-
-namespace SortaKinda.System.Modules;
+﻿namespace SortaKinda.System.Modules;
 
 // public class SaddlebagInventoryModule : InventoryModuleBase
 // {

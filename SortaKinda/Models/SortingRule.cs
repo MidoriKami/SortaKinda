@@ -103,7 +103,7 @@ public class SortingRule : IEquatable<SortingRule>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Name == other.Name;
+        return Id == other.Id;
     }
     
     public override bool Equals(object? obj)
@@ -114,5 +114,5 @@ public class SortingRule : IEquatable<SortingRule>
         return Equals((SortingRule) obj);
     }
     
-    public override int GetHashCode() => Name.GetHashCode();
+    public override int GetHashCode() => Id.GetHashCode();
 }

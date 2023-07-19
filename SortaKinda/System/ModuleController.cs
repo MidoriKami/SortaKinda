@@ -42,11 +42,20 @@ public class ModuleController : IDisposable
             module.Dispose();
         }
     }
+    
     public void SortAll()
     {
         foreach (var module in modules)
         {
-            module.PerformSort();
+            module.SortAll();
+        }
+    }
+    
+    public void Update()
+    {
+        foreach (var module in modules)
+        {
+            module.Update();
         }
     }
 }
