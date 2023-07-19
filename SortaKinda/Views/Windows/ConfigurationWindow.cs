@@ -27,8 +27,6 @@ public class ConfigurationWindow : Window
         Flags |= ImGuiWindowFlags.NoScrollWithMouse;
         Flags |= ImGuiWindowFlags.NoResize;
 
-        IsOpen = true;
-        
         CommandController.RegisterCommands(this);
     }
 
