@@ -2,6 +2,6 @@
 
 public enum FillMode
 {
-    Standard,
-    Reverse
+    FillFromTop,
+    FillFromBottom
 }

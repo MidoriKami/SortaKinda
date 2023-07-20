@@ -11,7 +11,7 @@ public class SortingOrder
 {
     public SortOrderDirection Direction = SortOrderDirection.Ascending;
     public SortOrderMode Mode = SortOrderMode.Alphabetically;
-    public FillMode FillMode = FillMode.Standard;
+    public FillMode FillMode = FillMode.FillFromTop;
 
     public bool Compare(InventorySlot a, InventorySlot b)
     {
