@@ -53,6 +53,7 @@ public unsafe class SortController : IDisposable
                     {
                         _ruleConfig.SortingRules.Remove(rule);
                         _ruleConfig.SortingRules.Insert(index + 1, rule);
+                        SaveConfig();
                     }
                 }
 
@@ -63,6 +64,7 @@ public unsafe class SortController : IDisposable
                     {
                         _ruleConfig.SortingRules.Remove(rule);
                         _ruleConfig.SortingRules.Insert(index - 1, rule);
+                        SaveConfig();
                     }
                 }
             
