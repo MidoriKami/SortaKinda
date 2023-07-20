@@ -1,6 +1,6 @@
-﻿using Dalamud.Interface;
+﻿using System.Numerics;
+using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using ImGuiNET;
 using SortaKinda.Models;
 using SortaKinda.Models.Enum;
@@ -17,7 +17,11 @@ public class RuleConfigurationWindow : Window
     {
         this.rule = rule;
 
-        Flags |= ImGuiWindowFlags.AlwaysAutoResize;
+        SizeConstraints = new WindowSizeConstraints()
+        {
+            MinimumSize = new Vector2(350.0f, 500.0f),
+            MaximumSize = new Vector2(9999, 9999)
+        };
     }
 
     public override void OnOpen()
