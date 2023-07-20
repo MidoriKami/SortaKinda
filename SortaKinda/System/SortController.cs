@@ -86,6 +86,7 @@ public unsafe class SortController : IDisposable
                 switch (SortaKindaSystem.WindowController.UpdateWindow(rule))
                 {
                     case ConfigurationResult.SaveAndClose:
+                        SortaKindaSystem.ModuleController.SortAll();
                         SaveConfig();
                         break;
                 
