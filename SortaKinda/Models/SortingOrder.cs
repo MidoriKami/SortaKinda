@@ -1,9 +1,9 @@
 ﻿using System;
 using Dalamud.Interface;
 using ImGuiNET;
+using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Abstracts;
 using SortaKinda.Models.Enum;
-using SortaKinda.System;
 
 namespace SortaKinda.Models;
 
@@ -18,39 +18,48 @@ public class SortingOrder
         var firstItem = a.LuminaData;
         var secondItem = b.LuminaData;
 
-        // If both items are null, don't swap
-        if (!a.HasItem && !b.HasItem) return false;
-
-        // first slot empty, second slot full, if Ascending we want to left justify, move the items left, if Descending right justify, leave the empty slot on the left.
-        if (!a.HasItem && b.HasItem) return FillMode is FillMode.Standard;
-
-        // first slot full, second slot empty, if Ascending we want to left justify, and we have that already, if Descending right justify, move the item right
-        if (a.HasItem && !b.HasItem) return FillMode is FillMode.Reverse;
-
-        if (firstItem is not null && secondItem is not null)
+        switch (a.HasItem, b.HasItem)
         {
-            var shouldSwap = Mode switch
-            {
-                SortOrderMode.ItemId => firstItem.RowId < secondItem.RowId,
-        
-                SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row ? 
-                    string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0 :
-                    firstItem.LevelItem.Row < secondItem.LevelItem.Row,
-        
-                SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
+            // If both items are null, don't swap
+            case (false, false): return false;
+
+            // first slot empty, second slot full, if Ascending we want to left justify, move the items left, if Descending right justify, leave the empty slot on the left.
+            case (false, true): return FillMode is FillMode.FillFromTop;
+
+            // first slot full, second slot empty, if Ascending we want to left justify, and we have that already, if Descending right justify, move the item right
+            case (true, false): return FillMode is FillMode.FillFromBottom;
             
-                _ => false,
-            };
+            case (true, true) when firstItem is not null && secondItem is not null:
+                var shouldSwap = ShouldSwap(firstItem, secondItem, ItemsMatch(firstItem, secondItem) ? SortOrderMode.Alphabetically : Mode);
 
-            if (Direction is SortOrderDirection.Descending || (FillMode is FillMode.Reverse && SortaKindaSystem.SystemConfig.FillFromBottom))
-                shouldSwap = !shouldSwap;
+                if (Direction is SortOrderDirection.Descending)
+                    shouldSwap = !shouldSwap;
 
-            return shouldSwap;
+                return shouldSwap;
+            
+            // Something went horribly wrong... best not touch it and walk away.
+            default: return false;
         }
-
-        throw new Exception("Logic Error, how tf did you get here?");
     }
+
+    private bool ItemsMatch(Item firstItem, Item secondItem) => Mode switch
+    {
+        SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
+        SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
+        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
+        SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
+        _ => false,
+    };
     
+    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch
+    {
+        SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
+        SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
+        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
+        SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
+        _ => false,
+    };
+
     public void Draw()
     {
         ImGui.Text("Ordering");
