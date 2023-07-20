@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using DailyDuty.System;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
@@ -176,33 +177,33 @@ public unsafe class SortController : IDisposable
     
         (*slotData.Value, *itemData.Value) = (*itemData.Value, *slotData.Value);
     }
-    
-    public static void SortInventory(InventoryType type, params InventoryGrid[] grids)
+
+    public static void SortInventory(InventoryType type, params InventoryGrid[] grids) => Task.Run(() =>
     {
         PluginLog.Debug($"Sorting Inventory: {type}");
-        
+
         // Get All ItemSlots that match this rule
         foreach (var rule in _ruleConfig.SortingRules)
         {
             if (rule.Id is "Default") continue;
-            
+
             // Get all items this rule applies to, and aren't already in any of the slots for that rule
             var itemSlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => !slot.Rule.Equals(rule))
                 .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
                 .ToList();
-            
+
             // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
             var targetSlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Equals(rule))
                 .Where(slot => !rule.Filter.IsItemSlotAllowed(slot))
                 .ToList();
-            
+
             SortItems(targetSlotsForRule, itemSlotsForRule);
         }
-        
+
         CleanupInventory(grids);
 
         foreach (var rule in _ruleConfig.SortingRules)
@@ -217,7 +218,7 @@ public unsafe class SortController : IDisposable
 
             ReorderItems(rule, targetSlotsForRule);
         }
-    }
+    });
 
     private static void ReorderItems(SortingRule rule, IReadOnlyList<InventorySlot> items)
     {
