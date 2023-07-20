@@ -22,12 +22,16 @@ public unsafe class InventorySlot
     public SortingRule Rule
     {
         get => SortController.GetRule(ControllingModule.ModuleConfig.Configurations![Type].Rules[Index]);
-        private set => ControllingModule.ModuleConfig.Configurations![Type].Rules[Index] = value.Id;
+        set
+        {
+            ControllingModule.ModuleConfig.Configurations![Type].Rules[Index] = value.Id;
+            ControllingModule.SaveConfig();
+        }
     }
 
     public int Index { get; init; }
     public InventoryType Type { get; init; }
-    public required InventoryModuleBase ControllingModule { get; set; }
+    public required InventoryModuleBase ControllingModule { get; init; }
 
     public void Draw(Vector2 drawPosition, Vector2 size)
     {
