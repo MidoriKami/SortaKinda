@@ -89,7 +89,7 @@ public unsafe class SortController : IDisposable
                         SaveConfig();
                         break;
                 
-                    case ConfigurationResult.RemoveEntry when rule.Id is not "Default":
+                    case ConfigurationResult.RemoveEntry:
                         removalRule = rule;
                         break;
                 }
