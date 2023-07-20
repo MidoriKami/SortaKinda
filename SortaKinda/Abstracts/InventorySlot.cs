@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.Interop;
@@ -48,35 +49,68 @@ public unsafe class InventorySlot
         ImGui.SetCursorPos(drawPosition);
         ImGui.Image(ItemIcon.ImGuiHandle, size, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
 
-        if (ImGui.IsItemHovered())
-        {
-            Rule.DrawTooltip();
-        }
-        
-        if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-        {
-            if (SortController.SelectedRule is { } rule)
-            {
-                Rule = rule;
-                ControllingModule.SaveConfig();
-            }
-        }
+        OnItemHovered();
+        OnItemLeftClicked();
+        OnItemRightClicked();
+        OnDragCollision(drawPosition, size);
+    }
 
-        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+    private void OnItemHovered()
+    {
+        if (!ImGui.IsItemHovered()) return;
+        
+        Rule.DrawTooltip();
+    }
+
+    private void OnItemLeftClicked()
+    {
+        if (!ImGui.IsItemClicked(ImGuiMouseButton.Left)) return;
+        if (SortController.SelectedRule is not { } rule || Rule.Equals(rule)) return;
+        
+        SetToSelectedRule();
+    }
+    
+    private void OnItemRightClicked()
+    {
+        if (!ImGui.IsItemClicked(ImGuiMouseButton.Right)) return;
+        
+        Rule = new SortingRule { Id = "Default" };
+        ControllingModule.SaveConfig();
+    }
+    
+    private void OnDragCollision(Vector2 drawPosition, Vector2 size)
+    {
+        if (AreaPaintController.GetDragBounds().IntersectsWith(GetBounds(drawPosition, size)))
         {
-            Rule = new SortingRule
-            {
-                Id = "Default"
-            };
-            ControllingModule.SaveConfig();
+            SetToSelectedRule();
         }
     }
 
+    private void SetToSelectedRule()
+    {
+        if (SortController.SelectedRule is not { } rule || Rule.Equals(rule)) return;
+        
+        Rule = rule;
+        ControllingModule.SaveConfig();
+    }
+    
     private void DrawFrame(Vector2 drawPosition, Vector2 size)
     {
         var start = ImGui.GetWindowPos() + drawPosition;
         var stop = start + size;
         
         ImGui.GetWindowDrawList().AddRect(start, stop, ImGui.GetColorU32(Rule.Color), 5.0f, ImDrawFlags.None, 2.0f);
+    }
+
+    private Rectangle GetBounds(Vector2 drawPosition, Vector2 size)
+    {
+        var start = ImGui.GetWindowPos() + drawPosition;
+        var stop = start + size;
+
+        var startPoint = new Point((int) start.X, (int) start.Y);
+        var stopPoint = new Point((int) stop.X, (int) stop.Y);
+        var rectSize = new Size(stopPoint.X - startPoint.X, stopPoint.Y - startPoint.Y);
+
+        return new Rectangle(startPoint, rectSize);
     }
 }
