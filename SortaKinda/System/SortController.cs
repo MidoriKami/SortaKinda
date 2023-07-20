@@ -193,10 +193,11 @@ public unsafe class SortController : IDisposable
                 .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
                 .ToList();
             
-            // Get all target slots this rule applies to
+            // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
             var targetSlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Equals(rule))
+                .Where(slot => !rule.Filter.IsItemSlotAllowed(slot))
                 .ToList();
             
             SortItems(targetSlotsForRule, itemSlotsForRule);
