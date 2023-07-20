@@ -8,6 +8,7 @@ using KamiLib.Commands;
 using KamiLib.Interfaces;
 using KamiLib.Utilities;
 using SortaKinda.Abstracts;
+using SortaKinda.System;
 using SortaKinda.Views.Tabs;
 
 namespace SortaKinda.Views.Windows;
@@ -15,6 +16,7 @@ namespace SortaKinda.Views.Windows;
 public class ConfigurationWindow : Window
 {
     private readonly List<ITabItem> tabs = new();
+    public AreaPaintController AreaPaintController = new();
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
@@ -40,6 +42,8 @@ public class ConfigurationWindow : Window
 
     public override void Draw()
     {
+        AreaPaintController.Draw();
+        
         if (ImGui.BeginTabBar("##SortaKindaTabBar"))
         {
             foreach (var tab in tabs)
