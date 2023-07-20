@@ -13,7 +13,7 @@ public class RuleConfigurationWindow : Window
 
     public ConfigurationResult Result { get; private set; } = ConfigurationResult.None;
     
-    public RuleConfigurationWindow(SortingRule rule) : base($"SortaKinda - {rule.Id}")
+    public RuleConfigurationWindow(SortingRule rule) : base($"SortaKinda Rule Configuration##{rule.Id}")
     {
         this.rule = rule;
 
