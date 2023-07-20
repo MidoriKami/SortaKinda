@@ -5,4 +5,5 @@ public enum SortOrderMode
     ItemLevel,
     Alphabetically,
     ItemId,
+    SellPrice,
 }
