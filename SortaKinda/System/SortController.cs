@@ -214,9 +214,6 @@ public unsafe class SortController : IDisposable
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Equals(rule))
                 .ToList();
-            
-            if (SortaKindaSystem.SystemConfig.FillFromBottom)
-                targetSlotsForRule.Reverse();
 
             ReorderItems(rule, targetSlotsForRule);
         }
@@ -255,9 +252,6 @@ public unsafe class SortController : IDisposable
             var emptyInventorySlots = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Id is "Default" && !slot.HasItem);
-
-            if (SortaKindaSystem.SystemConfig.FillFromBottom)
-                emptyInventorySlots = emptyInventorySlots.Reverse();
             
             // Perform the Sort
             SortItems(emptyInventorySlots.ToList(), inventorySlotsForRule.ToList());
