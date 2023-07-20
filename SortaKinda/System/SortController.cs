@@ -19,8 +19,8 @@ namespace SortaKinda.System;
 public unsafe class SortController : IDisposable
 {
     private static RuleConfig _ruleConfig = new();
-    public static SortingRule? SelectedRule;
-    private int selectedIndex;
+    public static SortingRule SelectedRule => _ruleConfig.SortingRules[_selectedIndex];
+    private static int _selectedIndex;
     private static readonly Random RandomGenerator = new();
 
     public static SortingRule GetRule(string id)
@@ -67,12 +67,8 @@ public unsafe class SortController : IDisposable
                 }
             
                 ImGui.SameLine();
-                if (ImGui.RadioButton($"##Selected{rule.Id}", ref selectedIndex, index))
-                {
-                    SelectedRule = rule;
-                    selectedIndex = index;
-                }
-                
+                ImGui.RadioButton($"##Selected{rule.Id}", ref _selectedIndex, index);
+
                 ImGui.SameLine();
                 rule.DrawHeader();
 
