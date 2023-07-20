@@ -23,7 +23,7 @@ public unsafe class InventorySlot
     public SortingRule Rule
     {
         get => SortController.GetRule(ControllingModule.ModuleConfig.Configurations![Type].Rules[Index]);
-        set
+        private set
         {
             ControllingModule.ModuleConfig.Configurations![Type].Rules[Index] = value.Id;
             ControllingModule.SaveConfig();
