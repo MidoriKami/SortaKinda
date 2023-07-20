@@ -186,9 +186,10 @@ public unsafe class SortController : IDisposable
         {
             if (rule.Id is "Default") continue;
             
-            // Get all items this rule applies to
+            // Get all items this rule applies to, and aren't already in any of the slots for that rule
             var itemSlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
+                .Where(slot => !slot.Rule.Equals(rule))
                 .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
                 .ToList();
             
