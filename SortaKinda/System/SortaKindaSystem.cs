@@ -74,7 +74,7 @@ public class SortaKindaSystem : IDisposable
         Service.Framework.Update -= OnFrameworkUpdate;
         Service.ClientState.Login -= OnLogin;
         Service.ClientState.Logout -= OnLogout;
-        Service.ClientState.TerritoryChanged += OnZoneChange;
+        Service.ClientState.TerritoryChanged -= OnZoneChange;
 
         SortController.Dispose();
         ModuleController.Dispose();
