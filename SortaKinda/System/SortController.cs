@@ -161,13 +161,7 @@ public unsafe class SortController : IDisposable
     
     private RuleConfig LoadConfig() => FileController.LoadFile<RuleConfig>("SortingRules.config.json", _ruleConfig);
     public void SaveConfig() => FileController.SaveFile("SortingRules.config.json", _ruleConfig.GetType(), _ruleConfig);
-    
-    private static IEnumerable<SortingRule> GetAllRules(params InventoryGrid[] grids) => 
-        (from grid in grids 
-            from slot in grid.InventorySlots 
-            select slot.Rule)
-        .ToHashSet();
-    
+
     private static void SortItems(IReadOnlyList<InventorySlot> targetSlots, IReadOnlyList<InventorySlot> sourceSlots)
     {
         foreach (var index in Enumerable.Range(0, Math.Min(targetSlots.Count, sourceSlots.Count)))
@@ -188,11 +182,8 @@ public unsafe class SortController : IDisposable
     {
         PluginLog.Debug($"Sorting Inventory: {type}");
         
-        // Get all Sorting Rules, order by descending, so higher priority rules get the items in the end
-        var sortingRules = GetAllRules(grids).ToList();
-        
         // Get All ItemSlots that match this rule
-        foreach (var rule in sortingRules)
+        foreach (var rule in _ruleConfig.SortingRules)
         {
             if (rule.Id is "Default") continue;
             
@@ -213,7 +204,7 @@ public unsafe class SortController : IDisposable
         
         CleanupInventory(grids);
 
-        foreach (var rule in sortingRules)
+        foreach (var rule in _ruleConfig.SortingRules)
         {
             if (rule.Id is "Default") continue;
 
@@ -248,11 +239,8 @@ public unsafe class SortController : IDisposable
 
     private static void CleanupInventory(params InventoryGrid[] grids)
     {
-        // Get all Sorting Rules for these grids
-        var sortingRules = GetAllRules(grids);
-
         // For each rule
-        foreach (var rule in sortingRules)
+        foreach (var rule in _ruleConfig.SortingRules)
         {
             if(rule.Id is "Default") continue;
             
