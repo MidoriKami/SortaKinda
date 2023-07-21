@@ -12,7 +12,7 @@ namespace SortaKinda.Models;
 public class SortingOrder : ISortingOrder
 {
     public SortOrderDirection Direction = SortOrderDirection.Ascending;
-    private FillMode fillMode = FillMode.Top;
+    public FillMode FillMode = FillMode.Top;
     public SortOrderMode Mode = SortOrderMode.Alphabetically;
 
     public int Compare(IInventorySlot? x, IInventorySlot? y)
@@ -37,10 +37,10 @@ public class SortingOrder : ISortingOrder
             case (false, false): return false;
 
             // first slot empty, second slot full, if Ascending we want to left justify, move the items left, if Descending right justify, leave the empty slot on the left.
-            case (false, true): return fillMode is FillMode.Top;
+            case (false, true): return FillMode is FillMode.Top;
 
             // first slot full, second slot empty, if Ascending we want to left justify, and we have that already, if Descending right justify, move the item right
-            case (true, false): return fillMode is FillMode.Bottom;
+            case (true, false): return FillMode is FillMode.Bottom;
 
             case (true, true) when firstItem is not null && secondItem is not null:
                 var shouldSwap = ShouldSwap(firstItem, secondItem, IsItemMatch(firstItem, secondItem) ? SortOrderMode.Alphabetically : Mode);
@@ -76,7 +76,7 @@ public class SortingOrder : ISortingOrder
                 ImGuiHelpers.ScaledDummy(10.0f);
                 ImGui.Text("Fill inventory slots from");
                 ImGuiComponents.HelpMarker("Top - Items are shifted to the top left-most slots\nBottom - Items are shifted to the bottom right-most slots");
-                DrawRadioEnum(ref fillMode);
+                DrawRadioEnum(ref FillMode);
 
                 ImGui.EndTable();
             }
@@ -118,12 +118,12 @@ public class SortingOrder : ISortingOrder
 
     private static void DrawRadioEnum<T>(ref T configValue) where T : global::System.Enum
     {
-        foreach (global::System.Enum orderingMode in global::System.Enum.GetValues(configValue.GetType()))
+        foreach (global::System.Enum mode in global::System.Enum.GetValues(configValue.GetType()))
         {
             var isSelected = Convert.ToInt32(configValue);
-            if (ImGui.RadioButton(orderingMode.GetLabel(), ref isSelected, Convert.ToInt32(orderingMode)))
+            if (ImGui.RadioButton(mode.GetLabel(), ref isSelected, Convert.ToInt32(mode)))
             {
-                configValue = (T) orderingMode;
+                configValue = (T) mode;
             }
         }
     }
