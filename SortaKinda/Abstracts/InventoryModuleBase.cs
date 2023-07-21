@@ -27,11 +27,6 @@ public abstract class InventoryModuleBase : IDisposable
         if(newConfig) SaveConfig();
     }
 
-    public void Unload()
-    {
-        
-    }
-
     private IModuleConfig LoadConfig() => FileController.LoadFile<IModuleConfig>($"{ModuleName}.config.json", ModuleConfig);
     public void SaveConfig() => FileController.SaveFile($"{ModuleName}.config.json", ModuleConfig.GetType(), ModuleConfig);
 }
