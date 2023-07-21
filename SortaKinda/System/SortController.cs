@@ -34,7 +34,7 @@ public unsafe class SortController
         SortingRule? removalRule = null;
 
         ImGui.TextUnformatted("Sorting Rules");
-        ImGuiComponents.HelpMarker("Select a Rule then Left Click on a inventory slot to apply that rule\nRight click on an inventory slot to clear that slots rule");
+        ImGuiComponents.HelpMarker("Select a Rule then Left Click on a inventory slot to apply that rule\nRight click on an inventory slot to clear that slots rule\n\nRules lower down in the list are higher priority");
         ImGui.SameLine();
         var region = ImGui.GetContentRegionMax();
         ImGui.SetCursorPos(region with { X = region.X - 50.0f, Y = ImGui.GetCursorPos().Y });
