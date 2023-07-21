@@ -20,7 +20,7 @@ public class RuleConfigurationWindow : Window
     {
         this.rule = rule;
 
-        Position = new Vector2(500.0f, 500.0f);
+        Position = ImGui.GetMainViewport().Size / 2.0f;
         
         SizeConstraints = new WindowSizeConstraints
         {
@@ -31,42 +31,56 @@ public class RuleConfigurationWindow : Window
 
     public override void Draw()
     {
+        DrawHeader();
+        DrawBody();
+        DrawFooter();
+    }
+
+    private void DrawHeader()
+    {
         var region = ImGui.GetContentRegionAvail();
-        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X / 4.0f - ImGuiHelpers.GlobalScale * 50.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f } );
+        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X / 4.0f - ImGuiHelpers.GlobalScale * 50.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f });
         ImGui.ColorEdit4("##ColorConfig", ref rule.Color, ImGuiColorEditFlags.NoInputs);
-        
+
         ImGui.SameLine();
         ImGui.SetNextItemWidth(region.X / 2.0f - ImGui.GetItemRectSize().X - ImGui.GetStyle().ItemSpacing.X);
         if (ImGui.InputText("##NameEdit", ref rule.Name, 1024, ImGuiInputTextFlags.AutoSelectAll))
         {
             WindowName = $"SortaKinda Rule Configuration - {rule.Name}###{rule.Id}";
         }
-        
+
         var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyAlt;
-        if(!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
+        if (!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
         ImGui.SameLine();
         if (ImGui.Button("Delete", ImGuiHelpers.ScaledVector2(100.0f, 23.0f)) && hotkeyHeld)
         {
             Result = ConfigurationResult.RemoveEntry;
         }
-        if(!hotkeyHeld) ImGui.PopStyleVar();
+        if (!hotkeyHeld) ImGui.PopStyleVar();
         if (ImGui.IsItemHovered() && !hotkeyHeld)
         {
             ImGui.SetTooltip("Hold Shift + Alt while clicking to delete this rule");
         }
         ImGuiHelpers.ScaledDummy(5.0f);
-
+    }
+    
+    private void DrawBody()
+    {
         if (ImGui.BeginChild("##ContentsFrame", new Vector2(0.0f, -35.0f), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
         {
             if (ImGui.BeginTabBar("##RuleConfigTabBar"))
             {
                 rule.Filter.DrawConfig();
                 rule.Order.DrawConfig();
-            
+
                 ImGui.EndTabBar();
             }
         }
         ImGui.EndChild();
+    }
+
+    private void DrawFooter()
+    {
 
         if (ImGui.BeginTable("##SaveAndCloseTable", 2, ImGuiTableFlags.SizingStretchSame))
         {
@@ -79,17 +93,17 @@ public class RuleConfigurationWindow : Window
             {
                 SortaKindaSystem.SortController.SaveConfig();
             }
-        
+
             ImGui.SameLine();
             if (ImGui.Button("Save & Close##SaveAndCloseButton", ImGuiHelpers.ScaledVector2(93.0f, 23.0f)))
             {
                 Result = ConfigurationResult.SaveAndClose;
             }
-            
+
             ImGui.EndTable();
         }
     }
-
+    
     public override void OnClose()
     {
         Result = ConfigurationResult.SaveAndClose;
