@@ -1,7 +1,12 @@
-﻿namespace SortaKinda.Models.Enum;
+﻿using KamiLib.AutomaticUserInterface;
+
+namespace SortaKinda.Models.Enum;
 
 public enum FillMode
 {
-    FillFromTop,
-    FillFromBottom
+    [EnumLabel("Top")]
+    Top,
+    
+    [EnumLabel("Bottom")]
+    Bottom
 }

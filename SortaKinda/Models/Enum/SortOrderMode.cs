@@ -1,9 +1,21 @@
-﻿namespace SortaKinda.Models.Enum;
+﻿using KamiLib.AutomaticUserInterface;
+
+namespace SortaKinda.Models.Enum;
 
 public enum SortOrderMode
 {
-    ItemLevel,
+    [EnumLabel("Alphabetical")]
     Alphabetically,
-    ItemId,
+    
+    [EnumLabel("ItemLevel")]
+    ItemLevel,
+    
+    [EnumLabel("Rarity")]
+    Rarity,
+    
+    [EnumLabel("SellPrice")]
     SellPrice,
+    
+    [EnumLabel("ItemId")]
+    ItemId,
 }
