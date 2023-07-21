@@ -47,7 +47,8 @@ public unsafe class SortController : IDisposable
             foreach(var index in Enumerable.Range(0, _ruleConfig.SortingRules.Count))
             {
                 var rule = _ruleConfig.SortingRules[index];
-            
+
+                ImGui.BeginDisabled(index is 0 || index == _ruleConfig.SortingRules.Count - 1);
                 if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
                 {
                     if (_ruleConfig.SortingRules.Count > 1)
@@ -57,8 +58,11 @@ public unsafe class SortController : IDisposable
                         SaveConfig();
                     }
                 }
-
+                ImGui.EndDisabled();
+                
                 ImGui.SameLine();
+
+                ImGui.BeginDisabled(index is 1 or 0);
                 if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp))
                 {
                     if (_ruleConfig.SortingRules.Count > 1)
@@ -68,12 +72,13 @@ public unsafe class SortController : IDisposable
                         SaveConfig();
                     }
                 }
-            
+                ImGui.EndDisabled();
+
                 ImGui.SameLine();
                 ImGui.RadioButton($"##Selected{rule.Id}", ref _selectedIndex, index);
 
                 ImGui.SameLine();
-                rule.DrawHeader();
+                rule.DrawListEntry();
 
                 ImGui.BeginDisabled(rule.Id is "Default");
                 ImGui.SameLine();
