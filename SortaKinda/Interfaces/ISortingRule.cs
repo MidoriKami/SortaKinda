@@ -9,6 +9,7 @@ public interface ISortingRule : IEquatable<SortingRule>
     Vector4 Color { get; set; }
     string Id { get; init; }
     string Name { get; set; }
+    public int Priority { get; set; }
 
     ISortingFilter Filter { get; set; }
     ISortingOrder Order { get; set; }

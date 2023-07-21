@@ -12,6 +12,7 @@ public class SortingRule : ISortingRule
     public Vector4 Color { get; set; } = KnownColor.White.AsVector4();
     public string Id { get; init; } = "Default";
     public string Name { get; set; } = "Unsorted";
+    public int Priority { get; set; }
     public ISortingFilter Filter { get; set; } = new SortingFilter();
     public ISortingOrder Order { get; set; } = new SortingOrder();
 
