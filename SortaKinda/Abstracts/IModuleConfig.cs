@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Models;
 
