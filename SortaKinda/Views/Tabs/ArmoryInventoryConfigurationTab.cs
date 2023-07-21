@@ -1,4 +1,4 @@
-﻿using SortaKinda.Abstracts;
+﻿using SortaKinda.Interfaces;
 using SortaKinda.Models.Enum;
 using SortaKinda.System;
 
@@ -10,5 +10,8 @@ public class ArmoryInventoryConfigurationTab : IInventoryConfigurationTab
     public bool Enabled => true;
     public int TabOrder => 2;
 
-    public void DrawInventory() => SortaKindaSystem.ModuleController.GetModule(ModuleName.ArmoryInventory).DrawInventoryGrid();
+    public void DrawInventory()
+    {
+        SortaKindaSystem.ModuleController.GetModule(ModuleName.ArmoryInventory).DrawInventoryGrid();
+    }
 }

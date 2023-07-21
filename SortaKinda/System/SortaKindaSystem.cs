@@ -14,12 +14,12 @@ public class SortaKindaSystem : IDisposable
     public static WindowController WindowController = null!;
 
     private uint lastJob;
-    
+
     public SortaKindaSystem()
     {
         SystemConfig = new SystemConfig();
         SystemConfig = LoadConfig();
-        
+
         SortController = new SortController();
         ModuleController = new ModuleController();
         WindowController = new WindowController();
@@ -28,11 +28,21 @@ public class SortaKindaSystem : IDisposable
         {
             OnLogin(this, EventArgs.Empty);
         }
-        
+
         Service.Framework.Update += OnFrameworkUpdate;
         Service.ClientState.Login += OnLogin;
         Service.ClientState.Logout += OnLogout;
         Service.ClientState.TerritoryChanged += OnZoneChange;
+    }
+
+    public void Dispose()
+    {
+        Service.Framework.Update -= OnFrameworkUpdate;
+        Service.ClientState.Login -= OnLogin;
+        Service.ClientState.Logout -= OnLogout;
+        Service.ClientState.TerritoryChanged -= OnZoneChange;
+
+        ModuleController.Dispose();
     }
 
     private void OnFrameworkUpdate(Framework framework)
@@ -49,36 +59,37 @@ public class SortaKindaSystem : IDisposable
         }
         lastJob = currentJob;
     }
-    
+
     private void OnLogin(object? sender, EventArgs e)
     {
         ModuleController.Load();
         SortController.Load();
-        
-        if(SystemConfig.SortOnLogin) ModuleController.SortAll();
+
+        if (SystemConfig.SortOnLogin) ModuleController.SortAll();
     }
-    
+
     private void OnLogout(object? sender, EventArgs e)
     {
-        
+
     }
-    
+
     private void OnZoneChange(object? sender, ushort e)
     {
-        if(SystemConfig.SortOnZoneChange) ModuleController.SortAll();
+        if (SystemConfig.SortOnZoneChange) ModuleController.SortAll();
     }
-    
-    public void Dispose()
+
+    public void DrawConfig()
     {
-        Service.Framework.Update -= OnFrameworkUpdate;
-        Service.ClientState.Login -= OnLogin;
-        Service.ClientState.Logout -= OnLogout;
-        Service.ClientState.TerritoryChanged -= OnZoneChange;
-
-        ModuleController.Dispose();
+        DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
     }
 
-    public void DrawConfig() => DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
-    private SystemConfig LoadConfig() => FileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
-    public void SaveConfig() => FileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);
+    private SystemConfig LoadConfig()
+    {
+        return FileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
+    }
+
+    public void SaveConfig()
+    {
+        FileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);
+    }
 }

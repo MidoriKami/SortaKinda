@@ -9,28 +9,27 @@ namespace SortaKinda;
 
 public sealed class SortaKindaPlugin : IDalamudPlugin
 {
-    public string Name => "SortaKinda";
-
     public static SortaKindaSystem System = null!;
-    
+
     public SortaKindaPlugin(DalamudPluginInterface pluginInterface)
     {
         pluginInterface.Create<Service>();
-        
+
         KamiCommon.Initialize(pluginInterface, Name);
         KamiCommon.RegisterLocalizationHandler(key => Strings.ResourceManager.GetString(key, Strings.Culture));
-                
+
         System = new SortaKindaSystem();
 
         CommandController.RegisterMainCommand("/sortakinda", "/sorta");
 
         KamiCommon.WindowManager.AddConfigurationWindow(new ConfigurationWindow());
     }
+    public string Name => "SortaKinda";
 
     public void Dispose()
     {
         KamiCommon.Dispose();
-        
+
         System.Dispose();
     }
 }

@@ -3,12 +3,12 @@ using ImGuiNET;
 using KamiLib.Interfaces;
 using SortaKinda.System;
 
-namespace SortaKinda.Abstracts;
+namespace SortaKinda.Interfaces;
 
 public interface IInventoryConfigurationTab : ITabItem
 {
     int TabOrder { get; }
-    
+
     void ITabItem.Draw()
     {
         if (ImGui.BeginTable("##SortaKindaInventoryConfigTable", 2, ImGuiTableFlags.None, new Vector2(0, -1)))
@@ -22,19 +22,22 @@ public interface IInventoryConfigurationTab : ITabItem
                 DrawRuleConfiguration();
             }
             ImGui.EndChild();
-            
+
             ImGui.TableNextColumn();
             if (ImGui.BeginChild("##InventoryChild", new Vector2(0, 0), false, ImGuiWindowFlags.NoMove))
             {
                 DrawInventory();
             }
             ImGui.EndChild();
-            
+
             ImGui.EndTable();
         }
     }
 
-    void DrawRuleConfiguration() => SortaKindaSystem.SortController.DrawConfig();
-    
+    void DrawRuleConfiguration()
+    {
+        SortaKindaSystem.SortController.DrawConfig();
+    }
+
     void DrawInventory();
 }

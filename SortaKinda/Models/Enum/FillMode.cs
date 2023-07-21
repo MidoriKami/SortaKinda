@@ -4,9 +4,9 @@ namespace SortaKinda.Models.Enum;
 
 public enum FillMode
 {
-    [EnumLabel("Top")]
+    [EnumLabel("Top")] 
     Top,
-    
-    [EnumLabel("Bottom")]
+
+    [EnumLabel("Bottom")] 
     Bottom
 }

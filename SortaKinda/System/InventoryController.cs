@@ -16,7 +16,7 @@ public unsafe partial class InventoryController
 
         var orderModule = UIModule.Instance()->GetItemOrderModule();
         if (orderModule is null) return null;
-        
+
         return type switch
         {
             InventoryType.Inventory1 => orderModule->InventorySorter,
@@ -45,16 +45,16 @@ public unsafe partial class InventoryController
     {
         var itemSorter = GetInventorySorter(type);
         if (itemSorter is null) return 0;
-        
+
         return type switch
         {
             InventoryType.Inventory2 => itemSorter->ItemsPerPage,
             InventoryType.Inventory3 => itemSorter->ItemsPerPage * 2,
             InventoryType.Inventory4 => itemSorter->ItemsPerPage * 3,
-            _ => 0,
+            _ => 0
         };
     }
-    
+
     public static InventoryItem* GetItemForSlot(InventoryType type, int slot)
     {
         var inventoryManager = InventoryManager.Instance();
@@ -65,42 +65,22 @@ public unsafe partial class InventoryController
 
         var inventoryContainer = inventoryManager->GetInventoryContainer(GetAdjustedInventoryType(type) + itemOrderData->Page);
         if (inventoryContainer is null) return null;
-        
+
         return inventoryContainer->GetInventorySlot(itemOrderData->Slot);
     }
 
-    public static InventoryItem* GetItemForSlot(InventoryType type, Pointer<ItemOrderModuleSorterItemEntry> slot)
-        => GetItemForSlot(type, *slot.Value);
-    
-    public static InventoryItem* GetItemForSlot(InventoryType type, ItemOrderModuleSorterItemEntry slot)
-    {
-        var inventoryManager = InventoryManager.Instance();
-        if (inventoryManager is null) return null;
-
-        var inventoryContainer = inventoryManager->GetInventoryContainer(type + slot.Page);
-        if (inventoryContainer is null) return null;
-        
-        return inventoryContainer->GetInventorySlot(slot.Slot);
-    }
-    
-    public static StdVector<Pointer<ItemOrderModuleSorterItemEntry>>* GetItemOrderData(InventoryType type)
-    {
-        var inventorySorter = GetInventorySorter(type);
-        if (inventorySorter is null) return null;
-        
-        return &inventorySorter->Items;
-    }
-    
     public static Pointer<ItemOrderModuleSorterItemEntry> GetItemOrderDataForSlot(InventoryType type, int slot)
     {
         var itemOrderData = GetItemOrderData(type);
         if (itemOrderData is null) return null;
-        
+
         return GetItemOrderData(type)->Span[slot + GetInventorySorterStartIndex(type)];
     }
 
-    public static int GetInventoryItemCount(params InventoryType[] types) 
-        => types.Sum(GetInventoryItemCount);
+    public static int GetInventoryItemCount(params InventoryType[] types)
+    {
+        return types.Sum(GetInventoryItemCount);
+    }
 
     public static int GetInventoryItemCount(InventoryType type)
     {
@@ -112,6 +92,22 @@ public unsafe partial class InventoryController
 
         return count;
     }
+}
+
+// Helpers that shouldn't be called directly.
+public unsafe partial class InventoryController
+{
+    private static InventoryType GetAdjustedInventoryType(InventoryType type)
+    {
+        return type switch
+        {
+            InventoryType.Inventory1 => InventoryType.Inventory1,
+            InventoryType.Inventory2 => InventoryType.Inventory1,
+            InventoryType.Inventory3 => InventoryType.Inventory1,
+            InventoryType.Inventory4 => InventoryType.Inventory1,
+            _ => type
+        };
+    }
 
     private static Span<InventoryItem> GetInventoryItems(InventoryType type)
     {
@@ -119,22 +115,16 @@ public unsafe partial class InventoryController
         if (instance is null) return Span<InventoryItem>.Empty;
 
         var container = instance->GetInventoryContainer(type);
-        if(container is null) return Span<InventoryItem>.Empty;
+        if (container is null) return Span<InventoryItem>.Empty;
 
-        return new Span<InventoryItem>(container->Items, (int)container->Size);
+        return new Span<InventoryItem>(container->Items, (int) container->Size);
     }
-    
-}
 
-// Helpers that shouldn't be called directly.
-public partial class InventoryController
-{
-    private static InventoryType GetAdjustedInventoryType(InventoryType type) => type switch
+    private static StdVector<Pointer<ItemOrderModuleSorterItemEntry>>* GetItemOrderData(InventoryType type)
     {
-        InventoryType.Inventory1 => InventoryType.Inventory1,
-        InventoryType.Inventory2 => InventoryType.Inventory1,
-        InventoryType.Inventory3 => InventoryType.Inventory1,
-        InventoryType.Inventory4 => InventoryType.Inventory1,
-        _ => type,
-    };
+        var inventorySorter = GetInventorySorter(type);
+        if (inventorySorter is null) return null;
+
+        return &inventorySorter->Items;
+    }
 }

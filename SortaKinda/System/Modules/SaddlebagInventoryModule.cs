@@ -6,8 +6,8 @@
 //     public override ModuleName ModuleName { get; protected set; } = ModuleName.SaddlebagInventory;
 //     public override IModuleConfig ModuleConfig { get; set; } = new SaddlebagConfig();
 //
-//     private InventoryGrid inventory1 = null!;
-//     private InventoryGrid inventory2 = null!;
+//     private IInventoryGrid inventory1 = null!;
+//     private IInventoryGrid inventory2 = null!;
 //
 //     private int currentInventoryCount;
 //     
@@ -30,8 +30,8 @@
 //             { InventoryType.SaddleBag2, new InventoryConfig(InventoryType.SaddleBag2) },
 //         };
 //
-//         inventory1 = new InventoryGrid(InventoryType.SaddleBag1, this);
-//         inventory2 = new InventoryGrid(InventoryType.SaddleBag2, this);
+//         inventory1 = new IInventoryGrid(InventoryType.SaddleBag1, this);
+//         inventory2 = new IInventoryGrid(InventoryType.SaddleBag2, this);
 //     }
 //     
 //     public override void SortAll()

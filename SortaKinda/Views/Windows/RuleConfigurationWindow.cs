@@ -12,22 +12,22 @@ namespace SortaKinda.Views.Windows;
 
 public class RuleConfigurationWindow : Window
 {
-    private readonly SortingRule rule;
+    private readonly ISortingRule rule;
 
-    public ConfigurationResult Result { get; private set; } = ConfigurationResult.None;
-    
-    public RuleConfigurationWindow(SortingRule rule) : base($"SortaKinda Rule Configuration - {rule.Name}###{rule.Id}")
+    public RuleConfigurationWindow(ISortingRule rule) : base($"SortaKinda Rule Configuration - {rule.Name}###{rule.Id}")
     {
         this.rule = rule;
 
         Position = ImGui.GetMainViewport().Size / 2.0f - new Vector2(500.0f, 400.0f) / 2.0f;
-        
+
         SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(500.0f, 400.0f),
             MaximumSize = new Vector2(9999, 9999)
         };
     }
+
+    public ConfigurationResult Result { get; private set; } = ConfigurationResult.None;
 
     public override void Draw()
     {
@@ -40,12 +40,15 @@ public class RuleConfigurationWindow : Window
     {
         var region = ImGui.GetContentRegionAvail();
         ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X / 4.0f - ImGuiHelpers.GlobalScale * 50.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f });
-        ImGui.ColorEdit4("##ColorConfig", ref rule.Color, ImGuiColorEditFlags.NoInputs);
+        var imGuiColor = rule.Color;
+        if (ImGui.ColorEdit4("##ColorConfig", ref imGuiColor, ImGuiColorEditFlags.NoInputs)) rule.Color = imGuiColor;
 
         ImGui.SameLine();
         ImGui.SetNextItemWidth(region.X / 2.0f - ImGui.GetItemRectSize().X - ImGui.GetStyle().ItemSpacing.X);
-        if (ImGui.InputText("##NameEdit", ref rule.Name, 1024, ImGuiInputTextFlags.AutoSelectAll))
+        var imGuiName = rule.Name;
+        if (ImGui.InputText("##NameEdit", ref imGuiName, 1024, ImGuiInputTextFlags.AutoSelectAll))
         {
+            rule.Name = imGuiName;
             WindowName = $"SortaKinda Rule Configuration - {rule.Name}###{rule.Id}";
         }
 
@@ -63,15 +66,14 @@ public class RuleConfigurationWindow : Window
         }
         ImGuiHelpers.ScaledDummy(5.0f);
     }
-    
+
     private void DrawBody()
     {
         if (ImGui.BeginChild("##ContentsFrame", new Vector2(0.0f, -35.0f), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
         {
             if (ImGui.BeginTabBar("##RuleConfigTabBar"))
             {
-                rule.Filter.DrawConfig();
-                rule.Order.DrawConfig();
+                rule.DrawConfig();
 
                 ImGui.EndTabBar();
             }
@@ -103,7 +105,7 @@ public class RuleConfigurationWindow : Window
             ImGui.EndTable();
         }
     }
-    
+
     public override void OnClose()
     {
         Result = ConfigurationResult.SaveAndClose;

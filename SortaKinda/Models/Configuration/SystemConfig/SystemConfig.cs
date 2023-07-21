@@ -1,6 +1,5 @@
 ﻿namespace SortaKinda.Models;
 
-
 public class SystemConfig : ISortingConfig
 {
     public bool SortOnInventoryChange { get; set; } = true;

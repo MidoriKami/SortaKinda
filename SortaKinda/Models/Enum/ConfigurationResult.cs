@@ -4,5 +4,5 @@ public enum ConfigurationResult
 {
     None,
     SaveAndClose,
-    RemoveEntry,
+    RemoveEntry
 }

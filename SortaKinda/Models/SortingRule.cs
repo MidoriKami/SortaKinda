@@ -1,57 +1,19 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
 using ImGuiNET;
-using KamiLib.Caching;
 using KamiLib.Utilities;
-using Lumina.Excel.GeneratedSheets;
+using SortaKinda.Interfaces;
 
 namespace SortaKinda.Models;
 
-public class SortingRule : IEquatable<SortingRule>
+public class SortingRule : ISortingRule
 {
-    public required string Id;
-    public Vector4 Color = KnownColor.White.AsVector4();
-    public string Name = "Unsorted";
-    public SortingFilter Filter = new();
-    public SortingOrder Order = new();
-
-    public void DrawListEntry()
-    {
-        ImGui.ColorEdit4("##ColorTooltip", ref Color, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
-        ImGui.SameLine();
-        ImGui.Text(Name);
-    }
-    
-    public void DrawTooltip()
-    {
-        ImGui.BeginTooltip();
-        ImGui.ColorEdit4("##ColorTooltip", ref Color, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
-        ImGui.SameLine();
-        ImGui.Text(Name);
-
-        if (Name is not "Unsorted")
-        {
-            var allowedItems = GetAllowedItemsString();
-            
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), allowedItems[..Math.Min(allowedItems.Length, 55)]);
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), GetSortingModesString());
-        }
-
-        ImGui.EndTooltip();
-    }
-
-    private string GetAllowedItemsString()
-    {
-        var strings = Filter.AllowedItemTypes
-            .Select(type => LuminaCache<ItemUICategory>.Instance.GetRow(type)?.Name.RawString ?? "Unknown Type")
-            .ToList();
-
-        return strings.Count is 0 ? "Any Item" : string.Join(", ", strings);
-    }
-
-    private string GetSortingModesString() => Order.Mode.GetLabel();
+    public Vector4 Color { get; set; } = KnownColor.White.AsVector4();
+    public string Id { get; init; } = "Default";
+    public string Name { get; set; } = "Unsorted";
+    public ISortingFilter Filter { get; set; } = new SortingFilter();
+    public ISortingOrder Order { get; set; } = new SortingOrder();
 
     public bool Equals(SortingRule? other)
     {
@@ -59,7 +21,40 @@ public class SortingRule : IEquatable<SortingRule>
         if (ReferenceEquals(this, other)) return true;
         return Id == other.Id;
     }
-    
+
+    public void DrawListEntry()
+    {
+        var imGuiColor = Color;
+        ImGui.ColorEdit4("##ColorTooltip", ref imGuiColor, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
+        ImGui.SameLine();
+        ImGui.Text(Name);
+    }
+
+    public void DrawTooltip()
+    {
+        ImGui.BeginTooltip();
+        var imGuiColor = Color;
+        if (ImGui.ColorEdit4("##ColorTooltip", ref imGuiColor, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker)) Color = imGuiColor;
+        ImGui.SameLine();
+        ImGui.Text(Name);
+
+        if (Name is not "Unsorted")
+        {
+            var allowedItems = GetAllowedItemsString();
+
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), allowedItems[..Math.Min(allowedItems.Length, 55)]);
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), GetSortingModesString());
+        }
+
+        ImGui.EndTooltip();
+    }
+
+    public void DrawConfig()
+    {
+        Filter.DrawConfigTabs();
+        Order.DrawConfigTabs();
+    }
+
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -67,7 +62,20 @@ public class SortingRule : IEquatable<SortingRule>
         if (obj.GetType() != GetType()) return false;
         return Equals((SortingRule) obj);
     }
-    
+
+    private string GetAllowedItemsString()
+    {
+        return Filter.GetAllowedItemsString();
+    }
+
+    private string GetSortingModesString()
+    {
+        return Order.GetSortingModeString();
+    }
+
     // ReSharper disable once NonReadonlyMemberInGetHashCode
-    public override int GetHashCode() => Id.GetHashCode();
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }

@@ -10,7 +10,7 @@ public class WindowController
 {
     private readonly Dictionary<string, RuleConfigurationWindow> temporaryWindows = new();
 
-    public void AddNewWindow(SortingRule rule)
+    public void AddNewWindow(ISortingRule rule)
     {
         if (!temporaryWindows.ContainsKey(rule.Id))
         {
@@ -23,8 +23,8 @@ public class WindowController
             temporaryWindows.Add(rule.Id, newRuleWindow);
         }
     }
-    
-    public ConfigurationResult UpdateWindow(SortingRule rule)
+
+    public ConfigurationResult UpdateWindow(ISortingRule rule)
     {
         if (temporaryWindows.ContainsKey(rule.Id))
         {

@@ -16,8 +16,18 @@ public class ModuleController : IDisposable
         modules = Reflection.ActivateOfType<InventoryModuleBase>().ToList();
     }
 
+    public void Dispose()
+    {
+        foreach (var module in modules)
+        {
+            module.Dispose();
+        }
+    }
+
     public InventoryModuleBase GetModule(ModuleName name)
-        => modules.First(eachModule => eachModule.ModuleName == name);
+    {
+        return modules.First(eachModule => eachModule.ModuleName == name);
+    }
 
     public void Load()
     {
@@ -27,14 +37,6 @@ public class ModuleController : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        foreach (var module in modules)
-        {
-            module.Dispose();
-        }
-    }
-    
     public void SortAll()
     {
         foreach (var module in modules)
@@ -42,7 +44,7 @@ public class ModuleController : IDisposable
             module.SortAll();
         }
     }
-    
+
     public void Update()
     {
         foreach (var module in modules)

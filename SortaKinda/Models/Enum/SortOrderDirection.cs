@@ -4,9 +4,9 @@ namespace SortaKinda.Models.Enum;
 
 public enum SortOrderDirection
 {
-    [EnumLabel("Ascending")]
+    [EnumLabel("Ascending")] 
     Ascending,
-    
-    [EnumLabel("Descending")]
-    Descending,
+
+    [EnumLabel("Descending")] 
+    Descending
 }

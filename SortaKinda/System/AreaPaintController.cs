@@ -5,7 +5,6 @@ using ImGuiNET;
 using KamiLib;
 using SortaKinda.Utility;
 using SortaKinda.Views.Windows;
-using Rectangle = System.Drawing.Rectangle;
 
 namespace SortaKinda.System;
 
@@ -15,7 +14,7 @@ public class AreaPaintController
     private static Vector2 _dragStartPosition = Vector2.Zero;
     private static Vector2 _dragStopPosition = Vector2.Zero;
     private Vector2 lastWindowPosition = Vector2.Zero;
-    
+
     public static Rectangle GetDragBounds()
     {
         if (_dragStarted is false) return Rectangle.Empty;

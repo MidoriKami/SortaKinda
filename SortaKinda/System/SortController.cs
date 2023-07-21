@@ -11,7 +11,7 @@ using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using KamiLib.Utilities;
-using SortaKinda.Abstracts;
+using SortaKinda.Interfaces;
 using SortaKinda.Models;
 using SortaKinda.Models.Enum;
 
@@ -20,22 +20,24 @@ namespace SortaKinda.System;
 public unsafe class SortController
 {
     private static RuleConfig _ruleConfig = new();
-    public static SortingRule SelectedRule => _ruleConfig.SortingRules[_selectedIndex];
     private static int _selectedIndex;
     private static readonly Random RandomGenerator = new();
+    public static ISortingRule SelectedRule => _ruleConfig.SortingRules[_selectedIndex];
 
-    public static SortingRule GetRule(string id)
-        => _ruleConfig.SortingRules.Where(rule => rule.Id == id).FirstOrDefault() ?? _ruleConfig.SortingRules[0];
-    
+    public static ISortingRule GetRule(string id)
+    {
+        return _ruleConfig.SortingRules.Where(rule => rule.Id == id).FirstOrDefault() ?? _ruleConfig.SortingRules[0];
+    }
+
     public void DrawConfig()
     {
-        SortingRule? removalRule = null;
-        
+        ISortingRule? removalRule = null;
+
         ImGui.TextUnformatted("Sorting Rules");
         ImGuiComponents.HelpMarker("Select a Rule then Left Click on a inventory slot to apply that rule\nRight click on an inventory slot to clear that slots rule");
         ImGui.SameLine();
         var region = ImGui.GetContentRegionMax();
-        ImGui.SetCursorPos(region with { X = region.X - 50.0f, Y = ImGui.GetCursorPos().Y});
+        ImGui.SetCursorPos(region with { X = region.X - 50.0f, Y = ImGui.GetCursorPos().Y });
         if (ImGui.Button("Sort All"))
         {
             SortaKindaSystem.ModuleController.SortAll();
@@ -44,62 +46,9 @@ public unsafe class SortController
 
         if (ImGui.BeginChild("##RulesChild", new Vector2(0.0f, -40.0f), false, ImGuiWindowFlags.NoScrollbar))
         {
-            foreach(var index in Enumerable.Range(0, _ruleConfig.SortingRules.Count))
+            foreach (var index in Enumerable.Range(0, _ruleConfig.SortingRules.Count))
             {
-                var rule = _ruleConfig.SortingRules[index];
-
-                ImGui.BeginDisabled(index is 0 || index == _ruleConfig.SortingRules.Count - 1);
-                if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
-                {
-                    if (_ruleConfig.SortingRules.Count > 1)
-                    {
-                        _ruleConfig.SortingRules.Remove(rule);
-                        _ruleConfig.SortingRules.Insert(index + 1, rule);
-                        SaveConfig();
-                    }
-                }
-                ImGui.EndDisabled();
-                
-                ImGui.SameLine();
-
-                ImGui.BeginDisabled(index is 1 or 0);
-                if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp))
-                {
-                    if (_ruleConfig.SortingRules.Count > 1)
-                    {
-                        _ruleConfig.SortingRules.Remove(rule);
-                        _ruleConfig.SortingRules.Insert(index - 1, rule);
-                        SaveConfig();
-                    }
-                }
-                ImGui.EndDisabled();
-
-                ImGui.SameLine();
-                ImGui.RadioButton($"##Selected{rule.Id}", ref _selectedIndex, index);
-
-                ImGui.SameLine();
-                rule.DrawListEntry();
-
-                ImGui.BeginDisabled(rule.Id is "Default");
-                ImGui.SameLine();
-                ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X - 25.0f });
-                if (ImGuiComponents.IconButton($"##EditButton{rule.Id}", FontAwesomeIcon.Cog))
-                {
-                    SortaKindaSystem.WindowController.AddNewWindow(rule);
-                }
-                ImGui.EndDisabled();
-            
-                switch (SortaKindaSystem.WindowController.UpdateWindow(rule))
-                {
-                    case ConfigurationResult.SaveAndClose:
-                        SortaKindaSystem.ModuleController.SortAll();
-                        SaveConfig();
-                        break;
-                
-                    case ConfigurationResult.RemoveEntry:
-                        removalRule = rule;
-                        break;
-                }
+                removalRule = DrawRule(index);
             }
 
             if (removalRule is { } toRemove)
@@ -109,7 +58,85 @@ public unsafe class SortController
             }
         }
         ImGui.EndChild();
-        
+
+        DrawAddNewRuleButton();
+    }
+
+    private ISortingRule? DrawRule(int index)
+    {
+        var rule = _ruleConfig.SortingRules[index];
+
+        DrawRuleMoveArrows(index, rule);
+
+        ImGui.SameLine();
+        ImGui.RadioButton($"##Selected{rule.Id}", ref _selectedIndex, index);
+
+        ImGui.SameLine();
+        rule.DrawListEntry();
+
+        return DrawRuleConfigurationButton(rule);
+    }
+
+    private void DrawRuleMoveArrows(int index, ISortingRule rule)
+    {
+        ImGui.BeginDisabled(index is 0 || index == _ruleConfig.SortingRules.Count - 1);
+        if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
+        {
+            if (_ruleConfig.SortingRules.Count > 1)
+            {
+                _ruleConfig.SortingRules.Remove(rule);
+                _ruleConfig.SortingRules.Insert(index + 1, rule);
+                SaveConfig();
+            }
+        }
+        ImGui.EndDisabled();
+
+        ImGui.SameLine();
+
+        ImGui.BeginDisabled(index is 1 or 0);
+        if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp))
+        {
+            if (_ruleConfig.SortingRules.Count > 1)
+            {
+                _ruleConfig.SortingRules.Remove(rule);
+                _ruleConfig.SortingRules.Insert(index - 1, rule);
+                SaveConfig();
+            }
+        }
+        ImGui.EndDisabled();
+    }
+
+    private ISortingRule? DrawRuleConfigurationButton(ISortingRule rule)
+    {
+        ISortingRule? removalRule = null;
+        var region = ImGui.GetContentRegionAvail();
+
+        ImGui.BeginDisabled(rule.Id is "Default");
+        ImGui.SameLine();
+        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X - 25.0f });
+        if (ImGuiComponents.IconButton($"##EditButton{rule.Id}", FontAwesomeIcon.Cog))
+        {
+            SortaKindaSystem.WindowController.AddNewWindow(rule);
+        }
+        ImGui.EndDisabled();
+
+        switch (SortaKindaSystem.WindowController.UpdateWindow(rule))
+        {
+            case ConfigurationResult.SaveAndClose:
+                SortaKindaSystem.ModuleController.SortAll();
+                SaveConfig();
+                break;
+
+            case ConfigurationResult.RemoveEntry:
+                removalRule = rule;
+                break;
+        }
+
+        return removalRule;
+    }
+
+    private void DrawAddNewRuleButton()
+    {
         ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetContentRegionMax().Y - 32.0f });
         ImGui.PushFont(UiBuilder.IconFont);
         if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##NewRule", new Vector2(ImGui.GetContentRegionAvail().X, 23.0f)))
@@ -119,27 +146,28 @@ public unsafe class SortController
             {
                 Id = newId,
                 Color = new Vector4(
-                    RandomGenerator.Next(0, 255) / 255.0f, 
+                    RandomGenerator.Next(0, 255) / 255.0f,
                     RandomGenerator.Next(0, 255) / 255.0f,
                     RandomGenerator.Next(0, 255) / 255.0f,
                     1.0f),
-                Name = "New Filter",
+                Name = "New Filter"
             };
-            
+
             _ruleConfig.SortingRules.Add(newRule);
             SortaKindaSystem.WindowController.AddNewWindow(newRule);
             SaveConfig();
         }
         ImGui.PopFont();
     }
-    
+
     public void Load()
     {
         _ruleConfig = LoadConfig();
 
         if (_ruleConfig.SortingRules.Count is 0)
         {
-            _ruleConfig.SortingRules.Add(new SortingRule {
+            _ruleConfig.SortingRules.Add(new SortingRule
+            {
                 Name = "Unsorted",
                 Color = KnownColor.White.AsVector4(),
                 Filter = new SortingFilter(),
@@ -148,17 +176,24 @@ public unsafe class SortController
                 {
                     Direction = SortOrderDirection.Ascending,
                     Mode = SortOrderMode.Alphabetically
-                },
+                }
             });
-            
+
             SaveConfig();
         }
     }
-    
-    private RuleConfig LoadConfig() => FileController.LoadFile<RuleConfig>("SortingRules.config.json", _ruleConfig);
-    public void SaveConfig() => FileController.SaveFile("SortingRules.config.json", _ruleConfig.GetType(), _ruleConfig);
 
-    private static void SortItems(IReadOnlyList<InventorySlot> targetSlots, IReadOnlyList<InventorySlot> sourceSlots)
+    private RuleConfig LoadConfig()
+    {
+        return FileController.LoadFile<RuleConfig>("SortingRules.config.json", _ruleConfig);
+    }
+    
+    public void SaveConfig()
+    {
+        FileController.SaveFile("SortingRules.config.json", _ruleConfig.GetType(), _ruleConfig);
+    }
+
+    private static void SortItems(IReadOnlyList<IInventorySlot> targetSlots, IReadOnlyList<IInventorySlot> sourceSlots)
     {
         foreach (var index in Enumerable.Range(0, Math.Min(targetSlots.Count, sourceSlots.Count)))
         {
@@ -166,61 +201,64 @@ public unsafe class SortController
         }
     }
 
-    private static void SwapItem(InventorySlot target, InventorySlot source)
+    private static void SwapItem(IInventorySlot target, IInventorySlot source)
     {
         var slotData = target.ItemOrderData;
         var itemData = source.ItemOrderData;
-    
+
         (*slotData.Value, *itemData.Value) = (*itemData.Value, *slotData.Value);
     }
 
-    public static void SortInventory(InventoryType type, params InventoryGrid[] grids) => Task.Run(() =>
+    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids)
     {
-        PluginLog.Debug($"Sorting Inventory: {type}");
-
-        // Get All ItemSlots that match this rule
-        foreach (var rule in _ruleConfig.SortingRules)
+        Task.Run(() =>
         {
-            if (rule.Id is "Default") continue;
+            PluginLog.Debug($"Sorting Inventory: {type}");
 
-            // Get all items this rule applies to, and aren't already in any of the slots for that rule
-            var itemSlotsForRule = grids
-                .SelectMany(grid => grid.InventorySlots)
-                .Where(slot => !slot.Rule.Equals(rule))
-                .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
-                .Order(rule.Order)
-                .ToList();
+            // Get All ItemSlots that match this rule
+            foreach (var rule in _ruleConfig.SortingRules)
+            {
+                if (rule.Id is "Default") continue;
 
-            // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
-            var targetSlotsForRule = grids
-                .SelectMany(grid => grid.InventorySlots)
-                .Where(slot => slot.Rule.Equals(rule))
-                .Where(slot => !rule.Filter.IsItemSlotAllowed(slot))
-                .ToList();
+                // Get all items this rule applies to, and aren't already in any of the slots for that rule
+                var itemSlotsForRule = grids
+                    .SelectMany(grid => grid.InventorySlots)
+                    .Where(slot => !slot.Rule.Equals(rule))
+                    .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
+                    .Order(rule.Order)
+                    .ToList();
 
-            SortItems(targetSlotsForRule, itemSlotsForRule);
-        }
+                // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
+                var targetSlotsForRule = grids
+                    .SelectMany(grid => grid.InventorySlots)
+                    .Where(slot => slot.Rule.Equals(rule))
+                    .Where(slot => !rule.Filter.IsItemSlotAllowed(slot))
+                    .ToList();
 
-        CleanupInventory(grids);
+                SortItems(targetSlotsForRule, itemSlotsForRule);
+            }
 
-        foreach (var rule in _ruleConfig.SortingRules)
-        {
-            if (rule.Id is "Default") continue;
+            CleanupInventory(grids);
 
-            // Get all target slots this rule applies to
-            var targetSlotsForRule = grids
-                .SelectMany(grid => grid.InventorySlots)
-                .Where(slot => slot.Rule.Equals(rule))
-                .ToList();
+            foreach (var rule in _ruleConfig.SortingRules)
+            {
+                if (rule.Id is "Default") continue;
 
-            ReorderItems(rule, targetSlotsForRule);
-        }
-    });
+                // Get all target slots this rule applies to
+                var targetSlotsForRule = grids
+                    .SelectMany(grid => grid.InventorySlots)
+                    .Where(slot => slot.Rule.Equals(rule))
+                    .ToList();
 
-    private static void ReorderItems(SortingRule rule, IReadOnlyList<InventorySlot> items)
+                ReorderItems(rule, targetSlotsForRule);
+            }
+        });
+    }
+
+    private static void ReorderItems(ISortingRule rule, IReadOnlyList<IInventorySlot> items)
     {
         if (rule.Id is "Default") return;
-        
+
         foreach (var _ in items)
         {
             foreach (var index in Enumerable.Range(0, items.Count - 1))
@@ -233,24 +271,24 @@ public unsafe class SortController
         }
     }
 
-    private static void CleanupInventory(params InventoryGrid[] grids)
+    private static void CleanupInventory(params IInventoryGrid[] grids)
     {
         // For each rule
         foreach (var rule in _ruleConfig.SortingRules)
         {
-            if(rule.Id is "Default") continue;
-            
-            // Get all InventorySlot's for this rule, where the item doesn't match the filter
+            if (rule.Id is "Default") continue;
+
+            // Get all IInventorySlot's for this rule, where the item doesn't match the filter
             var inventorySlotsForRule = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Equals(rule) && slot.HasItem)
                 .Where(slot => !rule.Filter.IsItemSlotAllowed(slot));
-            
+
             // Get all empty unsorted InventorySlots
             var emptyInventorySlots = grids
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => slot.Rule.Id is "Default" && !slot.HasItem);
-            
+
             // Perform the Sort
             SortItems(emptyInventorySlots.ToList(), inventorySlotsForRule.ToList());
         }

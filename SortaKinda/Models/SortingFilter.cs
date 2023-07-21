@@ -8,21 +8,21 @@ using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.Caching;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Abstracts;
+using SortaKinda.Interfaces;
 
 namespace SortaKinda.Models;
 
-public class SortingFilter
+public class SortingFilter : ISortingFilter
 {
+    private string newName = string.Empty;
+    private List<ItemUICategory>? searchResults;
+    private string searchString = string.Empty;
+    private bool setNameFocus;
+
     public HashSet<uint> AllowedItemTypes { get; set; } = new();
     public HashSet<string> AllowedNames { get; set; } = new();
 
-    private string newName = string.Empty;
-    private string searchString = string.Empty;
-    private List<ItemUICategory>? searchResults;
-    private bool setNameFocus;
-
-    public bool IsItemSlotAllowed(InventorySlot slot)
+    public bool IsItemSlotAllowed(IInventorySlot slot)
     {
         if (AllowedNames.Count > 0 && !AllowedNames.Any(allowed => Regex.IsMatch(slot.LuminaData?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase))) return false;
         if (AllowedItemTypes.Count > 0 && !AllowedItemTypes.Any(allowed => slot.LuminaData?.ItemUICategory.Row == allowed)) return false;
@@ -30,7 +30,7 @@ public class SortingFilter
         return true;
     }
 
-    public void DrawConfig()
+    public void DrawConfigTabs()
     {
         if (ImGui.BeginTabItem("Item Name Filter"))
         {
@@ -44,15 +44,31 @@ public class SortingFilter
             ImGui.EndTabItem();
         }
     }
-    
+
+    public string GetAllowedItemsString()
+    {
+        var strings = AllowedItemTypes
+            .Select(type => LuminaCache<ItemUICategory>.Instance.GetRow(type)?.Name.RawString ?? "Unknown Type")
+            .ToList();
+
+        return strings.Count is 0 ? "Any Item" : string.Join(", ", strings);
+    }
+
     private void DrawAddRemoveNameFilter()
     {
+        DrawAllowedItemNames();
+        DrawAddNewAllowedItemName();
+    }
+
+    private void DrawAllowedItemNames()
+    {
+
         if (ImGui.BeginTable("##NameFilterTable", 1, ImGuiTableFlags.BordersInnerV))
         {
             ImGui.TableNextColumn();
             ImGui.Text("Allowed Item Names");
             ImGui.Separator();
-            
+
             ImGui.TableNextColumn();
             string? removalString = null;
             if (ImGui.BeginChild("##NameFilterChild", new Vector2(0.0f, -30.0f)))
@@ -73,7 +89,10 @@ public class SortingFilter
 
             ImGui.EndTable();
         }
+    }
 
+    private void DrawAddNewAllowedItemName()
+    {
         if (setNameFocus)
         {
             ImGui.SetKeyboardFocusHere();
@@ -108,71 +127,136 @@ public class SortingFilter
             ImGui.TableNextColumn();
             ImGui.Text("Allowed Item Types");
             ImGui.Separator();
-            
+
             ImGui.TableNextColumn();
             ImGui.Text("Item Type Search");
             ImGui.Separator();
 
             ImGui.TableNextColumn();
-            if (ImGui.BeginChild("##ItemFilterChild", new Vector2(0.0f, 0.0f), false))
-            {
-                if(AllowedItemTypes.Count is 0) ImGui.Text("Nothing Filtered");
-                foreach (var category in AllowedItemTypes)
-                {
-                    if (LuminaCache<ItemUICategory>.Instance.GetRow(category) is not { Icon: var iconCategory, Name.RawString: var entryName }) continue;
-                    if (IconCache.Instance.GetIcon((uint)iconCategory) is not {} iconTexture ) continue;
-                
-                    if (ImGuiComponents.IconButton($"##RemoveButton{category}", FontAwesomeIcon.Trash))
-                    {
-                        removalEntry = category;
-                    }
-
-                    ImGui.SameLine();
-                    ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
-                    ImGui.Image(iconTexture.ImGuiHandle, new Vector2(20.0f, 20.0f));
-
-                    ImGui.SameLine();
-                    ImGui.TextUnformatted(entryName);
-                }
-            }
-            ImGui.EndChild();
-            if (removalEntry is { } toRemove) AllowedItemTypes.Remove(toRemove);
+            DrawFilteredItemTypes(removalEntry);
 
             ImGui.TableNextColumn();
-            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 25.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X);
-            if (ImGui.InputTextWithHint("##SearchBox", "Search...", ref searchString, 1024, ImGuiInputTextFlags.AutoSelectAll))
+            DrawItemTypeSearchBox();
+            DrawAllItemTypesPopup();
+            DrawItemTypeSearchResults();
+
+            ImGui.EndTable();
+        }
+    }
+
+    private void DrawFilteredItemTypes(uint? removalEntry)
+    {
+        if (ImGui.BeginChild("##ItemFilterChild", new Vector2(0.0f, 0.0f), false))
+        {
+            if (AllowedItemTypes.Count is 0) ImGui.Text("Nothing Filtered");
+            foreach (var category in AllowedItemTypes)
             {
-                if (searchString.IsNullOrEmpty())
+                if (LuminaCache<ItemUICategory>.Instance.GetRow(category) is not { Icon: var iconCategory, Name.RawString: var entryName }) continue;
+                if (IconCache.Instance.GetIcon((uint) iconCategory) is not { } iconTexture) continue;
+
+                if (ImGuiComponents.IconButton($"##RemoveButton{category}", FontAwesomeIcon.Trash))
                 {
-                    searchResults = null;
+                    removalEntry = category;
                 }
-                else
+
+                ImGui.SameLine();
+                ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
+                ImGui.Image(iconTexture.ImGuiHandle, new Vector2(20.0f, 20.0f));
+
+                ImGui.SameLine();
+                ImGui.TextUnformatted(entryName);
+            }
+        }
+        ImGui.EndChild();
+        if (removalEntry is { } toRemove) AllowedItemTypes.Remove(toRemove);
+    }
+
+    private void DrawItemTypeSearchBox()
+    {
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 25.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X);
+        if (ImGui.InputTextWithHint("##SearchBox", "Search...", ref searchString, 1024, ImGuiInputTextFlags.AutoSelectAll))
+        {
+            if (searchString.IsNullOrEmpty())
+            {
+                searchResults = null;
+            }
+            else
+            {
+                searchResults = LuminaCache<ItemUICategory>.Instance
+                    .Where(entry => entry.Name.RawString.ToLowerInvariant().Contains(searchString.ToLowerInvariant()))
+                    .ToList();
+            }
+        }
+        ImGui.SameLine();
+        if (ImGuiComponents.IconButton("##ShowAll", FontAwesomeIcon.Search))
+        {
+            ImGui.OpenPopup("ShowAllItemUiCategory");
+        }
+    }
+
+    private void DrawAllItemTypesPopup()
+    {
+        ImGui.SetNextWindowSizeConstraints(new Vector2(1024, 700), new Vector2(1024, 800));
+        if (ImGui.BeginPopup("ShowAllItemUiCategory"))
+        {
+            ImGui.Columns(4);
+
+            foreach (var result in LuminaCache<ItemUICategory>.Instance.OrderBy(item => item.OrderMajor).ThenBy(item => item.OrderMinor))
+            {
+                if (result is { RowId: 0, Name.RawString: "" }) continue;
+
+                var enabled = AllowedItemTypes.Contains(result.RowId);
+                if (ImGui.Checkbox($"##ItemUiCategory{result.RowId}", ref enabled))
                 {
-                    searchResults = LuminaCache<ItemUICategory>.Instance
-                        .Where(entry => entry.Name.RawString.ToLowerInvariant().Contains(searchString.ToLowerInvariant()))
-                        .ToList();
+                    if (enabled) AllowedItemTypes.Add(result.RowId);
+                    if (!enabled) AllowedItemTypes.Remove(result.RowId);
                 }
-            }
-            ImGui.SameLine();
-            if (ImGuiComponents.IconButton("##ShowAll", FontAwesomeIcon.Search))
-            {
-                ImGui.OpenPopup("ShowAllItemUiCategory");
-            }
 
-            ImGui.SetNextWindowSizeConstraints(new Vector2(1024, 700), new Vector2(1024, 800));
-            if (ImGui.BeginPopup("ShowAllItemUiCategory"))
-            {
-                ImGui.Columns(4);
-
-                foreach (var result in LuminaCache<ItemUICategory>.Instance.OrderBy(item => item.OrderMajor).ThenBy(item => item.OrderMinor))
+                if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
                 {
-                    if (result is { RowId: 0, Name.RawString: "" }) continue;
+                    ImGui.SameLine();
+                    ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
+                    ImGui.Image(icon.ImGuiHandle, new Vector2(20.0f, 20.0f));
+                }
 
-                    var enabled = AllowedItemTypes.Contains(result.RowId);
-                    if (ImGui.Checkbox($"##ItemUiCategory{result.RowId}", ref enabled))
+                ImGui.SameLine();
+                ImGui.TextUnformatted(result.Name.RawString);
+
+                ImGui.NextColumn();
+            }
+
+            ImGui.Columns(1);
+            ImGui.EndPopup();
+        }
+    }
+
+    private void DrawItemTypeSearchResults()
+    {
+        if (ImGui.BeginChild("##SearchResultsChild", new Vector2(0, 0.0f), false))
+        {
+            if (searchResults is null || searchResults?.Count is 0)
+            {
+                ImGui.TextUnformatted("No Results");
+            }
+            else if (searchResults is not null)
+            {
+                foreach (var result in searchResults)
+                {
+                    if (result.Name.RawString is "") continue;
+
+                    if (!AllowedItemTypes.Contains(result.RowId))
                     {
-                        if (enabled) AllowedItemTypes.Add(result.RowId);
-                        if (!enabled) AllowedItemTypes.Remove(result.RowId);
+                        if (ImGuiComponents.IconButton($"##AddCategoryButton{result.RowId}", FontAwesomeIcon.Plus))
+                        {
+                            AllowedItemTypes.Add(result.RowId);
+                        }
+                    }
+                    else
+                    {
+                        if (ImGuiComponents.IconButton($"##RemoveCategoryButton{result.RowId}", FontAwesomeIcon.Trash))
+                        {
+                            AllowedItemTypes.Remove(result.RowId);
+                        }
                     }
 
                     if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
@@ -184,56 +268,9 @@ public class SortingFilter
 
                     ImGui.SameLine();
                     ImGui.TextUnformatted(result.Name.RawString);
-
-                    ImGui.NextColumn();
-                }
-
-                ImGui.Columns(1);
-                ImGui.EndPopup();
-            }
-
-            if (ImGui.BeginChild("##SearchResultsChild", new Vector2(0, 0.0f), false))
-            {
-                if (searchResults is null || searchResults?.Count is 0)
-                {
-                    ImGui.TextUnformatted("No Results");
-                }
-                else if (searchResults is not null)
-                {
-                    foreach (var result in searchResults)
-                    {
-                        if (result.Name.RawString is "") continue;
-
-                        if (!AllowedItemTypes.Contains(result.RowId))
-                        {
-                            if (ImGuiComponents.IconButton($"##AddCategoryButton{result.RowId}", FontAwesomeIcon.Plus))
-                            {
-                                AllowedItemTypes.Add(result.RowId);
-                            }
-                        }
-                        else
-                        {
-                            if (ImGuiComponents.IconButton($"##RemoveCategoryButton{result.RowId}", FontAwesomeIcon.Trash))
-                            {
-                                AllowedItemTypes.Remove(result.RowId);
-                            }
-                        }
-
-                        if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
-                        {
-                            ImGui.SameLine();
-                            ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
-                            ImGui.Image(icon.ImGuiHandle, new Vector2(20.0f, 20.0f));
-                        }
-
-                        ImGui.SameLine();
-                        ImGui.TextUnformatted(result.Name.RawString);
-                    }
                 }
             }
-            ImGui.EndChild();
-
-            ImGui.EndTable();
         }
+        ImGui.EndChild();
     }
 }

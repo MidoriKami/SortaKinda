@@ -18,9 +18,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="SortaKinda.json" />
-        <None Remove="README.md" />
-        <None Remove="packages.lock.json" />
+        <None Remove="SortaKinda.json"/>
+        <None Remove="README.md"/>
+        <None Remove="packages.lock.json"/>
     </ItemGroup>
 
     <PropertyGroup>
@@ -28,7 +28,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.11" />
+        <PackageReference Include="DalamudPackager" Version="2.1.11"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -63,21 +63,21 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="System\Localization\Strings.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+        <EmbeddedResource Update="System\Localization\Strings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="System\Localization\Strings.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Strings.resx</DependentUpon>
-      </Compile>
+        <Compile Update="System\Localization\Strings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Strings.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\KamiLib\KamiLib.csproj" />
+        <ProjectReference Include="..\KamiLib\KamiLib.csproj"/>
     </ItemGroup>
 </Project>

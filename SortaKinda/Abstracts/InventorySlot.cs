@@ -7,20 +7,26 @@ using ImGuiNET;
 using ImGuiScene;
 using KamiLib.Caching;
 using Lumina.Excel.GeneratedSheets;
+using SortaKinda.Interfaces;
 using SortaKinda.Models;
 using SortaKinda.System;
 
 namespace SortaKinda.Abstracts;
 
-public unsafe class InventorySlot
+public unsafe class InventorySlot : IInventorySlot
 {
     private InventoryItem* Item => InventoryController.GetItemForSlot(Type, Index);
-    public Item? LuminaData => Item is not null ? LuminaCache<Item>.Instance.GetRow(Item->ItemID) : null;
     private TextureWrap? ItemIcon => LuminaData is not null ? IconCache.Instance.GetIcon(LuminaData.Icon) : null;
 
+    public int Index { get; init; }
+    public InventoryType Type { get; init; }
+    public required InventoryModuleBase ControllingModule { get; init; }
+
+    public Item? LuminaData => Item is not null ? LuminaCache<Item>.Instance.GetRow(Item->ItemID) : null;
     public Pointer<ItemOrderModuleSorterItemEntry> ItemOrderData => InventoryController.GetItemOrderDataForSlot(Type, Index);
     public bool HasItem => Item is not null && Item->ItemID is not 0;
-    public SortingRule Rule
+
+    public ISortingRule Rule
     {
         get => SortController.GetRule(ControllingModule.ModuleConfig.Configurations![Type].Rules[Index]);
         private set
@@ -29,10 +35,6 @@ public unsafe class InventorySlot
             ControllingModule.SaveConfig();
         }
     }
-
-    public int Index { get; init; }
-    public InventoryType Type { get; init; }
-    public required InventoryModuleBase ControllingModule { get; init; }
 
     public void Draw(Vector2 drawPosition, Vector2 size)
     {
@@ -45,7 +47,7 @@ public unsafe class InventorySlot
         if (Item is null) return;
         if (LuminaData is null) return;
         if (ItemIcon is null) return;
-        
+
         ImGui.SetCursorPos(drawPosition);
         ImGui.Image(ItemIcon.ImGuiHandle, size, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
 
@@ -58,7 +60,7 @@ public unsafe class InventorySlot
     private void OnItemHovered()
     {
         if (!ImGui.IsItemHovered()) return;
-        
+
         Rule.DrawTooltip();
     }
 
@@ -66,18 +68,18 @@ public unsafe class InventorySlot
     {
         if (!ImGui.IsItemClicked(ImGuiMouseButton.Left)) return;
         if (SortController.SelectedRule is not { } rule || Rule.Equals(rule)) return;
-        
+
         SetToSelectedRule();
     }
-    
+
     private void OnItemRightClicked()
     {
         if (!ImGui.IsItemClicked(ImGuiMouseButton.Right)) return;
-        
-        Rule = new SortingRule { Id = "Default" };
+
+        Rule = new SortingRule();
         ControllingModule.SaveConfig();
     }
-    
+
     private void OnDragCollision(Vector2 drawPosition, Vector2 size)
     {
         if (AreaPaintController.GetDragBounds().IntersectsWith(GetBounds(drawPosition, size)))
@@ -89,20 +91,20 @@ public unsafe class InventorySlot
     private void SetToSelectedRule()
     {
         if (SortController.SelectedRule is not { } rule || Rule.Equals(rule)) return;
-        
+
         Rule = rule;
         ControllingModule.SaveConfig();
     }
-    
+
     private void DrawFrame(Vector2 drawPosition, Vector2 size)
     {
         var start = ImGui.GetWindowPos() + drawPosition;
         var stop = start + size;
-        
+
         ImGui.GetWindowDrawList().AddRect(start, stop, ImGui.GetColorU32(Rule.Color), 5.0f, ImDrawFlags.None, 2.0f);
     }
 
-    private Rectangle GetBounds(Vector2 drawPosition, Vector2 size)
+    private static Rectangle GetBounds(Vector2 drawPosition, Vector2 size)
     {
         var start = ImGui.GetWindowPos() + drawPosition;
         var stop = start + size;

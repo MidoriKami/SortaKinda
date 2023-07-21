@@ -7,7 +7,7 @@ using KamiLib.ChatCommands;
 using KamiLib.Commands;
 using KamiLib.Interfaces;
 using KamiLib.Utilities;
-using SortaKinda.Abstracts;
+using SortaKinda.Interfaces;
 using SortaKinda.System;
 using SortaKinda.Views.Tabs;
 
@@ -16,7 +16,7 @@ namespace SortaKinda.Views.Windows;
 public class ConfigurationWindow : Window
 {
     private readonly List<ITabItem> tabs = new();
-    public AreaPaintController AreaPaintController = new();
+    private readonly AreaPaintController areaPaintController = new();
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
@@ -24,7 +24,7 @@ public class ConfigurationWindow : Window
         tabs.Add(new GeneralConfigurationTab());
 
         Size = new Vector2(880, 690);
-        
+
         Flags |= ImGuiWindowFlags.NoScrollbar;
         Flags |= ImGuiWindowFlags.NoScrollWithMouse;
         Flags |= ImGuiWindowFlags.NoResize;
@@ -42,8 +42,8 @@ public class ConfigurationWindow : Window
 
     public override void Draw()
     {
-        AreaPaintController.Draw();
-        
+        areaPaintController.Draw();
+
         if (ImGui.BeginTabBar("##SortaKindaTabBar"))
         {
             foreach (var tab in tabs)
@@ -54,11 +54,11 @@ public class ConfigurationWindow : Window
                     ImGui.EndTabItem();
                 }
             }
-            
+
             ImGui.EndTabBar();
         }
     }
-    
+
     [BaseCommandHandler("OpenConfigWindow")]
     public void OpenConfigWindow()
     {
@@ -68,7 +68,7 @@ public class ConfigurationWindow : Window
             Chat.PrintError("The configuration menu cannot be opened while in a PvP area");
             return;
         }
-            
+
         Toggle();
     }
 }

@@ -12,15 +12,15 @@ public class Bound
 
         return IsBoundedBy(ImGui.GetMousePos(), windowStart, windowStart + windowSize);
     }
-    
+
     public static bool IsCursorInWindowHeader()
     {
         var windowStart = ImGui.GetWindowPos();
         var headerSize = ImGui.GetWindowSize() with { Y = ImGui.GetWindowContentRegionMin().Y };
-        
+
         return IsBoundedBy(ImGui.GetMousePos(), windowStart, windowStart + headerSize);
     }
-    
+
     public static bool IsBoundedBy(Vector2 cursor, Vector2 minBounds, Vector2 maxBounds)
     {
         if (cursor.X >= minBounds.X && cursor.Y >= minBounds.Y)

@@ -6,5 +6,8 @@ public class GeneralConfigurationTab : ITabItem
 {
     public string TabName => "General Settings";
     public bool Enabled => true;
-    public void Draw() => SortaKindaPlugin.System.DrawConfig();
+    public void Draw()
+    {
+        SortaKindaPlugin.System.DrawConfig();
+    }
 }

@@ -13,18 +13,18 @@ public static unsafe class FileController
     public static T LoadFile<T>(string filePath, object targetObject)
     {
         DebugPrint($"[FileController] Loading {filePath}");
-        
+
         if (LoadFile(filePath, targetObject.GetType(), out var loadedData))
         {
             return (T) loadedData;
         }
-        
+
         DebugPrint($"[FileController] File Doesn't Exist, creating: {filePath}");
-        
+
         SaveFile(filePath, targetObject.GetType(), targetObject);
         return (T) targetObject;
     }
-    
+
     private static bool LoadFile(string fileName, Type fileType, [NotNullWhen(true)] out object? loadedData)
     {
         try
@@ -36,7 +36,7 @@ public static unsafe class FileController
                 loadedData = null;
                 return false;
             }
-        
+
             var jsonString = File.ReadAllText(fileInfo.FullName);
             loadedData = JsonConvert.DeserializeObject(jsonString, fileType)!;
             return true;
@@ -44,7 +44,7 @@ public static unsafe class FileController
         catch (Exception exception)
         {
             PluginLog.Error(exception, $"[FileController] Failed to load file: {fileName}");
-            
+
             loadedData = null;
             return false;
         }
@@ -59,7 +59,7 @@ public static unsafe class FileController
         try
         {
             var fileInfo = GetFileInfo(fileName);
-        
+
             var jsonString = JsonConvert.SerializeObject(objectData, fileType, new JsonSerializerSettings { Formatting = Formatting.Indented });
             File.WriteAllText(fileInfo.FullName, jsonString);
         }
@@ -73,10 +73,10 @@ public static unsafe class FileController
     {
         var contentId = PlayerState.Instance()->ContentId;
         var configDirectory = GetCharacterDirectory(contentId);
-        
+
         return new FileInfo(Path.Combine(configDirectory.FullName, fileName));
     }
-    
+
     private static DirectoryInfo GetCharacterDirectory(ulong contentId)
     {
         var directoryInfo = new DirectoryInfo(Path.Combine(Service.PluginInterface.ConfigDirectory.FullName, contentId.ToString()));
@@ -91,8 +91,8 @@ public static unsafe class FileController
 
     private static void DebugPrint(string message)
     {
-        #if DEBUG
+#if DEBUG
         PluginLog.Debug(message);
-        #endif
+#endif
     }
 }
