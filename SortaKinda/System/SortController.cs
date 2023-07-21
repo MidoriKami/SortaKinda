@@ -127,6 +127,7 @@ public unsafe class SortController : IDisposable
             };
             
             _ruleConfig.SortingRules.Add(newRule);
+            SortaKindaSystem.WindowController.AddNewWindow(newRule);
             SaveConfig();
         }
         ImGui.PopFont();
@@ -197,6 +198,7 @@ public unsafe class SortController : IDisposable
                 .SelectMany(grid => grid.InventorySlots)
                 .Where(slot => !slot.Rule.Equals(rule))
                 .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
+                .Order(rule.Order)
                 .ToList();
 
             // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
