@@ -20,7 +20,7 @@ public class RuleConfigurationWindow : Window
     {
         this.rule = rule;
 
-        Position = ImGui.GetMainViewport().Size / 2.0f;
+        Position = ImGui.GetMainViewport().Size / 2.0f - new Vector2(500.0f, 400.0f) / 2.0f;
         
         SizeConstraints = new WindowSizeConstraints
         {
