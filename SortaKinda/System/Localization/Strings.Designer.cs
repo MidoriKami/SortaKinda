@@ -60,6 +60,42 @@ namespace SortaKinda.System.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alphabetical.
+        /// </summary>
+        internal static string Alphabetical {
+            get {
+                return ResourceManager.GetString("Alphabetical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        internal static string Ascending {
+            get {
+                return ResourceManager.GetString("Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bottom.
+        /// </summary>
+        internal static string Bottom {
+            get {
+                return ResourceManager.GetString("Bottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Descending.
+        /// </summary>
+        internal static string Descending {
+            get {
+                return ResourceManager.GetString("Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fill from Bottom.
         /// </summary>
         internal static string FillFromBottom {
@@ -69,11 +105,47 @@ namespace SortaKinda.System.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Item Id.
+        /// </summary>
+        internal static string ItemId {
+            get {
+                return ResourceManager.GetString("ItemId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Level.
+        /// </summary>
+        internal static string ItemLevel {
+            get {
+                return ResourceManager.GetString("ItemLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ordering Options.
         /// </summary>
         internal static string OrderingConfig {
             get {
                 return ResourceManager.GetString("OrderingConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rarity.
+        /// </summary>
+        internal static string Rarity {
+            get {
+                return ResourceManager.GetString("Rarity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sell Price.
+        /// </summary>
+        internal static string SellPrice {
+            get {
+                return ResourceManager.GetString("SellPrice", resourceCulture);
             }
         }
         
@@ -128,6 +200,15 @@ namespace SortaKinda.System.Localization {
         internal static string SortOnZoneChange {
             get {
                 return ResourceManager.GetString("SortOnZoneChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top.
+        /// </summary>
+        internal static string Top {
+            get {
+                return ResourceManager.GetString("Top", resourceCulture);
             }
         }
     }

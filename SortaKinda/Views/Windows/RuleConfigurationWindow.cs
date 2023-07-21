@@ -1,9 +1,12 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using KamiLib.Utilities;
 using SortaKinda.Models;
 using SortaKinda.Models.Enum;
+using SortaKinda.System;
 
 namespace SortaKinda.Views.Windows;
 
@@ -13,39 +16,77 @@ public class RuleConfigurationWindow : Window
 
     public ConfigurationResult Result { get; private set; } = ConfigurationResult.None;
     
-    public RuleConfigurationWindow(SortingRule rule) : base($"SortaKinda Rule Configuration##{rule.Id}")
+    public RuleConfigurationWindow(SortingRule rule) : base($"SortaKinda Rule Configuration - {rule.Name}###{rule.Id}")
     {
         this.rule = rule;
 
-        SizeConstraints = new WindowSizeConstraints()
+        Position = new Vector2(500.0f, 500.0f);
+        
+        SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(350.0f, 500.0f),
+            MinimumSize = new Vector2(500.0f, 400.0f),
             MaximumSize = new Vector2(9999, 9999)
         };
     }
 
-    public override void OnOpen()
-    {
-        BringToFront();
-    }
-
     public override void Draw()
     {
-        rule.DrawConfig();
-
-        ImGuiHelpers.ScaledDummy(10.0f);
-            
-        var region = ImGui.GetContentRegionMax();
-        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X - 100.0f - 100.0f - ImGui.GetStyle().ItemSpacing.X });
-        if (ImGui.Button("Delete Rule", new Vector2(100.0f, 23.0f)))
+        var region = ImGui.GetContentRegionAvail();
+        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X / 4.0f - ImGuiHelpers.GlobalScale * 50.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f } );
+        ImGui.ColorEdit4("##ColorConfig", ref rule.Color, ImGuiColorEditFlags.NoInputs);
+        
+        ImGui.SameLine();
+        ImGui.SetNextItemWidth(region.X / 2.0f - ImGui.GetItemRectSize().X - ImGui.GetStyle().ItemSpacing.X);
+        if (ImGui.InputText("##NameEdit", ref rule.Name, 1024, ImGuiInputTextFlags.AutoSelectAll))
+        {
+            WindowName = $"SortaKinda Rule Configuration - {rule.Name}###{rule.Id}";
+        }
+        
+        var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyAlt;
+        if(!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
+        ImGui.SameLine();
+        if (ImGui.Button("Delete", ImGuiHelpers.ScaledVector2(100.0f, 23.0f)) && hotkeyHeld)
         {
             Result = ConfigurationResult.RemoveEntry;
         }
-
-        ImGui.SameLine();
-        if (ImGui.Button("Save and Close", new Vector2(100.0f, 23.0f)))
+        if(!hotkeyHeld) ImGui.PopStyleVar();
+        if (ImGui.IsItemHovered() && !hotkeyHeld)
         {
-            Result = ConfigurationResult.SaveAndClose;
+            ImGui.SetTooltip("Hold Shift + Alt while clicking to delete this rule");
+        }
+        ImGuiHelpers.ScaledDummy(5.0f);
+
+        if (ImGui.BeginChild("##ContentsFrame", new Vector2(0.0f, -35.0f), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+        {
+            if (ImGui.BeginTabBar("##RuleConfigTabBar"))
+            {
+                rule.Filter.DrawConfig();
+                rule.Order.DrawConfig();
+            
+                ImGui.EndTabBar();
+            }
+        }
+        ImGui.EndChild();
+
+        if (ImGui.BeginTable("##SaveAndCloseTable", 2, ImGuiTableFlags.SizingStretchSame))
+        {
+            ImGui.TableNextColumn();
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), rule.Id);
+
+            ImGui.TableNextColumn();
+            ImGui.SetCursorPos(new Vector2(ImGui.GetContentRegionMax().X - 93.0f * 2.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X, ImGui.GetCursorPos().Y));
+            if (ImGui.Button("Save##SaveButton", ImGuiHelpers.ScaledVector2(93.0f, 23.0f)))
+            {
+                SortaKindaSystem.SortController.SaveConfig();
+            }
+        
+            ImGui.SameLine();
+            if (ImGui.Button("Save & Close##SaveAndCloseButton", ImGuiHelpers.ScaledVector2(93.0f, 23.0f)))
+            {
+                Result = ConfigurationResult.SaveAndClose;
+            }
+            
+            ImGui.EndTable();
         }
     }
 

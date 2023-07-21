@@ -42,4 +42,31 @@
     <data name="FillFromBottom" xml:space="preserve">
         <value>Fill from Bottom</value>
     </data>
+    <data name="Alphabetical" xml:space="preserve">
+        <value>Alphabetical</value>
+    </data>
+    <data name="ItemLevel" xml:space="preserve">
+        <value>Item Level</value>
+    </data>
+    <data name="Rarity" xml:space="preserve">
+        <value>Rarity</value>
+    </data>
+    <data name="SellPrice" xml:space="preserve">
+        <value>Sell Price</value>
+    </data>
+    <data name="ItemId" xml:space="preserve">
+        <value>Item Id</value>
+    </data>
+    <data name="Ascending" xml:space="preserve">
+        <value>Ascending</value>
+    </data>
+    <data name="Descending" xml:space="preserve">
+        <value>Descending</value>
+    </data>
+    <data name="Top" xml:space="preserve">
+        <value>Top</value>
+    </data>
+    <data name="Bottom" xml:space="preserve">
+        <value>Bottom</value>
+    </data>
 </root>

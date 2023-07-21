@@ -1,19 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using ImGuiNET;
+using KamiLib.Utilities;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Abstracts;
 using SortaKinda.Models.Enum;
 
 namespace SortaKinda.Models;
 
-public class SortingOrder
+public class SortingOrder : IComparer<InventorySlot>
 {
     public SortOrderDirection Direction = SortOrderDirection.Ascending;
     public SortOrderMode Mode = SortOrderMode.Alphabetically;
-    public FillMode FillMode = FillMode.FillFromTop;
+    public FillMode FillMode = FillMode.Top;
 
-    public bool Compare(InventorySlot a, InventorySlot b)
+    public int Compare(InventorySlot? x, InventorySlot? y)
+    {
+        if (x is null) return 0;
+        if (y is null) return 0;
+        if (x.LuminaData is null) return 0;
+        if (y.LuminaData is null) return 0;
+        if (IsItemsMatch(x.LuminaData, y.LuminaData)) return 0;
+        if (CompareSlots(x, y)) return 1;
+        return -1;
+    }
+    
+    public bool CompareSlots(InventorySlot a, InventorySlot b)
     {
         var firstItem = a.LuminaData;
         var secondItem = b.LuminaData;
@@ -24,13 +38,13 @@ public class SortingOrder
             case (false, false): return false;
 
             // first slot empty, second slot full, if Ascending we want to left justify, move the items left, if Descending right justify, leave the empty slot on the left.
-            case (false, true): return FillMode is FillMode.FillFromTop;
+            case (false, true): return FillMode is FillMode.Top;
 
             // first slot full, second slot empty, if Ascending we want to left justify, and we have that already, if Descending right justify, move the item right
-            case (true, false): return FillMode is FillMode.FillFromBottom;
+            case (true, false): return FillMode is FillMode.Bottom;
             
             case (true, true) when firstItem is not null && secondItem is not null:
-                var shouldSwap = ShouldSwap(firstItem, secondItem, ItemsMatch(firstItem, secondItem) ? SortOrderMode.Alphabetically : Mode);
+                var shouldSwap = ShouldSwap(firstItem, secondItem, IsItemsMatch(firstItem, secondItem) ? SortOrderMode.Alphabetically : Mode);
 
                 if (Direction is SortOrderDirection.Descending)
                     shouldSwap = !shouldSwap;
@@ -42,12 +56,13 @@ public class SortingOrder
         }
     }
 
-    private bool ItemsMatch(Item firstItem, Item secondItem) => Mode switch
+    private bool IsItemsMatch(Item firstItem, Item secondItem) => Mode switch
     {
         SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
         SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
         SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
         SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
+        SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
         _ => false,
     };
     
@@ -57,54 +72,49 @@ public class SortingOrder
         SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
         SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
         SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
+        SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
         _ => false,
     };
 
-    public void Draw()
+    public void DrawConfig()
     {
-        ImGui.Text("Ordering");
-        ImGui.Separator();
+        if (ImGui.BeginTabItem("Ordering##OrderConfig"))
+        {
+            if (ImGui.BeginTable("##OrderTable", 2, ImGuiTableFlags.SizingStretchSame))
+            {
+                ImGui.TableNextColumn();
+                ImGuiHelpers.ScaledDummy(1.0f);
+                ImGui.Text("Order items using");
+                ImGuiComponents.HelpMarker("The primary property of an item to use for ordering");
+                DrawRadioEnum(ref Mode);
 
-        ImGui.PushItemWidth(200.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginCombo("Ordering Mode##OrderingCombo", Mode.ToString()))
-        {
-            foreach (var mode in global::System.Enum.GetValues<SortOrderMode>())
-            {
-                if (ImGui.Selectable(mode.ToString(), mode == Mode))
-                {
-                    Mode = mode;
-                }
+                ImGui.TableNextColumn();
+                ImGuiHelpers.ScaledDummy(1.0f);
+                ImGui.Text("Sort item by");
+                ImGuiComponents.HelpMarker("Ascending: A -> Z\nDescending Z -> A");
+                DrawRadioEnum(ref Direction);
+
+                ImGuiHelpers.ScaledDummy(10.0f);
+                ImGui.Text("Fill inventory slots from");
+                ImGuiComponents.HelpMarker("Top - Items are shifted to the top left-most slots\nBottom - Items are shifted to the bottom right-most slots");
+                DrawRadioEnum(ref FillMode);
+
+                ImGui.EndTable();
             }
             
-            ImGui.EndCombo();
+            ImGui.EndTabItem();
         }
-        
-        ImGui.PushItemWidth(200.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginCombo("Ordering Direction##OrderingDirectionCombo", Direction.ToString()))
+    }
+
+    private static void DrawRadioEnum<T>(ref T configValue) where T : global::System.Enum
+    {
+        foreach (global::System.Enum orderingMode in global::System.Enum.GetValues(configValue.GetType()))
         {
-            foreach (var direction in global::System.Enum.GetValues<SortOrderDirection>())
+            var isSelected = Convert.ToInt32(configValue);
+            if(ImGui.RadioButton(orderingMode.GetLabel(), ref isSelected, Convert.ToInt32(orderingMode)))
             {
-                if (ImGui.Selectable(direction.ToString(), direction == Direction))
-                {
-                    Direction = direction;
-                }
+                configValue = (T) orderingMode;
             }
-            
-            ImGui.EndCombo();
-        }
-        
-        ImGui.PushItemWidth(200.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginCombo("Fill Mode##OrderingDirectionCombo", FillMode.ToString()))
-        {
-            foreach (var fillMode in global::System.Enum.GetValues<FillMode>())
-            {
-                if (ImGui.Selectable(fillMode.ToString(), fillMode == FillMode))
-                {
-                    FillMode = fillMode;
-                }
-            }
-            
-            ImGui.EndCombo();
         }
     }
 }

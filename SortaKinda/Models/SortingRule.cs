@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Interface;
 using ImGuiNET;
 using KamiLib.Caching;
 using KamiLib.Utilities;
@@ -18,7 +17,7 @@ public class SortingRule : IEquatable<SortingRule>
     public SortingFilter Filter = new();
     public SortingOrder Order = new();
 
-    public void DrawHeader()
+    public void DrawListEntry()
     {
         ImGui.ColorEdit4("##ColorTooltip", ref Color, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
         ImGui.SameLine();
@@ -43,25 +42,8 @@ public class SortingRule : IEquatable<SortingRule>
         ImGui.EndTooltip();
     }
 
-    public void DrawConfig()
-    {
-        ImGui.TextUnformatted($"Unique ID: {Id}");
-        ImGui.ColorEdit4("##ColorConfig", ref Color, ImGuiColorEditFlags.NoInputs);
-        
-        ImGui.SameLine();
-        ImGui.InputText("##NameEdit", ref Name, 1024);
-
-        ImGuiHelpers.ScaledDummy(5.0f);
-        Filter.Draw();
-        
-        ImGuiHelpers.ScaledDummy(5.0f);
-        Order.Draw();
-    }
-
     private string GetAllowedItemsString()
     {
-        if (Filter.UseSpecificName) return Filter.SpecificName;
-
         var strings = Filter.AllowedItemTypes
             .Select(type => LuminaCache<ItemUICategory>.Instance.GetRow(type)?.Name.RawString ?? "Unknown Type")
             .ToList();
@@ -69,7 +51,7 @@ public class SortingRule : IEquatable<SortingRule>
         return strings.Count is 0 ? "Any Item" : string.Join(", ", strings);
     }
 
-    private string GetSortingModesString() => Order.Mode.ToString();
+    private string GetSortingModesString() => Order.Mode.GetLabel();
 
     public bool Equals(SortingRule? other)
     {
@@ -86,5 +68,6 @@ public class SortingRule : IEquatable<SortingRule>
         return Equals((SortingRule) obj);
     }
     
+    // ReSharper disable once NonReadonlyMemberInGetHashCode
     public override int GetHashCode() => Id.GetHashCode();
 }

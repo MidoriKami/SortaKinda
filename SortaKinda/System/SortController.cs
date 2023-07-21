@@ -225,7 +225,7 @@ public unsafe class SortController
         {
             foreach (var index in Enumerable.Range(0, items.Count - 1))
             {
-                if (rule.Order.Compare(items[index], items[index + 1]))
+                if (rule.Order.CompareSlots(items[index], items[index + 1]))
                 {
                     SwapItem(items[index], items[index + 1]);
                 }
