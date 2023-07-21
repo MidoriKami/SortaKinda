@@ -7,8 +7,6 @@ namespace SortaKinda.Abstracts;
 
 public interface IInventoryConfigurationTab : ITabItem
 {
-    private const float ConfigurationSize = 0.40f;
-    
     int TabOrder { get; }
     
     void ITabItem.Draw()
