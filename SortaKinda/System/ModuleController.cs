@@ -27,14 +27,6 @@ public class ModuleController : IDisposable
         }
     }
 
-    public void Unload()
-    {
-        foreach (var module in modules)
-        {
-            module.Unload();
-        }
-    }
-    
     public void Dispose()
     {
         foreach (var module in modules)
