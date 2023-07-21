@@ -31,7 +31,7 @@ public unsafe class SortController
 
     public void DrawConfig()
     {
-        ISortingRule? removalRule = null;
+        SortingRule? removalRule = null;
 
         ImGui.TextUnformatted("Sorting Rules");
         ImGuiComponents.HelpMarker("Select a Rule then Left Click on a inventory slot to apply that rule\nRight click on an inventory slot to clear that slots rule");
@@ -48,7 +48,10 @@ public unsafe class SortController
         {
             foreach (var index in Enumerable.Range(0, _ruleConfig.SortingRules.Count))
             {
-                removalRule = DrawRule(index);
+                if (DrawRule(index))
+                {
+                    removalRule = _ruleConfig.SortingRules[index];
+                }
             }
 
             if (removalRule is { } toRemove)
@@ -62,9 +65,16 @@ public unsafe class SortController
         DrawAddNewRuleButton();
     }
 
-    private ISortingRule? DrawRule(int index)
+    private bool DrawRule(int index)
     {
         var rule = _ruleConfig.SortingRules[index];
+        
+        // Update Priority
+        if (rule.Priority != index)
+        {
+            rule.Priority = index;
+            SaveConfig();
+        }
 
         DrawRuleMoveArrows(index, rule);
 
@@ -77,7 +87,7 @@ public unsafe class SortController
         return DrawRuleConfigurationButton(rule);
     }
 
-    private void DrawRuleMoveArrows(int index, ISortingRule rule)
+    private void DrawRuleMoveArrows(int index, SortingRule rule)
     {
         ImGui.BeginDisabled(index is 0 || index == _ruleConfig.SortingRules.Count - 1);
         if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
@@ -106,9 +116,9 @@ public unsafe class SortController
         ImGui.EndDisabled();
     }
 
-    private ISortingRule? DrawRuleConfigurationButton(ISortingRule rule)
+    private bool DrawRuleConfigurationButton(ISortingRule rule)
     {
-        ISortingRule? removalRule = null;
+        var removeRule = false;
         var region = ImGui.GetContentRegionAvail();
 
         ImGui.BeginDisabled(rule.Id is "Default");
@@ -128,11 +138,11 @@ public unsafe class SortController
                 break;
 
             case ConfigurationResult.RemoveEntry:
-                removalRule = rule;
+                removeRule = true;
                 break;
         }
 
-        return removalRule;
+        return removeRule;
     }
 
     private void DrawAddNewRuleButton()
@@ -215,6 +225,12 @@ public unsafe class SortController
         {
             PluginLog.Debug($"Sorting Inventory: {type}");
 
+            // Get all rules for this inventory for priority determinations
+            var rulesForInventory = grids
+                .SelectMany(grid => grid.InventorySlots)
+                .Select(slots => slots.Rule)
+                .ToHashSet();
+            
             // Get All ItemSlots that match this rule
             foreach (var rule in _ruleConfig.SortingRules)
             {
@@ -225,6 +241,7 @@ public unsafe class SortController
                     .SelectMany(grid => grid.InventorySlots)
                     .Where(slot => !slot.Rule.Equals(rule))
                     .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
+                    .Where(slot => !rulesForInventory.Any(otherRules => otherRules.Priority > rule.Priority && otherRules.Filter.IsItemSlotAllowed(slot)))
                     .Order(rule.Order)
                     .ToList();
 
