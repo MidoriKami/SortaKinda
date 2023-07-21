@@ -4,5 +4,5 @@ namespace SortaKinda.Models;
 
 public class RuleConfig
 {
-    public List<ISortingRule> SortingRules = new();
+    public List<SortingRule> SortingRules = new();
 }
