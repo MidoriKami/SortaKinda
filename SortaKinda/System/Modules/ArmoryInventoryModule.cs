@@ -57,7 +57,7 @@ public class ArmoryInventoryModule : InventoryModuleBase
 
     protected override void LoadModule()
     {
-        ModuleConfig.Configurations ??= new Dictionary<InventoryType, IInventoryConfig>
+        ModuleConfig.Configurations ??= new Dictionary<InventoryType, InventoryConfig>
         {
             { InventoryType.ArmoryMainHand, new InventoryConfig(InventoryType.ArmoryMainHand) },
             { InventoryType.ArmoryOffHand, new InventoryConfig(InventoryType.ArmoryOffHand) },

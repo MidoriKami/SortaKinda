@@ -1,11 +1,10 @@
 ﻿using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Interfaces;
 using SortaKinda.System;
 
 namespace SortaKinda.Models;
 
-public unsafe class InventoryConfig : IInventoryConfig
+public unsafe class InventoryConfig
 {
     public InventoryConfig(InventoryType type)
     {

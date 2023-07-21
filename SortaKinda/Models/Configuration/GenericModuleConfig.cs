@@ -6,5 +6,5 @@ namespace SortaKinda.Models;
 
 public class GenericModuleConfig : IModuleConfig
 {
-    public Dictionary<InventoryType, IInventoryConfig>? Configurations { get; set; }
+    public Dictionary<InventoryType, InventoryConfig>? Configurations { get; set; }
 }

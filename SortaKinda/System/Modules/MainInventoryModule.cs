@@ -22,7 +22,7 @@ public class MainInventoryModule : InventoryModuleBase
 
     protected override void LoadModule()
     {
-        ModuleConfig.Configurations ??= new Dictionary<InventoryType, IInventoryConfig>
+        ModuleConfig.Configurations ??= new Dictionary<InventoryType, InventoryConfig>
         {
             { InventoryType.Inventory1, new InventoryConfig(InventoryType.Inventory1) },
             { InventoryType.Inventory2, new InventoryConfig(InventoryType.Inventory2) },
