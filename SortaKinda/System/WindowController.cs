@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using KamiLib;
 using SortaKinda.Models;
 using SortaKinda.Models.Enum;
@@ -7,19 +6,9 @@ using SortaKinda.Views.Windows;
 
 namespace SortaKinda.System;
 
-public class WindowController : IDisposable
+public class WindowController
 {
     private readonly Dictionary<string, RuleConfigurationWindow> temporaryWindows = new();
-
-    public WindowController()
-    {
-        
-    }
-
-    public void Dispose()
-    {
-        
-    }
 
     public void AddNewWindow(SortingRule rule)
     {
