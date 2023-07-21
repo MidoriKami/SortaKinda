@@ -17,7 +17,7 @@ using SortaKinda.Models.Enum;
 
 namespace SortaKinda.System;
 
-public unsafe class SortController : IDisposable
+public unsafe class SortController
 {
     private static RuleConfig _ruleConfig = new();
     public static SortingRule SelectedRule => _ruleConfig.SortingRules[_selectedIndex];
@@ -153,16 +153,6 @@ public unsafe class SortController : IDisposable
             
             SaveConfig();
         }
-    }
-
-    public void Unload()
-    {
-        
-    }
-    
-    public void Dispose()
-    {
-        
     }
     
     private RuleConfig LoadConfig() => FileController.LoadFile<RuleConfig>("SortingRules.config.json", _ruleConfig);
