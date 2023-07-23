@@ -84,14 +84,13 @@ public class RuleConfigurationWindow : Window
 
     private void DrawFooter()
     {
-
         if (ImGui.BeginTable("##SaveAndCloseTable", 2, ImGuiTableFlags.SizingStretchSame))
         {
             ImGui.TableNextColumn();
             ImGui.TextColored(KnownColor.Gray.AsVector4(), rule.Id);
 
             ImGui.TableNextColumn();
-            ImGui.SetCursorPos(new Vector2(ImGui.GetContentRegionMax().X - 93.0f * 2.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X, ImGui.GetCursorPos().Y));
+            ImGui.SetCursorPos(new Vector2(ImGui.GetContentRegionMax().X - 93.0f * 2.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X - ImGui.GetStyle().FramePadding.X, ImGui.GetCursorPos().Y));
             if (ImGui.Button("Save##SaveButton", ImGuiHelpers.ScaledVector2(93.0f, 23.0f)))
             {
                 SortaKindaSystem.SortController.SaveConfig();
