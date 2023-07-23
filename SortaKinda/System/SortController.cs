@@ -9,7 +9,9 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using ImGuiNET;
+using KamiLib.Hooking;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;
@@ -219,58 +221,57 @@ public unsafe class SortController
         (*slotData.Value, *itemData.Value) = (*itemData.Value, *slotData.Value);
     }
 
-    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids)
+    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids) => Task.Run(() => Safety.ExecuteSafe(() =>
     {
-        Task.Run(() =>
-        {
-            PluginLog.Debug($"Sorting Inventory: {type}");
+        PluginLog.Debug($"Sorting Inventory: {type}");
 
-            // Get all rules for this inventory for priority determinations
-            var rulesForInventory = grids
-                .SelectMany(grid => grid.InventorySlots)
-                .Select(slots => slots.Rule)
-                .ToHashSet();
+        // Get all rules for this inventory for priority determinations
+        var rulesForInventory = grids
+            .SelectMany(grid => grid.InventorySlots)
+            .Select(slots => slots.Rule)
+            .ToHashSet();
             
-            // Get All ItemSlots that match this rule
-            foreach (var rule in _ruleConfig.SortingRules)
-            {
-                if (rule.Id is "Default") continue;
+        // Get All ItemSlots that match this rule
+        foreach (var rule in _ruleConfig.SortingRules)
+        {
+            if (rule.Id is "Default") continue;
 
-                // Get all items this rule applies to, and aren't already in any of the slots for that rule
-                var itemSlotsForRule = grids
-                    .SelectMany(grid => grid.InventorySlots)
-                    .Where(slot => !slot.Rule.Equals(rule))
-                    .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
-                    .Where(slot => !rulesForInventory.Any(otherRules => otherRules.Priority > rule.Priority && otherRules.Filter.IsItemSlotAllowed(slot)))
-                    .Order(rule.Order)
-                    .ToList();
+            // Get all items this rule applies to, and aren't already in any of the slots for that rule
+            var itemSlotsForRule = grids
+                .SelectMany(grid => grid.InventorySlots)
+                .Where(slot => !slot.Rule.Equals(rule))
+                .Where(slot => rule.Filter.IsItemSlotAllowed(slot))
+                .Where(slot => !rulesForInventory.Any(otherRules => otherRules.Priority > rule.Priority && otherRules.Filter.IsItemSlotAllowed(slot)))
+                .Order(rule.Order)
+                .ToList();
 
-                // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
-                var targetSlotsForRule = grids
-                    .SelectMany(grid => grid.InventorySlots)
-                    .Where(slot => slot.Rule.Equals(rule))
-                    .Where(slot => !rule.Filter.IsItemSlotAllowed(slot))
-                    .ToList();
+            // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
+            var targetSlotsForRule = grids
+                .SelectMany(grid => grid.InventorySlots)
+                .Where(slot => slot.Rule.Equals(rule))
+                .Where(slot => !rule.Filter.IsItemSlotAllowed(slot))
+                .ToList();
 
-                SortItems(targetSlotsForRule, itemSlotsForRule);
-            }
+            SortItems(targetSlotsForRule, itemSlotsForRule);
+        }
 
-            CleanupInventory(grids);
+        CleanupInventory(grids);
 
-            foreach (var rule in _ruleConfig.SortingRules)
-            {
-                if (rule.Id is "Default") continue;
+        foreach (var rule in _ruleConfig.SortingRules)
+        {
+            if (rule.Id is "Default") continue;
 
-                // Get all target slots this rule applies to
-                var targetSlotsForRule = grids
-                    .SelectMany(grid => grid.InventorySlots)
-                    .Where(slot => slot.Rule.Equals(rule))
-                    .ToList();
+            // Get all target slots this rule applies to
+            var targetSlotsForRule = grids
+                .SelectMany(grid => grid.InventorySlots)
+                .Where(slot => slot.Rule.Equals(rule))
+                .ToList();
 
-                ReorderItems(rule, targetSlotsForRule);
-            }
-        });
-    }
+            ReorderItems(rule, targetSlotsForRule);
+        }
+            
+        UIModule.Instance()->GetItemOrderModule()->UserFileEvent.SaveFile(true);
+    }, $"Exception Caught During Sorting '{type}'"));
 
     private static void ReorderItems(ISortingRule rule, IReadOnlyList<IInventorySlot> items)
     {
