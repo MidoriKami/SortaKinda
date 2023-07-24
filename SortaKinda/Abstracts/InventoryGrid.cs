@@ -33,8 +33,8 @@ public unsafe class InventoryGrid : IInventoryGrid
     private static Vector2 ItemSpacing => ImGui.GetStyle().ItemSpacing with { Y = 7.0f };
     private int StartIndex => InventoryController.GetInventorySorterStartIndex(InventoryType);
     private int ItemsPerPage => InventoryController.GetInventorySorter(InventoryType)->ItemsPerPage;
-    public InventoryType InventoryType { get; init; }
 
+    public InventoryType InventoryType { get; init; }
     public float Scale => 0.50f;
     public List<IInventorySlot> InventorySlots { get; set; }
     public Vector2 InventorySize => new Vector2((ItemSize.X + ItemSpacing.X) * ItemsPerRow, (ItemSize.Y + ItemSpacing.Y) * ItemsPerPage / ItemsPerRow) * Scale;
@@ -45,7 +45,9 @@ public unsafe class InventoryGrid : IInventoryGrid
         {
             var slotDrawPosition = drawPosition + GetDrawPositionForIndex(index - StartIndex);
 
-            InventorySlots[index - StartIndex].Draw(slotDrawPosition, ItemSize * Scale);
+            var inventorySlot = InventorySlots[index - StartIndex];
+            
+            inventorySlot.Draw(slotDrawPosition, ItemSize * Scale);
         }
     }
 

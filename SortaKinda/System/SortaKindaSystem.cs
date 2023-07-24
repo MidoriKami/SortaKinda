@@ -70,7 +70,8 @@ public class SortaKindaSystem : IDisposable
 
     private void OnLogout(object? sender, EventArgs e)
     {
-
+        ModuleController.Unload();
+        SortController.Unload();
     }
 
     private void OnZoneChange(object? sender, ushort e)

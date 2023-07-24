@@ -32,7 +32,7 @@ public unsafe class InventorySlot : IInventorySlot
         private set
         {
             ControllingModule.ModuleConfig.Configurations![Type].Rules[Index] = value.Id;
-            ControllingModule.SaveConfig();
+            NeedsSaving = true;
         }
     }
 
@@ -41,6 +41,7 @@ public unsafe class InventorySlot : IInventorySlot
         DrawItem(drawPosition, size);
         DrawFrame(drawPosition, size);
     }
+    public bool NeedsSaving { get; set; }
 
     private void DrawItem(Vector2 drawPosition, Vector2 size)
     {
@@ -77,7 +78,7 @@ public unsafe class InventorySlot : IInventorySlot
         if (!ImGui.IsItemClicked(ImGuiMouseButton.Right)) return;
 
         Rule = new SortingRule();
-        ControllingModule.SaveConfig();
+        NeedsSaving = true;
     }
 
     private void OnDragCollision(Vector2 drawPosition, Vector2 size)
@@ -93,7 +94,7 @@ public unsafe class InventorySlot : IInventorySlot
         if (SortController.SelectedRule is not { } rule || Rule.Equals(rule)) return;
 
         Rule = rule;
-        ControllingModule.SaveConfig();
+        NeedsSaving = true;
     }
 
     private void DrawFrame(Vector2 drawPosition, Vector2 size)

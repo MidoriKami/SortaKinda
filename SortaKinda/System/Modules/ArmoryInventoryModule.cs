@@ -43,7 +43,7 @@ public class ArmoryInventoryModule : InventoryModuleBase
         rightTabTextures.Add(InventoryType.ArmorySoulCrystal, armouryBoard.LoadTexturePart("ui/uld/ArmouryBoard_hr1.tex", 12));
     }
     public override ModuleName ModuleName { get; protected set; } = ModuleName.ArmoryInventory;
-    public override IModuleConfig ModuleConfig { get; set; } = new GenericModuleConfig();
+    public override IModuleConfig ModuleConfig { get; protected set; } = new GenericModuleConfig();
 
     public override void Dispose()
     {
@@ -90,7 +90,7 @@ public class ArmoryInventoryModule : InventoryModuleBase
         };
     }
 
-    public override void SortAll()
+    protected override void PerformSort()
     {
         foreach (var (key, inventory) in armoryTabs)
         {

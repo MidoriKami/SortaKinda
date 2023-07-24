@@ -9,25 +9,35 @@ namespace SortaKinda.Abstracts;
 public abstract class InventoryModuleBase : IDisposable
 {
     public abstract ModuleName ModuleName { get; protected set; }
-    public abstract IModuleConfig ModuleConfig { get; set; }
+    public abstract IModuleConfig ModuleConfig { get; protected set; }
 
-    public virtual void Dispose()
-    {
-    }
+    public virtual void Dispose() { }
 
     public abstract void DrawInventoryGrid();
     protected abstract void LoadModule();
-    public abstract void SortAll();
+    protected abstract void PerformSort();
     public abstract void Update();
+    
+    protected bool IsLoaded { get; set; }
 
     public void Load()
     {
         PluginLog.Debug($"[{ModuleName}] Loading Module");
-
+        
         ModuleConfig = LoadConfig();
-        var newConfig = ModuleConfig.Configurations is null;
         LoadModule();
-        if (newConfig) SaveConfig();
+
+        IsLoaded = true;
+    }
+
+    public void Unload()
+    {
+        IsLoaded = false;
+    }
+    
+    public virtual void SortAll()
+    {
+        if (IsLoaded) PerformSort();
     }
 
     private IModuleConfig LoadConfig()

@@ -18,7 +18,7 @@ public class MainInventoryModule : InventoryModuleBase
 
     private long mainInventoryLastCount;
     public override ModuleName ModuleName { get; protected set; } = ModuleName.MainInventory;
-    public override IModuleConfig ModuleConfig { get; set; } = new GenericModuleConfig();
+    public override IModuleConfig ModuleConfig { get; protected set; } = new GenericModuleConfig();
 
     protected override void LoadModule()
     {
@@ -36,7 +36,7 @@ public class MainInventoryModule : InventoryModuleBase
         inventory4 = new InventoryGrid(InventoryType.Inventory4, this);
     }
 
-    public override void SortAll()
+    protected override void PerformSort()
     {
         SortController.SortInventory(InventoryType.Inventory1, inventory1, inventory2, inventory3, inventory4);
     }

@@ -174,6 +174,8 @@ public unsafe class SortController
 
     public void Load()
     {
+        PluginLog.Debug($"[SortController] Loading Rules");
+
         _ruleConfig = LoadConfig();
 
         if (_ruleConfig.SortingRules.Count is 0)
@@ -193,6 +195,11 @@ public unsafe class SortController
 
             SaveConfig();
         }
+    }
+
+    public void Unload()
+    {
+        
     }
 
     private RuleConfig LoadConfig()

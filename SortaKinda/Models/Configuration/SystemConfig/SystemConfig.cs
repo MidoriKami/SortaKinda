@@ -6,4 +6,7 @@ public class SystemConfig : ISortingConfig
     public bool SortOnZoneChange { get; set; } = true;
     public bool SortOnJobChange { get; set; } = true;
     public bool SortOnLogin { get; set; } = true;
+
+    public string CharacterName { get; set; } = "Unknown Character Name";
+    public string HomeWorld { get; set; } = "Unknown HomeWorld";
 }

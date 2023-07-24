@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Numerics;
 using ImGuiNET;
 using KamiLib.Utilities;
@@ -41,9 +40,7 @@ public class SortingRule : ISortingRule
 
         if (Name is not "Unsorted")
         {
-            var allowedItems = GetAllowedItemsString();
-
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), allowedItems[..Math.Min(allowedItems.Length, 55)]);
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), GetAllowedItemsString());
             ImGui.TextColored(KnownColor.Gray.AsVector4(), GetSortingModesString());
         }
 

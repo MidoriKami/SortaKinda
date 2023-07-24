@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using SortaKinda.Interfaces;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Interfaces;
 
 public interface ISortingOrder : IComparer<IInventorySlot>
 {
