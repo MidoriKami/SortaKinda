@@ -1,23 +1,30 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.System;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Models.Configuration;
 
-public unsafe class InventoryConfig
+public class InventoryConfig
 {
     public InventoryConfig(InventoryType type)
     {
         Type = type;
-        var ruleCount = InventoryController.GetInventorySorter(type)->ItemsPerPage;
+        var inventorySize = InventoryController.GetInventorySize(type);
 
-        Rules = new string[ruleCount];
-        foreach (var index in Enumerable.Range(0, ruleCount))
+        SlotConfigs = new List<SlotConfig>();
+        foreach (var _ in Enumerable.Range(0, inventorySize))
         {
-            Rules[index] = "Default";
+            SlotConfigs.Add(new SlotConfig
+            {
+                Type = Type,
+                RuleId = SortController.DefaultId,
+                NeedsSaving = false,
+            });
         }
     }
 
     public InventoryType Type { get; set; }
-    public string[] Rules { get; set; }
+    public List<SlotConfig> SlotConfigs { get; set; }
+    public bool NeedsSaving { get; set; }
 }

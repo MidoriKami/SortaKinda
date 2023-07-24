@@ -1,30 +1,23 @@
-﻿using System.Numerics;
-using ImGuiNET;
+﻿using ImGuiNET;
 using KamiLib.Interfaces;
-using SortaKinda.System;
 
 namespace SortaKinda.Interfaces;
 
 public interface IInventoryConfigurationTab : ITabItem
 {
-    int TabOrder { get; }
-
     void ITabItem.Draw()
     {
-        if (ImGui.BeginTable("##SortaKindaInventoryConfigTable", 2, ImGuiTableFlags.None, new Vector2(0, -1)))
+        if (ImGui.BeginTable("##SortaKindaInventoryConfigTable", 2, ImGuiTableFlags.SizingStretchSame))
         {
-            ImGui.TableSetupColumn("##RulesColumn", ImGuiTableColumnFlags.WidthStretch, 47.5f);
-            ImGui.TableSetupColumn("##InventoryColumn", ImGuiTableColumnFlags.WidthStretch, 52.5f);
-
             ImGui.TableNextColumn();
-            if (ImGui.BeginChild("##ConfigChild", new Vector2(0, 0), false))
+            if (ImGui.BeginChild("##ConfigChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding))
             {
                 DrawRuleConfiguration();
             }
             ImGui.EndChild();
 
             ImGui.TableNextColumn();
-            if (ImGui.BeginChild("##InventoryChild", new Vector2(0, 0), false, ImGuiWindowFlags.NoMove))
+            if (ImGui.BeginChild("##InventoryChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding, false, ImGuiWindowFlags.NoMove))
             {
                 DrawInventory();
             }
@@ -34,10 +27,7 @@ public interface IInventoryConfigurationTab : ITabItem
         }
     }
 
-    void DrawRuleConfiguration()
-    {
-        SortaKindaSystem.SortController.DrawConfig();
-    }
+    void DrawRuleConfiguration() => SortaKindaPlugin.Controller.SortController.Draw();
 
     void DrawInventory();
 }

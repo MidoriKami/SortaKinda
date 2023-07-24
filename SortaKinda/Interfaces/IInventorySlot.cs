@@ -1,16 +1,22 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using FFXIVClientStructs.Interop;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Models;
+using SortaKinda.Models.Configuration;
 
 namespace SortaKinda.Interfaces;
 
-public interface IInventorySlot
+public unsafe interface IInventorySlot
 {
-    Item? LuminaData { get; }
-    Pointer<ItemOrderModuleSorterItemEntry> ItemOrderData { get; }
+    [MemberNotNullWhen(true, "Item")] 
     bool HasItem { get; }
+    Item? Item { get; }
+    ItemOrderModuleSorterItemEntry* ItemOrderEntry { get; }
+    int Slot { get; init; }
+    SlotConfig Config { get; init; }
     ISortingRule Rule { get; }
-    void Draw(Vector2 drawPosition, Vector2 size);
+
+    void OnLeftClick();
+    void OnRightClick();
+    void OnDragCollision();
+    void OnHover();
 }

@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿// ReSharper disable UnusedMember.Global
+using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using KamiLib.ChatCommands;
 using KamiLib.Commands;
 using KamiLib.Interfaces;
-using KamiLib.Utilities;
-using SortaKinda.Interfaces;
+using KamiLib.Windows;
 using SortaKinda.System;
 using SortaKinda.Views.Tabs;
 
@@ -15,48 +14,38 @@ namespace SortaKinda.Views.Windows;
 
 public class ConfigurationWindow : Window
 {
-    private readonly List<ITabItem> tabs = new();
     private readonly AreaPaintController areaPaintController = new();
+
+    private readonly TabBar tabBar = new()
+    {
+        TabItems = new List<ITabItem>
+        {
+            new MainInventoryTab(),
+        },
+        Id = "SortaKindaConfigTabBar",
+    };
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
-        tabs.AddRange(Reflection.ActivateOfInterface<IInventoryConfigurationTab>().OrderBy(tab => tab.TabOrder));
-        tabs.Add(new GeneralConfigurationTab());
-
-        Size = new Vector2(880, 690);
+        Size = new Vector2(840, 635);
 
         Flags |= ImGuiWindowFlags.NoScrollbar;
         Flags |= ImGuiWindowFlags.NoScrollWithMouse;
         Flags |= ImGuiWindowFlags.NoResize;
 
+        // todo: remove this
+        IsOpen = true;
+
         CommandController.RegisterCommands(this);
     }
 
     public override bool DrawConditions()
-    {
-        if (!Service.ClientState.IsLoggedIn) return false;
-        if (Service.ClientState.IsPvP) return false;
-
-        return true;
-    }
+        => Service.ClientState is { IsLoggedIn: true, IsPvP: false, LocalContentId: not 0, LocalPlayer: not null };
 
     public override void Draw()
-    {
+    {        
+        tabBar.Draw();
         areaPaintController.Draw();
-
-        if (ImGui.BeginTabBar("##SortaKindaTabBar"))
-        {
-            foreach (var tab in tabs)
-            {
-                if (ImGui.BeginTabItem(tab.TabName))
-                {
-                    tab.Draw();
-                    ImGui.EndTabItem();
-                }
-            }
-
-            ImGui.EndTabBar();
-        }
     }
 
     [BaseCommandHandler("OpenConfigWindow")]

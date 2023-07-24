@@ -9,7 +9,4 @@ public enum ModuleName
 
     [EnumLabel("ArmoryInventory")] 
     ArmoryInventory,
-
-    [EnumLabel("SaddlebagInventory")] 
-    SaddlebagInventory
 }

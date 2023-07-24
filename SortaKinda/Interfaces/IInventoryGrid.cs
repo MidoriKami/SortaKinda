@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using SortaKinda.Models.Configuration;
 
 namespace SortaKinda.Interfaces;
 
 public interface IInventoryGrid
 {
-    float Scale { get; }
-    List<IInventorySlot> InventorySlots { get; set; }
-    Vector2 InventorySize { get; }
-    void Draw(Vector2 drawPosition);
+    List<IInventorySlot> Inventory { get; set; }
+    InventoryConfig Config { get; init; }
+
+    void Update();
 }

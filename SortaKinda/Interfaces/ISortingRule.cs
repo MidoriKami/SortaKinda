@@ -1,21 +1,12 @@
-﻿using System;
-using System.Numerics;
-using SortaKinda.Interfaces;
+﻿using System.Numerics;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Interfaces;
 
-public interface ISortingRule : IEquatable<SortingRule>
+public interface ISortingRule
 {
     Vector4 Color { get; set; }
-    string Id { get; init; }
+    string Id { get; set; }
     string Name { get; set; }
-    public int Priority { get; set; }
-
-    ISortingFilter Filter { get; set; }
-    ISortingOrder Order { get; set; }
-
-    bool Equals(object? obj);
-    void DrawListEntry();
+    int Priority { get; set; }
     void DrawTooltip();
-    void DrawConfig();
 }
