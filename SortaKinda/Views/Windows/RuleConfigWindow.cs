@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Interface;
+using Dalamud.Interface.Style;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using SortaKinda.Models;
@@ -33,10 +34,25 @@ public class RuleConfigWindow : Window
         IsOpen = true;
     }
 
+    public override void PreDraw()
+    {
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, StyleModelV1.DalamudStandard.WindowPadding);
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, StyleModelV1.DalamudStandard.FramePadding);
+        ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, StyleModelV1.DalamudStandard.CellPadding);
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, StyleModelV1.DalamudStandard.ItemSpacing);
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, StyleModelV1.DalamudStandard.ItemInnerSpacing);
+        ImGui.PushStyleVar(ImGuiStyleVar.IndentSpacing, StyleModelV1.DalamudStandard.IndentSpacing);
+    }
+    
     public override void Draw()
     {
         DrawHeader();
         view.Draw();
+    }
+    
+    public override void PostDraw()
+    {
+        ImGui.PopStyleVar(6);
     }
 
     private void DrawHeader()
