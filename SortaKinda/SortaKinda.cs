@@ -2,7 +2,7 @@
 using KamiLib;
 using KamiLib.Commands;
 using SortaKinda.System;
-using SortaKinda.System.Localization;
+using SortaKinda.Controllers.Localization;
 using SortaKinda.Views.Windows;
 
 namespace SortaKinda;

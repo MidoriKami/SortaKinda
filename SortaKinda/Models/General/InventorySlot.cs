@@ -14,7 +14,7 @@ public unsafe class InventorySlot : IInventorySlot
     public Item? Item => LuminaCache<Item>.Instance.GetRow(InventoryController.GetItemForSlot(Type, Slot)->ItemID);
     public ItemOrderModuleSorterItemEntry* ItemOrderEntry => InventoryController.GetItemOrderData(Type, Slot);
     public ISortingRule Rule => SortaKindaController.SortController.GetRule(Config.RuleId);
-    private InventoryType Type { get; init; }
+    private InventoryType Type { get; }
     public int Slot { get; init; }
     public SlotConfig Config { get; init; }
 

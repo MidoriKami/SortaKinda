@@ -5,6 +5,7 @@ using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using SortaKinda.Models;
 using SortaKinda.System;
+using SortaKinda.Views.SortControllerViews;
 
 namespace SortaKinda.Views.Windows;
 
@@ -12,11 +13,13 @@ public class RuleConfigWindow : Window
 {
     public SortingRule Rule;
     private readonly List<SortingRule> ruleList;
+    private readonly SortingRuleView view;
 
-    public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###{sortingRule.Id}")
+    public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###RuleConfig{sortingRule.Id}")
     {
         Rule = sortingRule;
         ruleList = sortingRules;
+        view = new SortingRuleView(sortingRule);
 
         Position = ImGui.GetMainViewport().Size / 2.0f - new Vector2(500.0f, 400.0f) / 2.0f;
         PositionCondition = ImGuiCond.Appearing;
@@ -33,6 +36,7 @@ public class RuleConfigWindow : Window
     public override void Draw()
     {
         DrawHeader();
+        view.Draw();
     }
     
     private void DrawHeader()
@@ -64,7 +68,7 @@ public class RuleConfigWindow : Window
         if (ImGui.InputText("##NameEdit", ref imGuiName, 1024, ImGuiInputTextFlags.AutoSelectAll))
         {
             Rule.Name = imGuiName;
-            WindowName = $"SortaKinda Rule Configuration - {Rule.Name}###{Rule.Id}";
+            WindowName = $"SortaKinda Rule Configuration - {Rule.Name}###RuleConfig{Rule.Id}";
         }
     }
     

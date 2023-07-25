@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SortaKinda.System.Localization {
+namespace SortaKinda.Controllers.Localization {
     using System;
     
     
@@ -38,7 +38,7 @@ namespace SortaKinda.System.Localization {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SortaKinda.System.Localization.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SortaKinda.Controllers.Localization.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -78,6 +78,15 @@ namespace SortaKinda.System.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blue.
+        /// </summary>
+        internal static string Blue {
+            get {
+                return ResourceManager.GetString("Blue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bottom.
         /// </summary>
         internal static string Bottom {
@@ -105,6 +114,15 @@ namespace SortaKinda.System.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Green.
+        /// </summary>
+        internal static string Green {
+            get {
+                return ResourceManager.GetString("Green", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Item Id.
         /// </summary>
         internal static string ItemId {
@@ -128,6 +146,24 @@ namespace SortaKinda.System.Localization {
         internal static string OrderingConfig {
             get {
                 return ResourceManager.GetString("OrderingConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pink.
+        /// </summary>
+        internal static string Pink {
+            get {
+                return ResourceManager.GetString("Pink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purple.
+        /// </summary>
+        internal static string Purple {
+            get {
+                return ResourceManager.GetString("Purple", resourceCulture);
             }
         }
         
@@ -209,6 +245,15 @@ namespace SortaKinda.System.Localization {
         internal static string Top {
             get {
                 return ResourceManager.GetString("Top", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to White.
+        /// </summary>
+        internal static string White {
+            get {
+                return ResourceManager.GetString("White", resourceCulture);
             }
         }
     }

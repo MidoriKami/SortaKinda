@@ -75,4 +75,19 @@
     <data name="Bottom" xml:space="preserve">
         <value>Bottom</value>
     </data>
+    <data name="White" xml:space="preserve">
+        <value>White</value>
+    </data>
+    <data name="Green" xml:space="preserve">
+        <value>Green</value>
+    </data>
+    <data name="Blue" xml:space="preserve">
+        <value>Blue</value>
+    </data>
+    <data name="Purple" xml:space="preserve">
+        <value>Purple</value>
+    </data>
+    <data name="Pink" xml:space="preserve">
+        <value>Pink</value>
+    </data>
 </root>
