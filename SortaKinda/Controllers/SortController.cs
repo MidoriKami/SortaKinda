@@ -23,6 +23,7 @@ public class SortController : IDisposable, ISortController
 
     public void Load()
     {
+        RuleConfig = new SortingRuleConfig();
         RuleConfig = LoadConfig();
         View = new SortControllerView(this);
         EnsureDefaultRule();

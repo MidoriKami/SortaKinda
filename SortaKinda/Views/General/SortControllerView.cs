@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
 using Dalamud.Interface;
+using Dalamud.Utility;
 using ImGuiNET;
+using KamiLib.ChatCommands;
 using Newtonsoft.Json;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;
@@ -11,12 +15,12 @@ public class SortControllerView
 {
     private readonly ISortController sortController;
 
-    public SortingRuleListView ListView;
+    private readonly SortingRuleListView listView;
 
     public SortControllerView(ISortController sortingController)
     {
         sortController = sortingController;
-        ListView = new SortingRuleListView(sortingController, sortingController.Rules);
+        listView = new SortingRuleListView(sortingController, sortingController.Rules);
     }
     
     public void Draw()
@@ -62,36 +66,64 @@ public class SortControllerView
     
     private void ImportRules()
     {
-        if (JsonConvert.DeserializeObject<SortingRule[]>(ImGui.GetClipboardText()) is { } rules)
+        try
         {
-            foreach (var rule in rules)
+
+            var decodedString = Convert.FromBase64String(ImGui.GetClipboardText());
+            var uncompressed = Util.DecompressString(decodedString);
+
+            if (uncompressed.IsNullOrEmpty())
             {
-                if (!sortController.Rules.Any(existingRule => existingRule.Id == rule.Id))
-                {
-                    sortController.Rules.Add(new SortingRule
-                    {
-                        Id = rule.Id,
-                        Color = rule.Color,
-                        Index = sortController.Rules.Count,
-                        Name = rule.Name
-                    });
-                }
+                Chat.PrintError("Tried to import sorting rules, but got nothing, try copying the code again.");
+                return;
             }
             
-            sortController.SaveConfig();
+            if (JsonConvert.DeserializeObject<SortingRule[]>(uncompressed) is { } rules)
+            {
+                if (rules.Length is 0)
+                {
+                    Chat.PrintError("Tried to import sorting rules, but got nothing, try copying the code again.");
+                    return;
+                }
+
+                var addedCount = 0;
+                foreach (var rule in rules)
+                {
+                    if (!sortController.Rules.Any(existingRule => existingRule.Id == rule.Id))
+                    {
+                        rule.Index = sortController.Rules.Count;
+                        sortController.Rules.Add(rule);
+                        addedCount++;
+                    }
+                }
+            
+                Chat.Print("Import", $"Imported {addedCount} rules successfully.");
+                sortController.SaveConfig();
+            }
+        }
+        catch
+        {
+            Chat.PrintError("Something went wrong trying to import rules, check you copied the code correctly.");
         }
     }
     
     private void ExportRules()
     {
         var rules = sortController.Rules.ToArray()[1..];
-        
         var jsonString = JsonConvert.SerializeObject(rules);
-        ImGui.SetClipboardText(jsonString);
+
+        // Plaintext Approach
+        // ImGui.SetClipboardText(jsonString);
+        
+        // Alternative approach that includes compression
+        var compressed = Util.CompressString(jsonString);
+        ImGui.SetClipboardText(Convert.ToBase64String(compressed));
+        
+        Chat.Print("Export", $"Exported {rules.Length} rules to clipboard.");
     }
 
     private void DrawRules()
     {
-        ListView.Draw();
+        listView.Draw();
     }
 }

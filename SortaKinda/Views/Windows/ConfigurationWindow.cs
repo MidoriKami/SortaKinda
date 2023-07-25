@@ -21,6 +21,7 @@ public class ConfigurationWindow : Window
         TabItems = new List<ITabItem>
         {
             new MainInventoryTab(),
+            new GeneralConfigurationTab(),
         },
         Id = "SortaKindaConfigTabBar",
     };

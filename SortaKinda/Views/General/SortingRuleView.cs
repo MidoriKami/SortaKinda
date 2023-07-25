@@ -17,8 +17,8 @@ public class SortingRuleView
             Id = "SortingRuleTabBar",
             TabItems = new List<ITabItem>
             {
-                new ItemNameFilterTab(rule),
                 new ItemTypeFilterTab(rule),
+                new ItemNameFilterTab(rule),
                 new OtherFiltersTab(rule),
                 new SortOrderTab(rule),
             }

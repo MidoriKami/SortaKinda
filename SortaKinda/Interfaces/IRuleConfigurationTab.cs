@@ -11,7 +11,7 @@ namespace SortaKinda.Interfaces;
 public interface IRuleConfigurationTab : ITabItem
 {
     private static Vector2 FooterSize => ImGuiHelpers.ScaledVector2(0.0f, 30.0f);
-    protected ISortingRule SortingRule { get; set; }
+    protected ISortingRule SortingRule { get; }
     
     void ITabItem.Draw()
     {
@@ -40,6 +40,7 @@ public interface IRuleConfigurationTab : ITabItem
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.Button("Save", buttonSize))
         {
+            SortaKindaController.ModuleController.Sort();
             SortaKindaController.SortController.SaveConfig();
         }
         
@@ -47,6 +48,7 @@ public interface IRuleConfigurationTab : ITabItem
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.Button("Save & Close", buttonSize))
         {
+            SortaKindaController.ModuleController.Sort();
             SortaKindaController.SortController.SaveConfig();
             SortaKindaController.RuleConfigController.RemoveRuleConfigWindow(SortingRule.Id);
         }

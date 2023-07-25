@@ -24,20 +24,26 @@ public class InventorySlotView
     public void Draw()
     {
         DrawItem();
-        DrawFrame();
         
         if (ImGui.IsItemClicked(ImGuiMouseButton.Left)) inventorySlot.OnLeftClick();
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) inventorySlot.OnRightClick();
         if (ImGui.IsItemHovered()) inventorySlot.OnHover();
         if (AreaPaintController.GetDragBounds().IntersectsWith(GetBounds(drawPosition, ItemSize))) inventorySlot.OnDragCollision();
+        
+        DrawFrame();
     }
 
     private void DrawItem()
     {
-        if (!inventorySlot.HasItem) return;
-        if (IconCache.Instance.GetIcon(inventorySlot.Item.Icon) is not { } itemIcon) return;
-        
         ImGui.SetCursorPos(drawPosition);
+
+        if (!inventorySlot.HasItem || IconCache.Instance.GetIcon(inventorySlot.Item.Icon) is not { } itemIcon)
+        {
+            // Draw Null Image, so we have an item to hover over
+            ImGui.Image(0, ItemSize);
+            return;
+        }
+        
         ImGui.Image(itemIcon.ImGuiHandle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.33f });
     }
     

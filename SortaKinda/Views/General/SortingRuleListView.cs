@@ -28,9 +28,16 @@ public class SortingRuleListView
         var negativeOffset = new Vector2(0.0f, 23.0f * ImGuiHelpers.GlobalScale + ImGui.GetStyle().ItemSpacing.Y + 1.0f);
         if (ImGui.BeginChild("##RuleListChild", region - negativeOffset))
         {
-            foreach (var rule in sortingRules.ToList())
+            foreach (var index in Enumerable.Range(0, sortingRules.Count))
             {
-                DrawRule(rule, sortingRules.IndexOf(rule));
+                var rule = sortingRules[index];
+                if (rule.Index != index)
+                {
+                    rule.Index = index;
+                    controller.SaveConfig();
+                }
+                
+                DrawRule(rule, index);
             }
         }
         ImGui.EndChild();

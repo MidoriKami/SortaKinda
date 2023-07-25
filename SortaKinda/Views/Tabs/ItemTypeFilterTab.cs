@@ -4,7 +4,6 @@ using System.Linq;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Utility;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using ImGuiNET;
 using KamiLib;
 using KamiLib.Caching;
@@ -52,8 +51,8 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
                 }
 
                 ImGui.SameLine();
-                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 2.0f * ImGuiHelpers.GlobalScale);
-                ImGui.Image(iconTexture.ImGuiHandle, new Vector2(20.0f, 20.0f));
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 1.0f * ImGuiHelpers.GlobalScale);
+                ImGui.Image(iconTexture.ImGuiHandle, ImGuiHelpers.ScaledVector2(20.0f, 20.0f));
 
                 ImGui.SameLine();
                 ImGui.TextUnformatted(entryName);
@@ -103,7 +102,7 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
         {
             if (searchResults is null || searchResults.Count is 0)
             {
-                ImGui.TextUnformatted("No Results");
+                ImGui.TextColored(KnownColor.Gray.AsVector4(), "No Results");
             }
             else
             {
@@ -127,8 +126,8 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
                     if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
                     {
                         ImGui.SameLine();
-                        ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });
-                        ImGui.Image(icon.ImGuiHandle, new Vector2(20.0f, 20.0f));
+                        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 1.0f * ImGuiHelpers.GlobalScale);
+                        ImGui.Image(icon.ImGuiHandle, ImGuiHelpers.ScaledVector2(20.0f, 20.0f));
                     }
 
                     ImGui.SameLine();

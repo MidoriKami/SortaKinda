@@ -5,7 +5,7 @@ using SortaKinda.Models.Enum;
 
 namespace SortaKinda.Interfaces;
 
-public interface ISortingRule
+public interface ISortingRule : IComparer<IInventorySlot>
 {
     Vector4 Color { get; set; }
     string Id { get; set; }
@@ -24,4 +24,5 @@ public interface ISortingRule
     
     
     void ShowTooltip();
+    public bool IsItemSlotAllowed(IInventorySlot slot);
 }

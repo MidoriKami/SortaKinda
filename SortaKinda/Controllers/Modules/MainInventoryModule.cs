@@ -15,7 +15,8 @@ public class MainInventoryModule : ModuleBase
 
     private List<IInventoryGrid>? inventories;
     private QuadInventoryView? view;
-    
+    private long mainInventoryLastCount;
+
     protected override void Load()
     {
         inventories = new List<IInventoryGrid>
@@ -36,11 +37,19 @@ public class MainInventoryModule : ModuleBase
     
     protected override void Update()
     {
+        var currentInventoryCount = InventoryController.GetInventoryItemCount(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4);
 
+        if (mainInventoryLastCount != currentInventoryCount)
+        {
+            if (SortaKindaController.SystemConfig.SortOnInventoryChange) Sort();
+            mainInventoryLastCount = currentInventoryCount;
+        }
     }
 
     protected override void Sort()
     {
+        if (inventories is null) return;
         
+        InventorySorter.SortInventory(InventoryType.Inventory1, inventories.ToArray());
     }
 }

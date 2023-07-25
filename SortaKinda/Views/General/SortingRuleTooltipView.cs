@@ -1,7 +1,13 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Linq;
+using Dalamud.Utility;
 using ImGuiNET;
+using KamiLib.Caching;
 using KamiLib.Utilities;
+using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
+using SortaKinda.System;
 
 namespace SortaKinda.Views.SortControllerViews;
 
@@ -27,10 +33,12 @@ public class SortingRuleTooltipView
         ImGui.SameLine();
         ImGui.Text(rule.Name);
 
-        if (rule.Name is not "Unsorted")
+        if (rule.Id is not SortController.DefaultId)
         {
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), GetAllowedItemsString());
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), GetSortingModesString());
+            var itemFiltersString = GetAllowedItemsString();
+            
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), itemFiltersString.IsNullOrEmpty() ? "Any Item" : itemFiltersString);
+            ImGui.TextColored(KnownColor.Gray.AsVector4(), rule.SortMode.GetLabel());
         }
 
         ImGui.EndTooltip();
@@ -38,11 +46,17 @@ public class SortingRuleTooltipView
     
     private string GetAllowedItemsString()
     {
-        return "Allowed Item Code Not Written";
-    }
-    
-    private string GetSortingModesString()
-    {
-        return "Sorting Modes Code Not Written";
+        var strings = new[]
+        {
+            rule.AllowedItemTypes.Count > 0 ? string.Join(", ", rule.AllowedItemTypes.Select(type => LuminaCache<ItemUICategory>.Instance.GetRow(type)?.Name.RawString)) : string.Empty,
+            rule.AllowedItemNames.Count > 0 ? string.Join(", ", rule.AllowedItemNames.Select(name => @$"""{name}""")) : string.Empty,
+            rule.AllowedItemRarities.Count > 0 ? string.Join(", ", rule.AllowedItemRarities.Select(rarity => rarity.GetLabel())) : string.Empty,
+            rule.ItemLevelFilter.Enable ? $"{rule.ItemLevelFilter.MinValue} ilvl → {rule.ItemLevelFilter.MaxValue} ilvl" : string.Empty,
+            rule.VendorPriceFilter.Enable ? $"{rule.VendorPriceFilter.MinValue} gil → {rule.VendorPriceFilter.MaxValue} gil" : string.Empty,
+        };
+        
+        return string.Join("\n", strings
+            .Where(eachString => !eachString.IsNullOrEmpty())
+            .Select(eachString => eachString[..Math.Min(eachString.Length, 55)]));
     }
 }

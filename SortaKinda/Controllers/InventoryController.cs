@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
@@ -9,14 +10,6 @@ public unsafe partial class InventoryController
 {
     public static int GetInventoryPageSize(InventoryType type) 
         => GetInventorySorter(type)->ItemsPerPage;
-    
-    public static int GetInventoryStartIndex(InventoryType type) => type switch
-    {
-        InventoryType.Inventory2 => GetInventorySorter(type)->ItemsPerPage,
-        InventoryType.Inventory3 => GetInventorySorter(type)->ItemsPerPage * 2,
-        InventoryType.Inventory4 => GetInventorySorter(type)->ItemsPerPage * 3,
-        _ => 0
-    };
 
     public static InventoryItem* GetItemForSlot(InventoryType type, int slot)
         => InventoryManager.Instance()->GetInventoryContainer(GetAdjustedInventoryType(type) + GetItemOrderData(type, slot)->Page)
@@ -24,6 +17,11 @@ public unsafe partial class InventoryController
 
     public static ItemOrderModuleSorterItemEntry* GetItemOrderData(InventoryType type, int slot)
         => GetInventorySorter(type)->Items.Span[slot + GetInventoryStartIndex(type)];
+    
+    public static int GetInventoryItemCount(params InventoryType[] types)
+    {
+        return types.Sum(GetInventoryItemCount);
+    }
 }
 
 // Helper Methods
@@ -60,4 +58,34 @@ public unsafe partial class InventoryController
         InventoryType.Inventory4 => InventoryType.Inventory1,
         _ => type
     };
+    
+    private static int GetInventoryStartIndex(InventoryType type) => type switch
+    {
+        InventoryType.Inventory2 => GetInventorySorter(type)->ItemsPerPage,
+        InventoryType.Inventory3 => GetInventorySorter(type)->ItemsPerPage * 2,
+        InventoryType.Inventory4 => GetInventorySorter(type)->ItemsPerPage * 3,
+        _ => 0
+    };
+    
+    private static Span<InventoryItem> GetInventoryItems(InventoryType type)
+    {
+        var instance = InventoryManager.Instance();
+        if (instance is null) return Span<InventoryItem>.Empty;
+
+        var container = instance->GetInventoryContainer(type);
+        if (container is null) return Span<InventoryItem>.Empty;
+
+        return new Span<InventoryItem>(container->Items, (int) container->Size);
+    }
+    
+    private static int GetInventoryItemCount(InventoryType type)
+    {
+        var count = 0;
+        foreach (var item in GetInventoryItems(type))
+        {
+            if (item is not { ItemID: 0 }) count++;
+        }
+
+        return count;
+    }
 }

@@ -17,6 +17,9 @@ public class ItemTypeConfigWindow : Window
     {
         sortingRule = rule;
 
+        Position = ImGui.GetMainViewport().Size / 2.0f - new Vector2(1024.0f, 720.0f) / 2.0f;
+        PositionCondition = ImGuiCond.Appearing;
+        
         SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(1024, 720),

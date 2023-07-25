@@ -10,10 +10,23 @@ namespace SortaKinda.Models.Inventory;
 
 public unsafe class InventorySlot : IInventorySlot
 {
-    public bool HasItem => Item is not null;
+    public bool HasItem => Item is not null && Item.RowId is not 0;
     public Item? Item => LuminaCache<Item>.Instance.GetRow(InventoryController.GetItemForSlot(Type, Slot)->ItemID);
     public ItemOrderModuleSorterItemEntry* ItemOrderEntry => InventoryController.GetItemOrderData(Type, Slot);
-    public ISortingRule Rule => SortaKindaController.SortController.GetRule(Config.RuleId);
+    public ISortingRule Rule
+    {
+        get
+        {
+            var sortControllerRule = SortaKindaController.SortController.GetRule(Config.RuleId);
+
+            if (sortControllerRule.Id != Config.RuleId)
+            {
+                TryApplyRule(sortControllerRule.Id);
+            }
+            return sortControllerRule;
+        }
+    }
+
     private InventoryType Type { get; }
     public int Slot { get; init; }
     public SlotConfig Config { get; init; }

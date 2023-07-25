@@ -1,4 +1,5 @@
-﻿using Dalamud.Logging;
+﻿using System;
+using Dalamud.Logging;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -8,7 +9,7 @@ namespace SortaKinda.System;
 
 public abstract class ModuleBase : IModule
 {
-    protected bool IsLoaded { get; set; }
+    private bool IsLoaded { get; set; }
     
     public abstract ModuleName ModuleName { get; protected set; }
     protected abstract IModuleConfig ModuleConfig { get; set; }
@@ -22,6 +23,7 @@ public abstract class ModuleBase : IModule
     {
         PluginLog.Debug($"[{ModuleName}] Loading Module");
 
+        ModuleConfig = DefaultConfig;
         ModuleConfig = LoadConfig();
         Load();
         IsLoaded = true;
@@ -60,7 +62,15 @@ public abstract class ModuleBase : IModule
     {
         if (!IsLoaded) return;
         
+        Sort();
     }
+
+    private IModuleConfig DefaultConfig => ModuleName switch
+    {
+        ModuleName.MainInventory => new MainInventoryConfig(),
+        ModuleName.ArmoryInventory => new ArmoryConfig(),
+        _ => throw new ArgumentOutOfRangeException()
+    };
 
     private IModuleConfig LoadConfig() => CharacterFileController.LoadFile<IModuleConfig>($"{ModuleName}.config.json", ModuleConfig);
     private void SaveConfig() => CharacterFileController.SaveFile($"{ModuleName}.config.json", ModuleConfig.GetType(), ModuleConfig);

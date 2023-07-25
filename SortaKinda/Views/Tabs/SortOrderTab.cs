@@ -25,7 +25,9 @@ public class SortOrderTab : ITwoColumnRuleConfigurationTab
         ImGui.Text("Order items using");
         ImGuiComponents.HelpMarker("The primary property of an item to use for ordering");
         var sortMode = SortingRule.SortMode;
-        if (DrawRadioEnum(ref sortMode)) SortingRule.SortMode = sortMode;
+        DrawRadioEnum(ref sortMode);
+
+        SortingRule.SortMode = sortMode;
     }
     
     public void DrawRightSideContents()
@@ -33,27 +35,28 @@ public class SortOrderTab : ITwoColumnRuleConfigurationTab
         ImGui.Text("Sort item by");
         ImGuiComponents.HelpMarker("Ascending: A -> Z\nDescending Z -> A");
         var sortDirection = SortingRule.Direction;
-        if (DrawRadioEnum(ref sortDirection)) SortingRule.Direction = sortDirection;
+        DrawRadioEnum(ref sortDirection);
         
         ImGuiHelpers.ScaledDummy(8.0f);
         ImGui.Text("Fill inventory slots from");
         ImGuiComponents.HelpMarker("Top - Items are shifted to the top left-most slots\nBottom - Items are shifted to the bottom right-most slots");
         var fillMode = SortingRule.FillMode;
-        if (DrawRadioEnum(ref fillMode)) SortingRule.FillMode = fillMode;
+        DrawRadioEnum(ref fillMode);
+
+        SortingRule.Direction = sortDirection;
+        SortingRule.FillMode = fillMode;
+
     }
     
-    private static bool DrawRadioEnum<T>(ref T configValue) where T : Enum
+    private static void DrawRadioEnum<T>(ref T configValue) where T : Enum
     {
-        foreach (Enum mode in Enum.GetValues(configValue.GetType()))
+        foreach (Enum value in Enum.GetValues(configValue.GetType()))
         {
             var isSelected = Convert.ToInt32(configValue);
-            if (ImGui.RadioButton(mode.GetLabel(), ref isSelected, Convert.ToInt32(mode)))
+            if (ImGui.RadioButton($"{value.GetLabel()}##{configValue.GetType()}", ref isSelected, Convert.ToInt32(value)))
             {
-                configValue = (T) mode;
-                return true;
+                configValue = (T) value;
             }
         }
-
-        return false;
     }
 }
