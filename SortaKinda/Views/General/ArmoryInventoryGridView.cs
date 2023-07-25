@@ -13,24 +13,23 @@ namespace SortaKinda.Views.SortControllerViews;
 
 public class ArmoryInventoryGridView : IDisposable
 {
-    private InventoryType selectedTab = InventoryType.ArmoryMainHand;
-    
     private readonly UldWrapper armouryBoard;
     private readonly Dictionary<InventoryType, TextureWrap?> leftTabTextures = new();
     private readonly Dictionary<InventoryType, TextureWrap?> rightTabTextures = new();
 
     private readonly Dictionary<InventoryType, InventoryGridView> views = new();
+    private InventoryType selectedTab = InventoryType.ArmoryMainHand;
 
     public ArmoryInventoryGridView(List<IInventoryGrid> armoryInventories)
     {
         var region = new Vector2(404, 565);
         var position = new Vector2(region.X / 2.0f - InventoryGridView.GetGridWidth() / 2.0f, region.Y / 8.0f);
-        
+
         foreach (var inventory in armoryInventories)
         {
             views.Add(inventory.Type, new InventoryGridView(inventory, position));
         }
-        
+
         armouryBoard = Service.PluginInterface.UiBuilder.LoadUld("ui/uld/ArmouryBoard.uld");
 
         leftTabTextures.Add(InventoryType.ArmoryMainHand, armouryBoard.LoadTexturePart("ui/uld/ArmouryBoard_hr1.tex", 0));
@@ -47,7 +46,7 @@ public class ArmoryInventoryGridView : IDisposable
         rightTabTextures.Add(InventoryType.ArmoryRings, armouryBoard.LoadTexturePart("ui/uld/ArmouryBoard_hr1.tex", 11));
         rightTabTextures.Add(InventoryType.ArmorySoulCrystal, armouryBoard.LoadTexturePart("ui/uld/ArmouryBoard_hr1.tex", 12));
     }
-    
+
     public void Dispose()
     {
         foreach (var loadedTexture in leftTabTextures) loadedTexture.Value?.Dispose();
@@ -61,33 +60,23 @@ public class ArmoryInventoryGridView : IDisposable
 
         var region = new Vector2(404, 565);
         var position = new Vector2(region.X / 2.0f - InventoryGridView.GetGridWidth() / 2.0f, region.Y / 8.0f);
-        
-        var leftBarPosition = position - new Vector2(90.0f, 0.0f) * (0.75f);
-        DrawLeftTabBar(leftBarPosition, 0.75f);
-        
+
+        var leftBarPosition = position - new Vector2(90.0f, 0.0f) * 0.75f;
+        DrawTabBar(leftTabTextures, leftBarPosition);
+
         var rightBarPosition = position with { X = position.X + InventoryGridView.GetGridWidth() + 5.0f * 0.75f };
-        DrawRightTabBar(rightBarPosition, 0.75f);
-    }
-    
-    private void DrawLeftTabBar(Vector2 drawPosition, float scale)
-    {
-        DrawTabBar(leftTabTextures, drawPosition, scale);
+        DrawTabBar(rightTabTextures, rightBarPosition);
     }
 
-    private void DrawRightTabBar(Vector2 drawPosition, float scale)
+    private void DrawTabBar(Dictionary<InventoryType, TextureWrap?> textures, Vector2 drawPosition)
     {
-        DrawTabBar(rightTabTextures, drawPosition, scale);
-    }
-
-    private void DrawTabBar(Dictionary<InventoryType, TextureWrap?> textures, Vector2 drawPosition, float scale)
-    {
-        var itemSpacing = new Vector2(0.0f, 85.0f) * scale;
+        var itemSpacing = new Vector2(0.0f, 85.0f) * 0.75f;
 
         var index = 0;
         foreach (var (tab, texture) in textures)
         {
             if (texture is null) continue;
-            var textureSize = new Vector2(texture.Width, texture.Height) * scale;
+            var textureSize = new Vector2(texture.Width, texture.Height) * 0.75f;
 
             var inactiveColor = Vector4.One with { W = 0.33f };
             var activeColor = Vector4.One;
@@ -97,7 +86,7 @@ public class ArmoryInventoryGridView : IDisposable
                 var windowPosition = ImGui.GetWindowPos();
 
                 var borderColor = ImGui.GetColorU32(KnownColor.White.AsVector4());
-                var backgroundColor = ImGui.GetColorU32(KnownColor.Gray.AsVector4());
+                var backgroundColor = ImGui.GetColorU32(KnownColor.Gray.AsVector4() with { W = 0.50f });
 
                 var rectStart = windowPosition + drawPosition + itemSpacing * index;
                 var rectStop = rectStart + textureSize;

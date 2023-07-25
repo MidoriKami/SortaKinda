@@ -10,12 +10,11 @@ namespace SortaKinda.System.Modules;
 
 public class MainInventoryModule : ModuleBase
 {
-    public override ModuleName ModuleName { get; protected set; } = ModuleName.MainInventory;
-    protected override IModuleConfig ModuleConfig { get; set; } = new MainInventoryConfig();
-
     private List<IInventoryGrid>? inventories;
-    private QuadInventoryView? view;
     private long mainInventoryLastCount;
+    private QuadInventoryView? view;
+    public override ModuleName ModuleName => ModuleName.MainInventory;
+    protected override IModuleConfig ModuleConfig { get; set; } = new MainInventoryConfig();
 
     protected override void Load()
     {
@@ -24,7 +23,7 @@ public class MainInventoryModule : ModuleBase
         {
             inventories.Add(new InventoryGrid(config.Type, config));
         }
-        
+
         view = new QuadInventoryView(inventories, Vector2.Zero);
     }
 
@@ -32,7 +31,7 @@ public class MainInventoryModule : ModuleBase
     {
         view?.Draw();
     }
-    
+
     protected override void Update()
     {
         var currentInventoryCount = InventoryController.GetInventoryItemCount(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4);
@@ -47,7 +46,7 @@ public class MainInventoryModule : ModuleBase
     protected override void Sort()
     {
         if (inventories is null) return;
-        
+
         InventorySorter.SortInventory(InventoryType.Inventory1, inventories.ToArray());
     }
 }

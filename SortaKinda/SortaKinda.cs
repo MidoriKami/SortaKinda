@@ -1,8 +1,8 @@
 ﻿using Dalamud.Plugin;
 using KamiLib;
 using KamiLib.Commands;
-using SortaKinda.System;
 using SortaKinda.Controllers.Localization;
+using SortaKinda.System;
 using SortaKinda.Views.Windows;
 
 namespace SortaKinda;
@@ -10,7 +10,7 @@ namespace SortaKinda;
 public sealed class SortaKindaPlugin : IDalamudPlugin
 {
     public string Name => "SortaKinda";
-    
+
     public static SortaKindaController Controller = null!;
 
     public SortaKindaPlugin(DalamudPluginInterface pluginInterface)

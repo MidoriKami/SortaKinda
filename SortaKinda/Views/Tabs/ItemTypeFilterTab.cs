@@ -16,20 +16,21 @@ namespace SortaKinda.Views.Tabs;
 
 public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
 {
-    public string TabName => "Item Type Filter";
-    public string FirstLabel => "Allowed Item Types";
-    public string SecondLabel => "Item Type Search";
-    public bool Enabled => true;
-    
-    public ISortingRule SortingRule { get; set; }
-    private string searchString = string.Empty;
     private List<ItemUICategory>? searchResults;
+    private string searchString = string.Empty;
 
     public ItemTypeFilterTab(ISortingRule rule)
     {
         SortingRule = rule;
     }
-    
+
+    public string TabName => "Item Type Filter";
+    public string FirstLabel => "Allowed Item Types";
+    public string SecondLabel => "Item Type Search";
+    public bool Enabled => true;
+
+    public ISortingRule SortingRule { get; }
+
     public void DrawLeftSideContents()
     {
         uint? removalEntry = null;
@@ -59,22 +60,22 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
             }
         }
         ImGui.EndChild();
-        
+
         if (removalEntry is { } toRemove)
         {
             SortingRule.AllowedItemTypes.Remove(toRemove);
         }
     }
-    
+
     public void DrawRightSideContents()
     {
         var buttonSize = ImGuiHelpers.ScaledVector2(23.0f, 23.0f);
-        
+
         if (ImGui.IsWindowAppearing())
         {
             ImGui.SetKeyboardFocusHere();
         }
-        
+
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - buttonSize.X - ImGui.GetStyle().ItemSpacing.X);
         if (ImGui.InputTextWithHint("##SearchBox", "Search...", ref searchString, 1024, ImGuiInputTextFlags.AutoSelectAll))
         {
@@ -89,15 +90,15 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
                     .ToList();
             }
         }
-        
+
         ImGui.SameLine();
         ImGui.PushFont(UiBuilder.IconFont);
-        if(ImGui.Button($"{FontAwesomeIcon.Search.ToIconString()}##ShowAll", buttonSize))
+        if (ImGui.Button($"{FontAwesomeIcon.Search.ToIconString()}##ShowAll", buttonSize))
         {
             KamiCommon.WindowManager.AddWindow(new ItemTypeConfigWindow(SortingRule));
         }
         ImGui.PopFont();
-        
+
         if (ImGui.BeginChild("##SearchResultsChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding, false))
         {
             if (searchResults is null || searchResults.Count is 0)

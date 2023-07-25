@@ -10,6 +10,6 @@ public class MainInventoryConfig : IModuleConfig
         new InventoryConfig(InventoryType.Inventory1),
         new InventoryConfig(InventoryType.Inventory2),
         new InventoryConfig(InventoryType.Inventory3),
-        new InventoryConfig(InventoryType.Inventory4),
+        new InventoryConfig(InventoryType.Inventory4)
     };
 }

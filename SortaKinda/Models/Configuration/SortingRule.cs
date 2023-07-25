@@ -13,6 +13,14 @@ namespace SortaKinda.Models;
 
 public class SortingRule : ISortingRule
 {
+
+    private readonly SortingRuleTooltipView view;
+
+    public SortingRule()
+    {
+        view = new SortingRuleTooltipView(this);
+    }
+
     public Vector4 Color { get; set; }
     public string Id { get; set; } = SortController.DefaultId;
     public string Name { get; set; } = "New Rule";
@@ -26,18 +34,11 @@ public class SortingRule : ISortingRule
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;
 
-    private readonly SortingRuleTooltipView view;
-
-    public SortingRule()
-    {
-        view = new SortingRuleTooltipView(this);
-    }
-    
     public void ShowTooltip()
     {
         view.Draw();
     }
-    
+
     public int Compare(IInventorySlot? x, IInventorySlot? y)
     {
         if (x is null) return 0;
@@ -47,6 +48,17 @@ public class SortingRule : ISortingRule
         if (IsItemMatch(x.Item, y.Item)) return 0;
         if (CompareSlots(x, y)) return 1;
         return -1;
+    }
+
+    public bool IsItemSlotAllowed(IInventorySlot slot)
+    {
+        if (AllowedItemNames.Count > 0 && !AllowedItemNames.Any(allowed => Regex.IsMatch(slot.Item?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase))) return false;
+        if (AllowedItemTypes.Count > 0 && !AllowedItemTypes.Any(allowed => slot.Item?.ItemUICategory.Row == allowed)) return false;
+        if (AllowedItemRarities.Count > 0 && !AllowedItemRarities.Any(allowed => slot.Item?.Rarity == (byte) allowed)) return false;
+        if (ItemLevelFilter.Enable && (slot.Item?.LevelItem.Row > ItemLevelFilter.MaxValue || slot.Item?.LevelItem.Row < ItemLevelFilter.MinValue)) return false;
+        if (VendorPriceFilter.Enable && (slot.Item?.PriceLow > VendorPriceFilter.MaxValue || slot.Item?.PriceLow < VendorPriceFilter.MinValue)) return false;
+
+        return true;
     }
 
     public bool CompareSlots(IInventorySlot a, IInventorySlot b)
@@ -77,35 +89,30 @@ public class SortingRule : ISortingRule
             default: return false;
         }
     }
-    
-    private bool IsItemMatch(Item firstItem, Item secondItem) => SortMode switch
-    {
-        SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
-        SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
-        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
-        SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
-        SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
-        _ => false
-    };
 
-    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch
+    private bool IsItemMatch(Item firstItem, Item secondItem)
     {
-        SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
-        SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
-        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
-        SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
-        SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
-        _ => false
-    };
-    
-    public bool IsItemSlotAllowed(IInventorySlot slot)
-    {
-        if (AllowedItemNames.Count > 0 && !AllowedItemNames.Any(allowed => Regex.IsMatch(slot.Item?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase))) return false;
-        if (AllowedItemTypes.Count > 0 && !AllowedItemTypes.Any(allowed => slot.Item?.ItemUICategory.Row == allowed)) return false;
-        if (AllowedItemRarities.Count > 0 && !AllowedItemRarities.Any(allowed => slot.Item?.Rarity == (byte)allowed)) return false;
-        if (ItemLevelFilter.Enable && (slot.Item?.LevelItem.Row > ItemLevelFilter.MaxValue || slot.Item?.LevelItem.Row < ItemLevelFilter.MinValue)) return false;
-        if (VendorPriceFilter.Enable && (slot.Item?.PriceLow > VendorPriceFilter.MaxValue || slot.Item?.PriceLow < VendorPriceFilter.MinValue)) return false;
+        return SortMode switch
+        {
+            SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
+            SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
+            SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
+            SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
+            SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
+            _ => false
+        };
+    }
 
-        return true;
+    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode)
+    {
+        return sortMode switch
+        {
+            SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
+            SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
+            SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
+            SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
+            SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
+            _ => false
+        };
     }
 }

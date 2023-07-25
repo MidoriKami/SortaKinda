@@ -5,8 +5,7 @@ namespace SortaKinda.Models.Configuration;
 
 public class SlotConfig
 {
-    public string RuleId { get; set; } = SortController.DefaultId;
+    [NonSerialized] public bool Dirty;
 
-    [NonSerialized] 
-    public bool Dirty;
+    public string RuleId { get; set; } = SortController.DefaultId;
 }

@@ -12,7 +12,7 @@ public interface IRuleConfigurationTab : ITabItem
 {
     private static Vector2 FooterSize => ImGuiHelpers.ScaledVector2(0.0f, 30.0f);
     protected ISortingRule SortingRule { get; }
-    
+
     void ITabItem.Draw()
     {
         if (ImGui.BeginChild("##RuleConfigurationTabChild", ImGui.GetContentRegionAvail() - FooterSize - ImGui.GetStyle().FramePadding))
@@ -29,13 +29,14 @@ public interface IRuleConfigurationTab : ITabItem
     }
 
     void DrawConfigurationTab();
+
     void DrawFooter()
     {
         var buttonSize = ImGuiHelpers.ScaledVector2(100.0f, 23.0f);
-        
+
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.TextColored(KnownColor.Gray.AsVector4(), SortingRule.Id);
-        
+
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X * 2.0f - ImGui.GetStyle().ItemSpacing.X);
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.Button("Save", buttonSize))
@@ -43,14 +44,14 @@ public interface IRuleConfigurationTab : ITabItem
             SortaKindaController.ModuleController.Sort();
             SortaKindaController.SortController.SaveConfig();
         }
-        
+
         ImGui.SameLine();
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.Button("Save & Close", buttonSize))
         {
             SortaKindaController.ModuleController.Sort();
             SortaKindaController.SortController.SaveConfig();
-            SortaKindaController.RuleConfigController.RemoveRuleConfigWindow(SortingRule.Id);
+            RuleConfigWindowController.RemoveRuleConfigWindow(SortingRule.Id);
         }
     }
 }

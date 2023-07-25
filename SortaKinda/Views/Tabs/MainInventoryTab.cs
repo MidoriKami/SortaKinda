@@ -8,5 +8,9 @@ public class MainInventoryTab : IInventoryConfigurationTab
 {
     public string TabName => "Main Inventory";
     public bool Enabled => true;
-    public void DrawInventory() => SortaKindaController.ModuleController.DrawModule(ModuleName.MainInventory);
+
+    public void DrawInventory()
+    {
+        SortaKindaController.ModuleController.DrawModule(ModuleName.MainInventory);
+    }
 }

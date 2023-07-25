@@ -22,9 +22,9 @@ public class ConfigurationWindow : Window
         {
             new MainInventoryTab(),
             new ArmoryInventoryTab(),
-            new GeneralConfigurationTab(),
+            new GeneralConfigurationTab()
         },
-        Id = "SortaKindaConfigTabBar",
+        Id = "SortaKindaConfigTabBar"
     };
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
@@ -36,15 +36,17 @@ public class ConfigurationWindow : Window
         Flags |= ImGuiWindowFlags.NoResize;
 
         IsOpen = true;
-        
+
         CommandController.RegisterCommands(this);
     }
 
     public override bool DrawConditions()
-        => Service.ClientState is { IsLoggedIn: true, IsPvP: false, LocalContentId: not 0, LocalPlayer: not null };
+    {
+        return Service.ClientState is { IsLoggedIn: true, IsPvP: false, LocalContentId: not 0, LocalPlayer: not null };
+    }
 
     public override void Draw()
-    {        
+    {
         tabBar.Draw();
         areaPaintController.Draw();
     }

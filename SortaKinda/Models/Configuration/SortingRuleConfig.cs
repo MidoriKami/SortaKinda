@@ -13,7 +13,7 @@ public class SortingRuleConfig
         {
             Color = KnownColor.White.AsVector4(),
             Id = SortController.DefaultId,
-            Name = "Unsorted",
+            Name = "Unsorted"
         }
     };
 }

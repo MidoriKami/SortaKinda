@@ -10,9 +10,19 @@ namespace SortaKinda.Models.Inventory;
 
 public unsafe class InventorySlot : IInventorySlot
 {
+    public InventorySlot(InventoryType type, SlotConfig config, int index)
+    {
+        Type = type;
+        Config = config;
+        Slot = index;
+    }
+
+    private InventoryType Type { get; }
+    public SlotConfig Config { get; init; }
     public bool HasItem => Item is not null && Item.RowId is not 0;
     public Item? Item => LuminaCache<Item>.Instance.GetRow(InventoryController.GetItemForSlot(Type, Slot)->ItemID);
     public ItemOrderModuleSorterItemEntry* ItemOrderEntry => InventoryController.GetItemOrderData(Type, Slot);
+
     public ISortingRule Rule
     {
         get
@@ -27,32 +37,23 @@ public unsafe class InventorySlot : IInventorySlot
         }
     }
 
-    private InventoryType Type { get; }
     public int Slot { get; init; }
-    public SlotConfig Config { get; init; }
 
-    public InventorySlot(InventoryType type, SlotConfig config, int index)
-    {
-        Type = type;
-        Config = config;
-        Slot = index;
-    }
-        
     public void OnLeftClick()
     {
         TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
     }
-    
+
     public void OnRightClick()
     {
         TryApplyRule(SortController.DefaultId);
     }
-    
+
     public void OnDragCollision()
     {
         TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
     }
-    
+
     public void OnHover()
     {
         Rule.ShowTooltip();

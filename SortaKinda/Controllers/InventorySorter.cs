@@ -28,28 +28,31 @@ public unsafe class InventorySorter
         (*slotData, *itemData) = (*itemData, *slotData);
     }
 
-    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids) => Task.Run(() => Safety.ExecuteSafe(() =>
+    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids)
     {
-        PluginLog.Debug($"Sorting Inventory: {type}");
+        Task.Run(() => Safety.ExecuteSafe(() =>
+        {
+            PluginLog.Debug($"Sorting Inventory: {type}");
 
-        // Get all rules for this inventory for priority determinations
-        var rulesForInventory = grids
-            .SelectMany(grid => grid.Inventory)
-            .Select(slots => slots.Rule)
-            .ToHashSet();
-            
-        // Step 1: Put all items that belong into a category into a category
-        MoveItemsIntoCategories(grids, rulesForInventory);
+            // Get all rules for this inventory for priority determinations
+            var rulesForInventory = grids
+                .SelectMany(grid => grid.Inventory)
+                .Select(slots => slots.Rule)
+                .ToHashSet();
 
-        // Step 2: Remove items that don't belong in categories
-        RemoveItemsFromCategories(grids);
+            // Step 1: Put all items that belong into a category into a category
+            MoveItemsIntoCategories(grids, rulesForInventory);
 
-        // Step 3: Sort remaining items in categories
-        SortCategories(grids);
+            // Step 2: Remove items that don't belong in categories
+            RemoveItemsFromCategories(grids);
 
-        UIModule.Instance()->GetItemOrderModule()->UserFileEvent.SaveFile(true);
-    }, $"Exception Caught During Sorting '{type}'"));
-    
+            // Step 3: Sort remaining items in categories
+            SortCategories(grids);
+
+            UIModule.Instance()->GetItemOrderModule()->UserFileEvent.SaveFile(true);
+        }, $"Exception Caught During Sorting '{type}'"));
+    }
+
     private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IReadOnlyCollection<ISortingRule> rulesForInventory)
     {
         foreach (var rule in SortaKindaController.SortController.Rules)
@@ -75,7 +78,7 @@ public unsafe class InventorySorter
             SortItems(targetSlotsForRule, itemSlotsForRule);
         }
     }
-    
+
     private static void RemoveItemsFromCategories(IInventoryGrid[] grids)
     {
         foreach (var rule in SortaKindaController.SortController.Rules)

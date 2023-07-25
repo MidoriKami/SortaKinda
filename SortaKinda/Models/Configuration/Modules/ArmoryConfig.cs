@@ -18,6 +18,6 @@ public class ArmoryConfig : IModuleConfig
         new InventoryConfig(InventoryType.ArmoryNeck),
         new InventoryConfig(InventoryType.ArmoryWrist),
         new InventoryConfig(InventoryType.ArmoryRings),
-        new InventoryConfig(InventoryType.ArmorySoulCrystal),
+        new InventoryConfig(InventoryType.ArmorySoulCrystal)
     };
 }

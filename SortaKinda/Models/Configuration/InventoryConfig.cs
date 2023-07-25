@@ -15,7 +15,7 @@ public class InventoryConfig
         {
             SlotConfigs.Add(new SlotConfig
             {
-                RuleId = SortController.DefaultId,
+                RuleId = SortController.DefaultId
             });
         }
     }

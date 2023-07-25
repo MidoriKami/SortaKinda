@@ -13,9 +13,9 @@ namespace SortaKinda.Views.SortControllerViews;
 
 public class SortingRuleListView
 {
-    private readonly List<SortingRule> sortingRules;
     private readonly ISortController controller;
-    
+    private readonly List<SortingRule> sortingRules;
+
     public SortingRuleListView(ISortController sortController, List<SortingRule> rules)
     {
         controller = sortController;
@@ -36,19 +36,19 @@ public class SortingRuleListView
                     rule.Index = index;
                     controller.SaveConfig();
                 }
-                
+
                 DrawRule(rule, index);
             }
         }
         ImGui.EndChild();
-        
+
         AddNewRuleButton();
     }
-    
+
     private void AddNewRuleButton()
     {
         var region = ImGui.GetContentRegionAvail();
-        
+
         ImGui.PushFont(UiBuilder.IconFont);
 
         if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNewRuleButton", region with { Y = 23.0f * ImGuiHelpers.GlobalScale }))
@@ -60,13 +60,13 @@ public class SortingRuleListView
                 Name = "New Rule",
                 Index = sortingRules.Count
             };
-            
+
             sortingRules.Add(newRule);
             controller.SaveConfig();
-            
-            SortaKindaController.RuleConfigController.AddRuleConfigWindow(newRule, sortingRules);
+
+            RuleConfigWindowController.AddRuleConfigWindow(newRule, sortingRules);
         }
-            
+
         ImGui.PopFont();
     }
 
@@ -80,7 +80,7 @@ public class SortingRuleListView
     private void DrawArrows(int index)
     {
         var rule = sortingRules[index];
-        
+
         ImGui.BeginDisabled(index is 0 || index == sortingRules.Count - 1);
         if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
         {
@@ -107,41 +107,41 @@ public class SortingRuleListView
         }
         ImGui.EndDisabled();
     }
-    
-    private void DrawRadioButton(int index)
+
+    private static void DrawRadioButton(int index)
     {
         ImGui.SameLine();
         ImGui.RadioButton($"##Selected{index}", ref SortaKindaController.SortController.SelectedRuleIndex, index);
     }
-    
+
     private void DrawRuleEntry(SortingRule rule, int index)
     {
         ImGui.SameLine();
-        
+
         var ruleColor = rule.Color;
         ImGui.ColorEdit4($"##{rule.Id}ColorEdit", ref ruleColor, ImGuiColorEditFlags.NoPicker | ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoTooltip);
-        
+
         ImGui.SameLine();
         ImGui.TextUnformatted(rule.Name);
 
         ImGui.BeginDisabled(rule.Id is SortController.DefaultId);
         DrawDeleteButton(index);
         ImGui.EndDisabled();
-        
+
         ImGui.BeginDisabled(rule.Id is SortController.DefaultId);
         DrawConfigButton(rule);
         ImGui.EndDisabled();
     }
-    
+
     private void DrawDeleteButton(int index)
     {
         var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyAlt;
         var buttonSize = ImGuiHelpers.ScaledVector2(23.0f, 23.0f);
 
         if (!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
-        
+
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X * 2.0f - ImGui.GetStyle().ItemSpacing.X);
-        
+
         ImGui.PushFont(UiBuilder.IconFont);
         if (ImGui.Button($"{FontAwesomeIcon.Trash.ToIconString()}##{index}", buttonSize) && hotkeyHeld)
         {
@@ -149,9 +149,9 @@ public class SortingRuleListView
             controller.SaveConfig();
         }
         ImGui.PopFont();
-        
+
         if (!hotkeyHeld) ImGui.PopStyleVar();
-        
+
         if (ImGui.IsItemHovered() && !hotkeyHeld)
         {
             ImGui.SetTooltip("Hold Shift + Alt while clicking to delete this rule");
@@ -166,11 +166,11 @@ public class SortingRuleListView
         ImGui.PushFont(UiBuilder.IconFont);
         if (ImGui.Button($"{FontAwesomeIcon.Cog.ToIconString()}##{rule.Id}", buttonSize))
         {
-            SortaKindaController.RuleConfigController.AddRuleConfigWindow(rule, sortingRules);
+            RuleConfigWindowController.AddRuleConfigWindow(rule, sortingRules);
         }
         ImGui.PopFont();
     }
-    
+
     private static Vector4 GetRandomColor()
     {
         var random = new Random();

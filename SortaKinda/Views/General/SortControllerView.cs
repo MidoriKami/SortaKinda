@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using Dalamud.Interface;
 using Dalamud.Utility;
 using ImGuiNET;
@@ -13,16 +12,15 @@ namespace SortaKinda.Views.SortControllerViews;
 
 public class SortControllerView
 {
-    private readonly ISortController sortController;
-
     private readonly SortingRuleListView listView;
+    private readonly ISortController sortController;
 
     public SortControllerView(ISortController sortingController)
     {
         sortController = sortingController;
         listView = new SortingRuleListView(sortingController, sortingController.Rules);
     }
-    
+
     public void Draw()
     {
         DrawHeader();
@@ -33,7 +31,7 @@ public class SortControllerView
     {
         var importExportButtonSize = ImGuiHelpers.ScaledVector2(23.0f, 23.0f);
         var sortButtonSize = ImGuiHelpers.ScaledVector2(100.0f, 23.0f);
-        
+
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.TextUnformatted("Sorting Rules");
 
@@ -44,8 +42,8 @@ public class SortControllerView
             ImportRules();
         }
         ImGui.PopFont();
-        if(ImGui.IsItemHovered()) ImGui.SetTooltip("Import rules from clipboard");
-        
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Import rules from clipboard");
+
         ImGui.SameLine();
         ImGui.PushFont(UiBuilder.IconFont);
         if (ImGui.Button($"{FontAwesomeIcon.ExternalLinkAlt.ToIconString()}##ImportButton", importExportButtonSize))
@@ -53,17 +51,17 @@ public class SortControllerView
             ExportRules();
         }
         ImGui.PopFont();
-        if(ImGui.IsItemHovered()) ImGui.SetTooltip("Export rules to clipboard");
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Export rules to clipboard");
 
         ImGui.SameLine();
         if (ImGui.Button("Sort All", sortButtonSize))
         {
             sortController.SortAllInventories();
         }
-        
+
         ImGui.Separator();
     }
-    
+
     private void ImportRules()
     {
         try
@@ -77,7 +75,7 @@ public class SortControllerView
                 Chat.PrintError("Tried to import sorting rules, but got nothing, try copying the code again.");
                 return;
             }
-            
+
             if (JsonConvert.DeserializeObject<SortingRule[]>(uncompressed) is { } rules)
             {
                 if (rules.Length is 0)
@@ -96,7 +94,7 @@ public class SortControllerView
                         addedCount++;
                     }
                 }
-            
+
                 Chat.Print("Import", $"Received {rules.Length} sorting rules from clipboard. ");
                 Chat.Print("Import", $"Added {addedCount} new sorting rules.");
                 sortController.SaveConfig();
@@ -107,7 +105,7 @@ public class SortControllerView
             Chat.PrintError("Something went wrong trying to import rules, check you copied the code correctly.");
         }
     }
-    
+
     private void ExportRules()
     {
         var rules = sortController.Rules.ToArray()[1..];
@@ -115,11 +113,11 @@ public class SortControllerView
 
         // Plaintext Approach
         // ImGui.SetClipboardText(jsonString);
-        
+
         // Alternative approach that includes compression
         var compressed = Util.CompressString(jsonString);
         ImGui.SetClipboardText(Convert.ToBase64String(compressed));
-        
+
         Chat.Print("Export", $"Exported {rules.Length} rules to clipboard.");
     }
 

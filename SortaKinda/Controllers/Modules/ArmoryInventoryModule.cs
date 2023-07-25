@@ -9,12 +9,12 @@ namespace SortaKinda.System.Modules;
 
 public class ArmoryInventoryModule : ModuleBase
 {
-    public override ModuleName ModuleName { get; protected set; } = ModuleName.ArmoryInventory;
-    protected override IModuleConfig ModuleConfig { get; set; } = new ArmoryConfig();
-    
+    private readonly Dictionary<InventoryType, int> lastItemCounts = new();
+
     private List<IInventoryGrid>? inventories;
     private ArmoryInventoryGridView? view;
-    private readonly Dictionary<InventoryType, int> lastItemCounts = new();
+    public override ModuleName ModuleName => ModuleName.ArmoryInventory;
+    protected override IModuleConfig ModuleConfig { get; set; } = new ArmoryConfig();
 
     protected override void Load()
     {
@@ -37,11 +37,11 @@ public class ArmoryInventoryModule : ModuleBase
     {
         view?.Draw();
     }
-    
+
     protected override void Update()
     {
         if (inventories is null) return;
-        
+
         foreach (var inventory in inventories)
         {
             var inventoryCount = InventoryController.GetInventoryItemCount(inventory.Type);
@@ -50,12 +50,12 @@ public class ArmoryInventoryModule : ModuleBase
 
             if (lastItemCounts[inventory.Type] != inventoryCount)
             {
-                InventorySorter.SortInventory(inventory.Type, inventory);
+                if (SortaKindaController.SystemConfig.SortOnInventoryChange) InventorySorter.SortInventory(inventory.Type, inventory);
                 lastItemCounts[inventory.Type] = inventoryCount;
             }
         }
     }
-    
+
     protected override void Sort()
     {
         if (inventories is null) return;

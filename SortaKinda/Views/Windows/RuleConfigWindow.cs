@@ -11,9 +11,9 @@ namespace SortaKinda.Views.Windows;
 
 public class RuleConfigWindow : Window
 {
-    public SortingRule Rule;
     private readonly List<SortingRule> ruleList;
     private readonly SortingRuleView view;
+    public SortingRule Rule;
 
     public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###RuleConfig{sortingRule.Id}")
     {
@@ -29,7 +29,7 @@ public class RuleConfigWindow : Window
             MinimumSize = new Vector2(500.0f, 400.0f),
             MaximumSize = new Vector2(9999, 9999)
         };
-        
+
         IsOpen = true;
     }
 
@@ -38,18 +38,18 @@ public class RuleConfigWindow : Window
         DrawHeader();
         view.Draw();
     }
-    
+
     private void DrawHeader()
     {
         DrawColorEdit();
         DrawNameEdit();
         DrawDeleteButton();
     }
-    
+
     private void DrawColorEdit()
     {
         var region = ImGui.GetContentRegionAvail();
-        
+
         ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X / 4.0f - ImGuiHelpers.GlobalScale * 50.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f });
         var imGuiColor = Rule.Color;
         if (ImGui.ColorEdit4("##ColorConfig", ref imGuiColor, ImGuiColorEditFlags.NoInputs))
@@ -57,7 +57,7 @@ public class RuleConfigWindow : Window
             Rule.Color = imGuiColor;
         }
     }
-    
+
     private void DrawNameEdit()
     {
         var region = ImGui.GetContentRegionAvail();
@@ -71,7 +71,7 @@ public class RuleConfigWindow : Window
             WindowName = $"SortaKinda Rule Configuration - {Rule.Name}###RuleConfig{Rule.Id}";
         }
     }
-    
+
     private void DrawDeleteButton()
     {
         var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyAlt;
@@ -93,6 +93,6 @@ public class RuleConfigWindow : Window
     public override void OnClose()
     {
         SortaKindaController.SortController.SaveConfig();
-        SortaKindaController.RuleConfigController.RemoveRuleConfigWindow(this);
+        RuleConfigWindowController.RemoveRuleConfigWindow(this);
     }
 }

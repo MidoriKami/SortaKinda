@@ -8,6 +8,7 @@ using SortaKinda.Views.Windows;
 
 namespace SortaKinda.System;
 
+// I'm sorry this is super weird... sorta a singleton, but also not...
 public class AreaPaintController
 {
     private static bool _dragStarted;

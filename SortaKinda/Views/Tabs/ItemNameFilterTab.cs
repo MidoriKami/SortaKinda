@@ -10,19 +10,18 @@ namespace SortaKinda.Views.Tabs;
 
 public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
 {
-    public string TabName => "Item Name Filter";
-    public bool Enabled => true;
-    public string FirstLabel => "Allowed Item Names";
-    public ISortingRule SortingRule { get; set; }
-
     private string newName = string.Empty;
     private bool setNameFocus = true;
-    
+
     public ItemNameFilterTab(ISortingRule rule)
     {
         SortingRule = rule;
     }
-    
+    public string TabName => "Item Name Filter";
+    public bool Enabled => true;
+    public string FirstLabel => "Allowed Item Names";
+    public ISortingRule SortingRule { get; }
+
     public void DrawContents()
     {
         DrawFilteredNames();
@@ -56,11 +55,11 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
             SortingRule.AllowedItemNames.Remove(toRemove);
         }
     }
-    
+
     private void DrawAddItemNameInput()
     {
         var buttonSize = ImGuiHelpers.ScaledVector2(25.0f, 23.0f);
-        
+
         if (setNameFocus || ImGui.IsWindowAppearing())
         {
             ImGui.SetKeyboardFocusHere();
@@ -68,7 +67,7 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
         }
 
         ImGui.TextColored(KnownColor.Gray.AsVector4(), "Supports Regex for item name filtering");
-        
+
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - buttonSize.X - ImGui.GetStyle().ItemSpacing.X);
         if (ImGui.InputTextWithHint("##NewName", "Item Name", ref newName, 1024, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
         {
@@ -78,11 +77,11 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
             }
             setNameFocus = true;
         }
-        
+
         ImGui.SameLine();
-        
+
         ImGui.PushFont(UiBuilder.IconFont);
-        if(ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNameButton", buttonSize))
+        if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNameButton", buttonSize))
         {
             if (newName is not "")
             {

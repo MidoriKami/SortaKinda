@@ -6,7 +6,7 @@ public interface ITwoColumnRuleConfigurationTab : IRuleConfigurationTab
 {
     string FirstLabel { get; }
     string SecondLabel { get; }
-    
+
     void IRuleConfigurationTab.DrawConfigurationTab()
     {
         if (ImGui.BeginTable("##RuleConfigTable", 2, ImGuiTableFlags.SizingStretchSame | ImGuiTableFlags.BordersInnerV, ImGui.GetContentRegionAvail()))
@@ -21,10 +21,10 @@ public interface ITwoColumnRuleConfigurationTab : IRuleConfigurationTab
 
             ImGui.TableNextColumn();
             DrawLeftSideContents();
-            
+
             ImGui.TableNextColumn();
             DrawRightSideContents();
-            
+
             ImGui.EndTable();
         }
     }

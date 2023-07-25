@@ -28,7 +28,10 @@ public interface IInventoryConfigurationTab : ITabItem
         }
     }
 
-    void DrawRuleConfiguration() => SortaKindaController.SortController.Draw();
+    void DrawRuleConfiguration()
+    {
+        SortaKindaController.SortController.Draw();
+    }
 
     void DrawInventory();
 }

@@ -16,8 +16,18 @@ public class ModuleController : IDisposable
         modules = new List<IModule>
         {
             new MainInventoryModule(),
-            new ArmoryInventoryModule(),
+            new ArmoryInventoryModule()
         };
+    }
+
+    public void Dispose()
+    {
+        Unload();
+
+        foreach (var module in modules.OfType<IDisposable>())
+        {
+            module.Dispose();
+        }
     }
 
     public void Load()
@@ -27,7 +37,7 @@ public class ModuleController : IDisposable
             module.LoadModule();
         }
     }
-    
+
     public void Unload()
     {
         foreach (var module in modules)
@@ -35,7 +45,7 @@ public class ModuleController : IDisposable
             module.UnloadModule();
         }
     }
-    
+
     public void Update()
     {
         foreach (var module in modules)
@@ -43,7 +53,7 @@ public class ModuleController : IDisposable
             module.UpdateModule();
         }
     }
-    
+
     public void Sort()
     {
         foreach (var module in modules)
@@ -51,17 +61,9 @@ public class ModuleController : IDisposable
             module.SortModule();
         }
     }
-    
-    public void Dispose()
-    {
-        Unload();
-        
-        foreach (var module in modules.OfType<IDisposable>())
-        {
-            module.Dispose();
-        }
-    }
 
-    public void DrawModule(ModuleName module) 
-        => modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
+    public void DrawModule(ModuleName module)
+    {
+        modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
+    }
 }
