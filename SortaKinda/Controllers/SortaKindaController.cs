@@ -5,13 +5,15 @@ namespace SortaKinda.System;
 
 public class SortaKindaController : IDisposable
 {
-    public ModuleController ModuleController;
-    public SortController SortController;
+    public static ModuleController ModuleController = null!;
+    public static SortController SortController = null!;
+    public static RuleConfigController RuleConfigController = null!;
     
     public SortaKindaController()
     {
-        ModuleController = new ModuleController();
+        RuleConfigController = new RuleConfigController();
         SortController = new SortController();
+        ModuleController = new ModuleController();
 
         if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null })
         {
@@ -32,28 +34,30 @@ public class SortaKindaController : IDisposable
         Service.ClientState.TerritoryChanged -= OnZoneChange;
         
         ModuleController.Dispose();
+        SortController.Dispose();
     }
     
     private void OnLogin(object? sender, EventArgs e)
     {
         if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0, IsPvP: false }) return;
-        
-        ModuleController.Load();
+
         SortController.Load();
+        ModuleController.Load();
     }
     
     private void OnLogout(object? sender, EventArgs e)
     {
         if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0, IsPvP: false }) return;
-        
-        ModuleController.Unload();
+
         SortController.Unload();
+        ModuleController.Unload();
     }
     
     private void OnUpdate(Framework framework)
     {
         if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0, IsPvP: false }) return;
-        
+
+        SortController.Update();
         ModuleController.Update();
     }
     

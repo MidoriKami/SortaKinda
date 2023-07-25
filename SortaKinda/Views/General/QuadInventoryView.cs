@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using Dalamud.Interface;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.SortControllerViews;
@@ -7,7 +8,7 @@ namespace SortaKinda.Views.SortControllerViews;
 public class QuadInventoryView
 {
     private readonly List<InventoryGridView> views = new();
-    public static Vector2 GridSpacing => new(8.0f, 8.0f);
+    private static Vector2 GridSpacing => ImGuiHelpers.ScaledVector2(8.0f, 8.0f);
 
     public QuadInventoryView(IReadOnlyList<IInventoryGrid> inventoryGrids, Vector2 position)
     {

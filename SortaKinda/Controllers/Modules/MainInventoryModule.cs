@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
@@ -17,7 +16,7 @@ public class MainInventoryModule : ModuleBase
     private List<IInventoryGrid>? inventories;
     private QuadInventoryView? view;
     
-    protected override void Initialize()
+    protected override void Load()
     {
         inventories = new List<IInventoryGrid>
         {
@@ -35,19 +34,12 @@ public class MainInventoryModule : ModuleBase
         view?.Draw();
     }
     
-    protected override void InternalUpdate()
+    protected override void Update()
     {
-        if (inventories is null) return;
-        
-        foreach (var grid in inventories)
-        {
-            grid.Update();
-        }
-        
-        NeedsSaving |= inventories?.Any(inventory => inventory.Config.NeedsSaving) ?? false;
+
     }
-    
-    protected override void DoSort()
+
+    protected override void Sort()
     {
         
     }

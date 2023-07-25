@@ -1,45 +1,33 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using ImGuiNET;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
+using SortaKinda.Models;
 using SortaKinda.Models.Configuration;
 using SortaKinda.Views.SortControllerViews;
 
 namespace SortaKinda.System;
 
-public class SortController : ISortController
+public class SortController : IDisposable, ISortController
 {
-    public SortingRuleConfig RuleConfig { get; set; } = new();
-    public const string DefaultId = "Default";
-    private int SelectedRuleIndex = 0;
-    public ISortingRule SelectedRule => RuleConfig.Rules[SelectedRuleIndex];
-
     private bool IsLoaded { get; set; }
     
-    public void Draw()
-    {
-        if (!IsLoaded)
-        {
-            ImGui.TextColored(KnownColor.Red.AsVector4(), "SortController is not Loaded.");
-            return;
-        }
-        
-        SortControllerView.Draw(this);
-    }
+    public SortingRuleConfig RuleConfig { get; set; } = new();
+    public const string DefaultId = "Default";
+    public List<SortingRule> Rules => RuleConfig.Rules;
+    public int SelectedRuleIndex = 0;
+    public ISortingRule SelectedRule => RuleConfig.Rules[SelectedRuleIndex];
+    public SortControllerView? View { get; set; }
 
-    public ISortingRule GetRule(string id)
-        => RuleConfig.Rules.FirstOrDefault(rule => rule.Id == id) ?? RuleConfig.Rules[0];
-    
     public void Load()
     {
         RuleConfig = LoadConfig();
+        View = new SortControllerView(this);
+        EnsureDefaultRule();
+        
         IsLoaded = true;
-    }
-
-    public void Unload()
-    {
-        IsLoaded = false;
     }
 
     public void Update()
@@ -47,7 +35,45 @@ public class SortController : ISortController
         
     }
     
-    private SortingRuleConfig LoadConfig() => CharacterFileController.LoadFile<SortingRuleConfig>("SortingRules.config.json", RuleConfig);
+    public void Draw()
+    {
+        if (!IsLoaded) return;
+        
+        View?.Draw();
+    }
 
+    public void Unload()
+    {
+        IsLoaded = false;
+    }
+
+    public ISortingRule GetRule(string id)
+        => RuleConfig.Rules.FirstOrDefault(rule => rule.Id == id) ?? RuleConfig.Rules[0];
+
+    public void SortAllInventories() => SortaKindaController.ModuleController.Sort();
+
+    private void EnsureDefaultRule()
+    {
+        if (RuleConfig.Rules.Count is 0)
+        {
+            RuleConfig.Rules.Add(DefaultRule);
+        }
+        
+        if (RuleConfig.Rules[0] is not { Id: DefaultId, Name: "Unsorted", Index: 0 })
+        {
+            RuleConfig.Rules[0] = DefaultRule;
+        }
+    }
+    
+    private static SortingRule DefaultRule => new()
+    {
+        Id = DefaultId,
+        Name = "Unsorted",
+        Index = 0,
+        Color = KnownColor.White.AsVector4()
+    };
+    
+    private SortingRuleConfig LoadConfig() => CharacterFileController.LoadFile<SortingRuleConfig>("SortingRules.config.json", RuleConfig);
     public void SaveConfig() => CharacterFileController.SaveFile("SortingRules.config.json", RuleConfig.GetType(), RuleConfig);
+    public void Dispose() => Unload();
 }

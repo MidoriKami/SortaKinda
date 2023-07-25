@@ -7,9 +7,9 @@ public interface IModule : IDisposable
 {
     ModuleName ModuleName { get; }
     
-    void Load();
-    void Unload();
-    void Update();
-    void Sort();
+    void LoadModule();
+    void UnloadModule();
+    void UpdateModule();
+    void SortModule();
     void Draw();
 }

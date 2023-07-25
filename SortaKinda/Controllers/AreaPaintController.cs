@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Numerics;
 using ImGuiNET;
 using KamiLib;
-using KamiLib.Utilities;
 using SortaKinda.Utility;
 using SortaKinda.Views.Windows;
 
@@ -49,7 +48,7 @@ public class AreaPaintController
         {
             _dragStopPosition = ImGui.GetMousePos();
 
-            if (SortaKindaPlugin.Controller.SortController.SelectedRule is not { Color: var ruleColor }) return;
+            if (SortaKindaController.SortController.SelectedRule is not { Color: var ruleColor }) return;
             ImGui.GetWindowDrawList().AddRect(_dragStartPosition, _dragStopPosition, ImGui.GetColorU32(ruleColor), 0.0f, ImDrawFlags.None, 3.0f);
             ImGui.GetWindowDrawList().AddRectFilled(_dragStartPosition, _dragStopPosition, ImGui.GetColorU32(ruleColor with { W = 0.33f }));
         }

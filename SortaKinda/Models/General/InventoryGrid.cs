@@ -24,6 +24,4 @@ public class InventoryGrid : IInventoryGrid
             Inventory.Add(new InventorySlot(Type, config.SlotConfigs[index], index));
         }
     }
-
-    public void Update() => Config.NeedsSaving |= Inventory.Any(slot => slot.Config.NeedsSaving);
 }

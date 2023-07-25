@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using ImGuiNET;
+using Dalamud.Interface;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.SortControllerViews;
@@ -8,7 +8,7 @@ namespace SortaKinda.Views.SortControllerViews;
 public class InventoryGridView
 {
     private const int ItemsPerRow = 5;
-    public static Vector2 ItemSpacing => new(5.0f, 5.0f);
+    private static Vector2 ItemSpacing => ImGuiHelpers.ScaledVector2(5.0f, 5.0f);
 
     private readonly List<InventorySlotView> inventorySlots = new();
 

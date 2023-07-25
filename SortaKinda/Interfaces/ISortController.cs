@@ -1,8 +1,12 @@
-﻿using SortaKinda.Models.Configuration;
+﻿using System.Collections.Generic;
+using SortaKinda.Models;
 
 namespace SortaKinda.Interfaces;
 
 public interface ISortController
 {
-    SortingRuleConfig RuleConfig { get; set; }
+    List<SortingRule> Rules { get; }
+
+    void SortAllInventories();
+    void SaveConfig();
 }

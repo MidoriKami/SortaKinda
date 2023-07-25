@@ -9,39 +9,54 @@ namespace SortaKinda.System;
 public abstract class ModuleBase : IModule
 {
     protected bool IsLoaded { get; set; }
-    protected bool NeedsSaving { get; set; }
     
     public abstract ModuleName ModuleName { get; protected set; }
     protected abstract IModuleConfig ModuleConfig { get; set; }
-    protected abstract void Initialize();
+    protected abstract void Load();
     public abstract void Draw();
-    protected abstract void InternalUpdate();
-    protected abstract void DoSort();
+    protected abstract void Update();
+    protected abstract void Sort();
     public virtual void Dispose() { }
     
-    public void Load()
+    public void LoadModule()
     {
         PluginLog.Debug($"[{ModuleName}] Loading Module");
 
         ModuleConfig = LoadConfig();
-        Initialize();
+        Load();
         IsLoaded = true;
         
         SaveConfig();
     }
     
-    public void Unload()
+    public void UnloadModule()
     {
         IsLoaded = false;
     }
     
-    public void Update()
+    public void UpdateModule()
     {
         if (!IsLoaded) return;
-        if (NeedsSaving) SaveConfig();
+        
+        var needsSaving = false;
+        foreach (var inventory in ModuleConfig.InventoryConfigs)
+        {
+            foreach (var slot in inventory.SlotConfigs)
+            {
+                if (slot.Dirty)
+                {
+                    needsSaving = true;
+                    slot.Dirty = false;
+                }
+            }
+        }
+
+        if (needsSaving) SaveConfig();
+
+        Update();
     }
     
-    public void Sort()
+    public void SortModule()
     {
         if (!IsLoaded) return;
         

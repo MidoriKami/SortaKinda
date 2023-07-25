@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using KamiLib.Interfaces;
+using SortaKinda.System;
 
 namespace SortaKinda.Interfaces;
 
@@ -27,7 +28,7 @@ public interface IInventoryConfigurationTab : ITabItem
         }
     }
 
-    void DrawRuleConfiguration() => SortaKindaPlugin.Controller.SortController.Draw();
+    void DrawRuleConfiguration() => SortaKindaController.SortController.Draw();
 
     void DrawInventory();
 }

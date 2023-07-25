@@ -7,9 +7,6 @@ namespace SortaKinda.System;
 
 public unsafe partial class InventoryController
 {
-    public static int GetInventorySize(InventoryType type)
-        => (int) GetInventorySorter(type)->ItemCount;
-
     public static int GetInventoryPageSize(InventoryType type) 
         => GetInventorySorter(type)->ItemsPerPage;
     

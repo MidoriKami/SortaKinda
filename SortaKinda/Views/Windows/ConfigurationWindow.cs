@@ -27,7 +27,7 @@ public class ConfigurationWindow : Window
 
     public ConfigurationWindow() : base("SortaKinda - Configuration Window")
     {
-        Size = new Vector2(840, 635);
+        Size = new Vector2(840, 636);
 
         Flags |= ImGuiWindowFlags.NoScrollbar;
         Flags |= ImGuiWindowFlags.NoScrollWithMouse;

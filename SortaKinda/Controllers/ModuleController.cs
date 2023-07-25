@@ -24,7 +24,7 @@ public class ModuleController : IDisposable
     {
         foreach (var module in modules)
         {
-            module.Load();
+            module.LoadModule();
         }
     }
     
@@ -32,7 +32,7 @@ public class ModuleController : IDisposable
     {
         foreach (var module in modules)
         {
-            module.Unload();
+            module.UnloadModule();
         }
     }
     
@@ -40,7 +40,7 @@ public class ModuleController : IDisposable
     {
         foreach (var module in modules)
         {
-            module.Update();
+            module.UpdateModule();
         }
     }
     
@@ -48,7 +48,7 @@ public class ModuleController : IDisposable
     {
         foreach (var module in modules)
         {
-            module.Sort();
+            module.SortModule();
         }
     }
     

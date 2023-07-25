@@ -8,7 +8,7 @@ public class ArmoryInventoryModule : ModuleBase
     public override ModuleName ModuleName { get; protected set; } = ModuleName.ArmoryInventory;
     protected override IModuleConfig ModuleConfig { get; set; } = new ArmoryConfig();
     
-    protected override void Initialize()
+    protected override void Load()
     {
         
     }
@@ -18,11 +18,11 @@ public class ArmoryInventoryModule : ModuleBase
         
     }
     
-    protected override void InternalUpdate()
+    protected override void Update()
     {
     }
     
-    protected override void DoSort()
+    protected override void Sort()
     {
         
     }

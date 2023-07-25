@@ -12,10 +12,9 @@ public unsafe class InventorySlot : IInventorySlot
 {
     public bool HasItem => Item is not null;
     public Item? Item => LuminaCache<Item>.Instance.GetRow(InventoryController.GetItemForSlot(Type, Slot)->ItemID);
-
     public ItemOrderModuleSorterItemEntry* ItemOrderEntry => InventoryController.GetItemOrderData(Type, Slot);
-    public ISortingRule Rule => SortaKindaPlugin.Controller.SortController.GetRule(Config.RuleId);
-    public InventoryType Type { get; init; }
+    public ISortingRule Rule => SortaKindaController.SortController.GetRule(Config.RuleId);
+    private InventoryType Type { get; init; }
     public int Slot { get; init; }
     public SlotConfig Config { get; init; }
 
@@ -28,24 +27,30 @@ public unsafe class InventorySlot : IInventorySlot
         
     public void OnLeftClick()
     {
-        Config.RuleId = SortaKindaPlugin.Controller.SortController.SelectedRule.Id;
-        Config.NeedsSaving = true;
+        TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
     }
     
     public void OnRightClick()
     {
-        Config.RuleId = SortController.DefaultId;
-        Config.NeedsSaving = true;
+        TryApplyRule(SortController.DefaultId);
     }
     
     public void OnDragCollision()
     {
-        Config.RuleId = SortaKindaPlugin.Controller.SortController.SelectedRule.Id;
-        Config.NeedsSaving = true;
+        TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
     }
     
     public void OnHover()
     {
-        Rule.DrawTooltip();
+        Rule.ShowTooltip();
+    }
+
+    private void TryApplyRule(string id)
+    {
+        if (Config.RuleId != id)
+        {
+            Config.RuleId = id;
+            Config.Dirty = true;
+        }
     }
 }
