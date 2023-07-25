@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
+using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using ImGuiNET;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
@@ -94,6 +94,5 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
         {
             ImGui.SetTooltip("Add Name");
         }
-        ImGuiHelpers.ScaledIndent(-15.0f);
     }
 }
