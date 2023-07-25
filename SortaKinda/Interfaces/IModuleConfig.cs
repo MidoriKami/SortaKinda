@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Models;
 
-namespace SortaKinda.Interfaces;
+namespace SortaKinda.Models.Configuration;
 
 public interface IModuleConfig
 {
-    Dictionary<InventoryType, InventoryConfig>? Configurations { get; set; }
+    List<InventoryConfig> InventoryConfigs { get; set; }
 }

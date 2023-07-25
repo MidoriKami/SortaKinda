@@ -1,21 +1,27 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using SortaKinda.Interfaces;
+using SortaKinda.Models;
+using SortaKinda.Models.Enum;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Interfaces;
 
-public interface ISortingRule : IEquatable<SortingRule>
+public interface ISortingRule : IComparer<IInventorySlot>
 {
     Vector4 Color { get; set; }
-    string Id { get; init; }
-    string Name { get; set; }
-    public int Priority { get; set; }
+    string Id { get; }
+    string Name { get; }
+    int Index { get; }
 
-    ISortingFilter Filter { get; set; }
-    ISortingOrder Order { get; set; }
+    HashSet<string> AllowedItemNames { get; }
+    HashSet<uint> AllowedItemTypes { get; }
+    HashSet<ItemRarity> AllowedItemRarities { get; }
+    RangeFilter ItemLevelFilter { get; }
+    RangeFilter VendorPriceFilter { get; }
 
-    bool Equals(object? obj);
-    void DrawListEntry();
-    void DrawTooltip();
-    void DrawConfig();
+    public SortOrderDirection Direction { get; set; }
+    public FillMode FillMode { get; set; }
+    public SortOrderMode SortMode { get; set; }
+
+    void ShowTooltip();
+    public bool IsItemSlotAllowed(IInventorySlot slot);
 }

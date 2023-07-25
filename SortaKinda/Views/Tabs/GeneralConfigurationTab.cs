@@ -1,4 +1,5 @@
 ﻿using KamiLib.Interfaces;
+using SortaKinda.System;
 
 namespace SortaKinda.Views.Tabs;
 
@@ -8,6 +9,6 @@ public class GeneralConfigurationTab : ITabItem
     public bool Enabled => true;
     public void Draw()
     {
-        SortaKindaPlugin.System.DrawConfig();
+        SortaKindaController.DrawConfig();
     }
 }

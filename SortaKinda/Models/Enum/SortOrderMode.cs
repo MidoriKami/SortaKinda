@@ -4,18 +4,13 @@ namespace SortaKinda.Models.Enum;
 
 public enum SortOrderMode
 {
-    [EnumLabel("Alphabetical")] 
-    Alphabetically,
+    [EnumLabel("Alphabetical")] Alphabetically,
 
-    [EnumLabel("ItemLevel")] 
-    ItemLevel,
+    [EnumLabel("ItemLevel")] ItemLevel,
 
-    [EnumLabel("Rarity")] 
-    Rarity,
+    [EnumLabel("Rarity")] Rarity,
 
-    [EnumLabel("SellPrice")] 
-    SellPrice,
+    [EnumLabel("SellPrice")] SellPrice,
 
-    [EnumLabel("ItemId")] 
-    ItemId
+    [EnumLabel("ItemId")] ItemId
 }

@@ -4,12 +4,7 @@ namespace SortaKinda.Models.Enum;
 
 public enum ModuleName
 {
-    [EnumLabel("MainInventory")] 
-    MainInventory,
+    [EnumLabel("MainInventory")] MainInventory,
 
-    [EnumLabel("ArmoryInventory")] 
-    ArmoryInventory,
-
-    [EnumLabel("SaddlebagInventory")] 
-    SaddlebagInventory
+    [EnumLabel("ArmoryInventory")] ArmoryInventory
 }
