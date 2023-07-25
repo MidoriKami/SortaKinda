@@ -21,6 +21,7 @@ public class ConfigurationWindow : Window
         TabItems = new List<ITabItem>
         {
             new MainInventoryTab(),
+            new ArmoryInventoryTab(),
             new GeneralConfigurationTab(),
         },
         Id = "SortaKindaConfigTabBar",
@@ -34,9 +35,8 @@ public class ConfigurationWindow : Window
         Flags |= ImGuiWindowFlags.NoScrollWithMouse;
         Flags |= ImGuiWindowFlags.NoResize;
 
-        // todo: remove this
         IsOpen = true;
-
+        
         CommandController.RegisterCommands(this);
     }
 

@@ -7,8 +7,8 @@ namespace SortaKinda.Views.SortControllerViews;
 
 public class InventoryGridView
 {
-    private const int ItemsPerRow = 5;
-    private static Vector2 ItemSpacing => ImGuiHelpers.ScaledVector2(5.0f, 5.0f);
+    public const int ItemsPerRow = 5;
+    public static Vector2 ItemSpacing => ImGuiHelpers.ScaledVector2(5.0f, 5.0f);
 
     private readonly List<InventorySlotView> inventorySlots = new();
 
@@ -47,5 +47,10 @@ public class InventoryGridView
         var ySize = rowCount * (InventorySlotView.ItemSize.Y + ItemSpacing.Y);
 
         return new Vector2(xSize, ySize);
+    }
+
+    public static float GetGridWidth()
+    {
+        return (InventorySlotView.ItemSize.X + ItemSpacing.X) * ItemsPerRow;
     }
 }

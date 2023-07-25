@@ -19,14 +19,12 @@ public class MainInventoryModule : ModuleBase
 
     protected override void Load()
     {
-        inventories = new List<IInventoryGrid>
+        inventories = new List<IInventoryGrid>();
+        foreach (var config in ModuleConfig.InventoryConfigs)
         {
-            new InventoryGrid(InventoryType.Inventory1, ModuleConfig.InventoryConfigs[0]),
-            new InventoryGrid(InventoryType.Inventory2, ModuleConfig.InventoryConfigs[1]),
-            new InventoryGrid(InventoryType.Inventory3, ModuleConfig.InventoryConfigs[2]),
-            new InventoryGrid(InventoryType.Inventory4, ModuleConfig.InventoryConfigs[3]),
-        };
-
+            inventories.Add(new InventoryGrid(config.Type, config));
+        }
+        
         view = new QuadInventoryView(inventories, Vector2.Zero);
     }
 

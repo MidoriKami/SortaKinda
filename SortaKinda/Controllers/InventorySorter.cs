@@ -38,7 +38,7 @@ public unsafe class InventorySorter
             .Select(slots => slots.Rule)
             .ToHashSet();
             
-        // Step 1: Put all items that belong into a category into a catergory
+        // Step 1: Put all items that belong into a category into a category
         MoveItemsIntoCategories(grids, rulesForInventory);
 
         // Step 2: Remove items that don't belong in categories

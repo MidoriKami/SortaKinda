@@ -97,7 +97,8 @@ public class SortControllerView
                     }
                 }
             
-                Chat.Print("Import", $"Imported {addedCount} rules successfully.");
+                Chat.Print("Import", $"Received {rules.Length} sorting rules from clipboard. ");
+                Chat.Print("Import", $"Added {addedCount} new sorting rules.");
                 sortController.SaveConfig();
             }
         }

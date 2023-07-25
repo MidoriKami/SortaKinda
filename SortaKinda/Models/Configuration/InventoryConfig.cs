@@ -9,6 +9,7 @@ public class InventoryConfig
 {
     public InventoryConfig(InventoryType type)
     {
+        Type = type;
         SlotConfigs = new List<SlotConfig>();
         foreach (var _ in Enumerable.Range(0, InventoryController.GetInventoryPageSize(type)))
         {
@@ -20,4 +21,5 @@ public class InventoryConfig
     }
 
     public List<SlotConfig> SlotConfigs { get; set; }
+    public InventoryType Type { get; set; }
 }
