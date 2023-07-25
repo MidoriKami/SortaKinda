@@ -43,7 +43,7 @@ public class InventorySlotView
             return;
         }
 
-        ImGui.Image(itemIcon.ImGuiHandle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.33f });
+        ImGui.Image(itemIcon.ImGuiHandle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
     }
 
     private void DrawFrame()
