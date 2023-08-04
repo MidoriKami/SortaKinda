@@ -12,7 +12,7 @@ namespace SortaKinda.System;
 
 public unsafe class InventorySorter
 {
-    private static void SortItems(IReadOnlyList<IInventorySlot> targetSlots, IReadOnlyList<IInventorySlot> sourceSlots)
+    private static void SwapItems(IReadOnlyList<IInventorySlot> targetSlots, IReadOnlyList<IInventorySlot> sourceSlots)
     {
         foreach (var index in Enumerable.Range(0, Math.Min(targetSlots.Count, sourceSlots.Count)))
         {
@@ -75,7 +75,7 @@ public unsafe class InventorySorter
                 .Where(slot => !rule.IsItemSlotAllowed(slot))
                 .ToList();
 
-            SortItems(targetSlotsForRule, itemSlotsForRule);
+            SwapItems(targetSlotsForRule, itemSlotsForRule);
         }
     }
 
@@ -97,7 +97,7 @@ public unsafe class InventorySorter
                 .Where(slot => slot.Rule.Id is SortController.DefaultId && !slot.HasItem);
 
             // Perform the Sort
-            SortItems(emptyInventorySlots.ToList(), inventorySlotsForRule.ToList());
+            SwapItems(emptyInventorySlots.ToList(), inventorySlotsForRule.ToList());
         }
     }
 
