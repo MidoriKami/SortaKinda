@@ -11,11 +11,13 @@ public class SortaKindaController : IDisposable
     public static ModuleController ModuleController = null!;
     public static SortController SortController = null!;
     public static SystemConfig SystemConfig = null!;
+    public static SortingThreadController SortingThreadController = null!;
 
     private uint lastJob = uint.MaxValue;
 
     public SortaKindaController()
     {
+        SortingThreadController = new SortingThreadController();
         SystemConfig = new SystemConfig();
         SortController = new SortController();
         ModuleController = new ModuleController();
@@ -39,6 +41,7 @@ public class SortaKindaController : IDisposable
         Service.ClientState.TerritoryChanged -= OnZoneChange;
 
         ModuleController.Dispose();
+        SortingThreadController.Dispose();
     }
 
     private void OnLogin(object? sender, EventArgs e)
@@ -80,6 +83,8 @@ public class SortaKindaController : IDisposable
             ModuleController.Sort();
             lastJob = classJobId;
         }
+        
+        SortingThreadController.Update();
     }
 
     private void OnZoneChange(object? sender, ushort e)

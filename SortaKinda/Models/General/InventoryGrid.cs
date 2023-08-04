@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -15,8 +14,6 @@ public class InventoryGrid : IInventoryGrid
         Type = type;
         Config = config;
         Inventory = new List<IInventorySlot>();
-
-        PluginLog.Debug(Type.ToString());
 
         foreach (var index in Enumerable.Range(0, InventoryController.GetInventoryPageSize(Type)))
         {

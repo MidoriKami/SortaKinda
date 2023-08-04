@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiLib.Hooking;
 using SortaKinda.Interfaces;
 
@@ -28,30 +27,28 @@ public unsafe class InventorySorter
         (*slotData, *itemData) = (*itemData, *slotData);
     }
 
-    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids)
+    public static void SortInventory(InventoryType type, params IInventoryGrid[] grids) => Safety.ExecuteSafe(() =>
     {
-        Task.Run(() => Safety.ExecuteSafe(() =>
-        {
-            PluginLog.Debug($"Sorting Inventory: {type}");
+        var stopwatch = Stopwatch.StartNew();
+        PluginLog.Debug($"Sorting Inventory: {type}");
 
-            // Get all rules for this inventory for priority determinations
-            var rulesForInventory = grids
-                .SelectMany(grid => grid.Inventory)
-                .Select(slots => slots.Rule)
-                .ToHashSet();
+        // Get all rules for this inventory for priority determinations
+        var rulesForInventory = grids
+            .SelectMany(grid => grid.Inventory)
+            .Select(slots => slots.Rule)
+            .ToHashSet();
 
-            // Step 1: Put all items that belong into a category into a category
-            MoveItemsIntoCategories(grids, rulesForInventory);
+        // Step 1: Put all items that belong into a category into a category
+        MoveItemsIntoCategories(grids, rulesForInventory);
 
-            // Step 2: Remove items that don't belong in categories
-            RemoveItemsFromCategories(grids);
+        // Step 2: Remove items that don't belong in categories
+        RemoveItemsFromCategories(grids);
 
-            // Step 3: Sort remaining items in categories
-            SortCategories(grids);
+        // Step 3: Sort remaining items in categories
+        SortCategories(grids);
 
-            UIModule.Instance()->GetItemOrderModule()->UserFileEvent.HasChanges = true;
-        }, $"Exception Caught During Sorting '{type}'"));
-    }
+        PluginLog.Debug($"Sorted {type} in {stopwatch.Elapsed.TotalMilliseconds}ms");
+    }, $"Exception Caught During Sorting '{type}'");
 
     private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IReadOnlyCollection<ISortingRule> rulesForInventory)
     {

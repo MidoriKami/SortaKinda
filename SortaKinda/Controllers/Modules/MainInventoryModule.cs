@@ -49,6 +49,6 @@ public class MainInventoryModule : ModuleBase
     {
         if (inventories is null) return;
 
-        InventorySorter.SortInventory(InventoryType.Inventory1, inventories.ToArray());
+        SortaKindaController.SortingThreadController.AddSortingTask(InventoryType.Inventory1, inventories.ToArray());
     }
 }

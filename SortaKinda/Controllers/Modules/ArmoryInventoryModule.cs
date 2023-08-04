@@ -50,7 +50,11 @@ public class ArmoryInventoryModule : ModuleBase
 
             if (lastItemCounts[inventory.Type] != inventoryCount)
             {
-                if (SortaKindaController.SystemConfig.SortOnInventoryChange) InventorySorter.SortInventory(inventory.Type, inventory);
+                if (SortaKindaController.SystemConfig.SortOnInventoryChange)
+                {
+                    SortaKindaController.SortingThreadController.AddSortingTask(inventory.Type, inventory);
+                }
+                
                 lastItemCounts[inventory.Type] = inventoryCount;
             }
         }
@@ -62,7 +66,7 @@ public class ArmoryInventoryModule : ModuleBase
 
         foreach (var inventory in inventories)
         {
-            InventorySorter.SortInventory(inventory.Type, inventory);
+            SortaKindaController.SortingThreadController.AddSortingTask(inventory.Type, inventory);
         }
     }
 }
