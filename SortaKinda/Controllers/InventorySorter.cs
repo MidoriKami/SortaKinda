@@ -49,7 +49,7 @@ public unsafe class InventorySorter
             // Step 3: Sort remaining items in categories
             SortCategories(grids);
 
-            UIModule.Instance()->GetItemOrderModule()->UserFileEvent.SaveFile(true);
+            UIModule.Instance()->GetItemOrderModule()->UserFileEvent.HasChanges = true;
         }, $"Exception Caught During Sorting '{type}'"));
     }
 
