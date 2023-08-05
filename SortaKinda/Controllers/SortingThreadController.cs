@@ -37,7 +37,7 @@ public unsafe class SortingThreadController : IDisposable
         {
             PluginLog.Debug("Sort Pending!");
             
-            foreach (var task in sortingTasks)
+            foreach (var task in sortingTasks.Where(task => task.Status is TaskStatus.Created))
             {
                 PluginLog.Debug("Starting Task");
                 task.Start();
