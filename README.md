@@ -18,7 +18,10 @@ You can use more advanced regex strings to filter items more specifically `Crach
 Type filters use the items type as the filter, all items display their item type below the tooltip icon.
 SortaKinda provides a search box for quick lookups, and a complete table for enabling/disabling several item types at once.
 
-![image](https://github.com/MidoriKami/SortaKinda/assets/9083275/8efd1ca3-55ee-44a1-8ff8-3d276b623c65)
+| ![image](https://github.com/MidoriKami/SortaKinda/assets/9083275/36c8399b-6edc-4cf3-92f6-391b80218daa) | ![image](https://github.com/MidoriKami/SortaKinda/assets/9083275/3034ec9f-f438-428e-88a4-a8105f39e408)   |
+|----------------|-----------|
+| ![image](https://github.com/MidoriKami/SortaKinda/assets/9083275/7e161a51-7f4d-4f21-b2ca-9d3647c14bd7) | ![image](https://github.com/MidoriKami/SortaKinda/assets/9083275/56243fb8-5636-4bc0-a3dd-e10597fd432c)   |
+
 
 ![image](https://github.com/MidoriKami/SortaKinda/assets/9083275/7b314475-3f25-4cf8-bc33-0db678472488)
 
