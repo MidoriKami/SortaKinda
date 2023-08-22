@@ -22,7 +22,7 @@ public class SortaKindaController : IDisposable
         SortController = new SortController();
         ModuleController = new ModuleController();
 
-        if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null })
+        if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 })
         {
             OnLogin(this, EventArgs.Empty);
         }
@@ -46,7 +46,9 @@ public class SortaKindaController : IDisposable
 
     private void OnLogin(object? sender, EventArgs e)
     {
-        if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer: { Name.TextValue: var playerName, HomeWorld.GameData.InternalName.RawString: var worldName }, LocalContentId: not 0, IsPvP: false }) return;
+        if (!Service.ClientState.IsLoggedIn) return;
+        if (Service.ClientState.IsPvP) return;
+        if (Service.ClientState is not { LocalPlayer: { Name.TextValue: var playerName, HomeWorld.GameData.InternalName.RawString: var worldName } }) return;
 
         SystemConfig = new SystemConfig();
         SystemConfig = LoadConfig();
@@ -62,8 +64,6 @@ public class SortaKindaController : IDisposable
 
     private void OnLogout(object? sender, EventArgs e)
     {
-        if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0, IsPvP: false }) return;
-
         ModuleController.Unload();
 
         lastJob = uint.MaxValue;
@@ -71,7 +71,9 @@ public class SortaKindaController : IDisposable
 
     private void OnUpdate(Framework framework)
     {
-        if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer.ClassJob.Id: var classJobId, LocalContentId: not 0, IsPvP: false }) return;
+        if (!Service.ClientState.IsLoggedIn) return;
+        if (Service.ClientState.IsPvP) return;
+        if (Service.ClientState is not { LocalPlayer.ClassJob.Id: var classJobId }) return;
 
         ModuleController.Update();
 
@@ -89,7 +91,8 @@ public class SortaKindaController : IDisposable
 
     private void OnZoneChange(object? sender, ushort e)
     {
-        if (Service.ClientState is not { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0, IsPvP: false }) return;
+        if (!Service.ClientState.IsLoggedIn) return;
+        if (Service.ClientState.IsPvP) return;
 
         if (SystemConfig.SortOnZoneChange) ModuleController.Sort();
     }
