@@ -15,6 +15,7 @@ public class SortingRuleListView
 {
     private readonly ISortController controller;
     private readonly List<SortingRule> sortingRules;
+    private int? deletionRuleId;
 
     public SortingRuleListView(ISortController sortController, List<SortingRule> rules)
     {
@@ -26,6 +27,8 @@ public class SortingRuleListView
     {
         var region = ImGui.GetContentRegionAvail();
         var negativeOffset = new Vector2(0.0f, 23.0f * ImGuiHelpers.GlobalScale + ImGui.GetStyle().ItemSpacing.Y + 1.0f);
+        deletionRuleId = null;
+        
         if (ImGui.BeginChild("##RuleListChild", region - negativeOffset))
         {
             foreach (var index in Enumerable.Range(0, sortingRules.Count))
@@ -43,6 +46,11 @@ public class SortingRuleListView
         ImGui.EndChild();
 
         AddNewRuleButton();
+
+        if (deletionRuleId is { } ruleToDelete)
+        {
+            sortingRules.RemoveAt(ruleToDelete);
+        }
     }
 
     private void AddNewRuleButton()
@@ -145,7 +153,7 @@ public class SortingRuleListView
         ImGui.PushFont(UiBuilder.IconFont);
         if (ImGui.Button($"{FontAwesomeIcon.Trash.ToIconString()}##{index}", buttonSize) && hotkeyHeld)
         {
-            sortingRules.RemoveAt(index);
+            deletionRuleId = index;
             controller.SaveConfig();
         }
         ImGui.PopFont();
