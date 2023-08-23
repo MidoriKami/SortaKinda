@@ -51,6 +51,6 @@ public class InventoryGridView
 
     public static float GetGridWidth()
     {
-        return (InventorySlotView.ItemSize.X + ItemSpacing.X) * ItemsPerRow;
+        return InventorySlotView.ItemSize.X * ItemsPerRow + ItemSpacing.X * ( ItemsPerRow - 1 );
     }
 }
