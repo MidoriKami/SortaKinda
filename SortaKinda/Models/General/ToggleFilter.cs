@@ -20,11 +20,12 @@ public class ToggleFilter
 
     public void DrawConfig()
     {
-        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 2.0f * ImGuiHelpers.GlobalScale);
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.TextUnformatted(Filter.GetLabel());
         
         ImGui.SameLine(ImGui.GetContentRegionMax().X / 2.0f);
         
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.PushItemWidth(ImGui.GetContentRegionMax().X / 2.0f);
         if (ImGui.BeginCombo($"##{Filter.GetLabel()}Combo", State.GetLabel()))
         {
