@@ -64,6 +64,8 @@ public abstract class ModuleBase : IModule
 
         if (needsSaving) SaveConfig();
 
+        // Don't update modules if the Retainer transfer window is open
+        if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;
         Update();
     }
 
