@@ -90,7 +90,7 @@ public class RuleConfigWindow : Window
 
     private void DrawDeleteButton()
     {
-        var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyAlt;
+        var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyCtrl;
         if (!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
         ImGui.SameLine();
         if (ImGui.Button("Delete", ImGuiHelpers.ScaledVector2(100.0f, 23.0f)) && hotkeyHeld)
@@ -101,7 +101,7 @@ public class RuleConfigWindow : Window
         if (!hotkeyHeld) ImGui.PopStyleVar();
         if (ImGui.IsItemHovered() && !hotkeyHeld)
         {
-            ImGui.SetTooltip("Hold Shift + Alt while clicking to delete this rule");
+            ImGui.SetTooltip("Hold Shift + Control while clicking to delete this rule");
         }
         ImGuiHelpers.ScaledDummy(5.0f);
     }

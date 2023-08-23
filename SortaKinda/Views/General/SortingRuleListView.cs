@@ -147,7 +147,7 @@ public class SortingRuleListView
 
     private void DrawDeleteButton(int index)
     {
-        var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyAlt;
+        var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyCtrl;
         var buttonSize = ImGuiHelpers.ScaledVector2(23.0f, 23.0f);
 
         if (!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
@@ -166,7 +166,7 @@ public class SortingRuleListView
 
         if (ImGui.IsItemHovered() && !hotkeyHeld)
         {
-            ImGui.SetTooltip("Hold Shift + Alt while clicking to delete this rule");
+            ImGui.SetTooltip("Hold Shift + Control while clicking to delete this rule");
         }
     }
 
