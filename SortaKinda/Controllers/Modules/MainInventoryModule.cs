@@ -16,7 +16,12 @@ public class MainInventoryModule : ModuleBase
     public override ModuleName ModuleName => ModuleName.MainInventory;
     protected override IModuleConfig ModuleConfig { get; set; } = new MainInventoryConfig();
 
-    protected override void Load()
+    public override void Draw()
+    {
+        view?.Draw();
+    }
+    
+    protected override void LoadViews()
     {
         inventories = new List<IInventoryGrid>();
         foreach (var config in ModuleConfig.InventoryConfigs)
@@ -25,11 +30,6 @@ public class MainInventoryModule : ModuleBase
         }
 
         view = new QuadInventoryView(inventories, Vector2.Zero);
-    }
-
-    public override void Draw()
-    {
-        view?.Draw();
     }
 
     protected override void Update()

@@ -16,7 +16,7 @@ public class ArmoryInventoryModule : ModuleBase
     public override ModuleName ModuleName => ModuleName.ArmoryInventory;
     protected override IModuleConfig ModuleConfig { get; set; } = new ArmoryConfig();
 
-    protected override void Load()
+    protected override void LoadViews()
     {
         inventories = new List<IInventoryGrid>();
         foreach (var config in ModuleConfig.InventoryConfigs)

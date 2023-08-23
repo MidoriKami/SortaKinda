@@ -1,4 +1,5 @@
 ﻿using System;
+using Dalamud.Interface;
 using Dalamud.Logging;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
@@ -10,6 +11,7 @@ namespace SortaKinda.System;
 public abstract class ModuleBase : IModule
 {
     private bool IsLoaded { get; set; }
+    private float lastScale;
     
     protected abstract IModuleConfig ModuleConfig { get; set; }
 
@@ -23,7 +25,8 @@ public abstract class ModuleBase : IModule
     public abstract ModuleName ModuleName { get; }
     
     public abstract void Draw();
-    
+    protected abstract void LoadViews();
+
     public virtual void Dispose()
     {
     }
@@ -35,6 +38,7 @@ public abstract class ModuleBase : IModule
         ModuleConfig = DefaultConfig;
         ModuleConfig = LoadConfig();
         Load();
+        LoadViews();
         IsLoaded = true;
 
         SaveConfig();
@@ -64,6 +68,12 @@ public abstract class ModuleBase : IModule
 
         if (needsSaving) SaveConfig();
 
+        if (!ImGuiHelpers.GlobalScale.Equals(lastScale))
+        {
+            LoadViews();
+        }
+        lastScale = ImGuiHelpers.GlobalScale;
+        
         // Don't update modules if the Retainer transfer window is open
         if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;
         Update();
@@ -75,9 +85,9 @@ public abstract class ModuleBase : IModule
 
         Sort();
     }
-    
-    protected abstract void Load();
-    
+
+    protected virtual void Load() { }
+
     protected abstract void Update();
     
     protected abstract void Sort();
