@@ -20,9 +20,12 @@ public class ArmoryInventoryGridView : IDisposable
     private readonly Dictionary<InventoryType, InventoryGridView> views = new();
     private InventoryType selectedTab = InventoryType.ArmoryMainHand;
 
+    private Vector2 ButtonSize => ImGuiHelpers.ScaledVector2(80.0f, 80.0f) * .75f;
+    private Vector2 ButtonPadding => ImGuiHelpers.ScaledVector2(5.0f, 5.0f);
+
     public ArmoryInventoryGridView(List<IInventoryGrid> armoryInventories)
     {
-        var region = new Vector2(404, 565);
+        var region = ImGuiHelpers.ScaledVector2(404, 565);
         var position = new Vector2(region.X / 2.0f - InventoryGridView.GetGridWidth() / 2.0f, region.Y / 8.0f);
 
         foreach (var inventory in armoryInventories)
@@ -58,26 +61,27 @@ public class ArmoryInventoryGridView : IDisposable
     {
         views[selectedTab].Draw();
 
-        var region = new Vector2(404, 565);
-        var position = new Vector2(region.X / 2.0f - InventoryGridView.GetGridWidth() / 2.0f, region.Y / 8.0f);
+        var region = ImGuiHelpers.ScaledVector2(404, 565);
+        var gridWidth = InventoryGridView.GetGridWidth();
+        var position = new Vector2(region.X / 2.0f - gridWidth / 2.0f, region.Y / 8.0f);
 
-        var leftBarPosition = position - new Vector2(90.0f, 0.0f) * 0.75f;
+        var leftOffset = ButtonSize.X + ButtonPadding.X;
+        var leftBarPosition = position - new Vector2(leftOffset, 0.0f);
         DrawTabBar(leftTabTextures, leftBarPosition);
 
-        var rightBarPosition = position with { X = position.X + InventoryGridView.GetGridWidth() + 5.0f * 0.75f };
+        var rightOffset = ButtonPadding.X;
+        var rightBarPosition = position + new Vector2(gridWidth + rightOffset, 0.0f);
         DrawTabBar(rightTabTextures, rightBarPosition);
     }
 
     private void DrawTabBar(Dictionary<InventoryType, TextureWrap?> textures, Vector2 drawPosition)
     {
-        var itemSpacing = new Vector2(0.0f, 85.0f) * 0.75f;
+        var itemSpacing = new Vector2(0.0f, ButtonSize.Y + ButtonPadding.Y);
 
         var index = 0;
         foreach (var (tab, texture) in textures)
         {
             if (texture is null) continue;
-            var textureSize = new Vector2(texture.Width, texture.Height) * 0.75f;
-
             var inactiveColor = Vector4.One with { W = 0.33f };
             var activeColor = Vector4.One;
 
@@ -89,14 +93,14 @@ public class ArmoryInventoryGridView : IDisposable
                 var backgroundColor = ImGui.GetColorU32(KnownColor.Gray.AsVector4() with { W = 0.50f });
 
                 var rectStart = windowPosition + drawPosition + itemSpacing * index;
-                var rectStop = rectStart + textureSize;
+                var rectStop = rectStart + ButtonSize;
 
                 ImGui.GetWindowDrawList().AddRectFilled(rectStart, rectStop, backgroundColor, 5.0f);
                 ImGui.GetWindowDrawList().AddRect(rectStart, rectStop, borderColor, 5.0f);
             }
 
             ImGui.SetCursorPos(drawPosition + itemSpacing * index++);
-            ImGui.Image(texture.ImGuiHandle, textureSize, Vector2.Zero, Vector2.One, selectedTab == tab ? activeColor : inactiveColor);
+            ImGui.Image(texture.ImGuiHandle, ButtonSize, Vector2.Zero, Vector2.One, selectedTab == tab ? activeColor : inactiveColor);
 
             if (ImGui.IsItemClicked())
             {
