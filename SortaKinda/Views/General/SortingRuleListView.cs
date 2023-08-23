@@ -49,6 +49,10 @@ public class SortingRuleListView
 
         if (deletionRuleId is { } ruleToDelete)
         {
+            if (ruleToDelete == sortingRules.Count)
+            {
+                SortaKindaController.SortController.SelectedRuleIndex = sortingRules.Count - 1;
+            }
             sortingRules.RemoveAt(ruleToDelete);
         }
     }
