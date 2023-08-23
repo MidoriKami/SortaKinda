@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.ChatCommands;
+using KamiLib.Utilities;
 using Newtonsoft.Json;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;
@@ -34,6 +37,10 @@ public class SortControllerView
 
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.TextUnformatted("Sorting Rules");
+
+        ImGui.PushStyleColor(ImGuiCol.PopupBg, KnownColor.Black.AsVector4());
+        ImGuiComponents.HelpMarker("Sorting Rules are evaluated from top to bottom\nRules at the bottom will get the items in the end if there are overlaps in the rules\nPut your generic filters at the top, and your specific filters at the bottom");
+        ImGui.PopStyleColor();
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - importExportButtonSize.X * 2.0f - sortButtonSize.X - ImGui.GetStyle().ItemSpacing.X * 2.0f);
         ImGui.PushFont(UiBuilder.IconFont);
