@@ -30,10 +30,10 @@ public class SortingRule : ISortingRule
     public HashSet<ItemRarity> AllowedItemRarities { get; set; } = new();
     public RangeFilter ItemLevelFilter { get; set; } = new("Item Level Filter", 0, 1000);
     public RangeFilter VendorPriceFilter { get; set; } = new("Vendor Price Filter", 0, 1_000_000);
-    public ToggleFilter UntradableFilter { get; } = new(PropertyFilter.Untradable);
-    public ToggleFilter UniqueFilter { get; } = new(PropertyFilter.Unique);
-    public ToggleFilter CollectableFilter { get; } = new(PropertyFilter.Collectable);
-    public ToggleFilter DyeableFilter { get; } = new(PropertyFilter.Dyeable);
+    public ToggleFilter UntradableFilter { get; set; } = new(PropertyFilter.Untradable);
+    public ToggleFilter UniqueFilter { get; set; } = new(PropertyFilter.Unique);
+    public ToggleFilter CollectableFilter { get; set; } = new(PropertyFilter.Collectable);
+    public ToggleFilter DyeableFilter { get; set; } = new(PropertyFilter.Dyeable);
     public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;

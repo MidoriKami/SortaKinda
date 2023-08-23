@@ -27,7 +27,7 @@ public class ToggleFilter
         
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.PushItemWidth(ImGui.GetContentRegionMax().X / 2.0f);
-        if (ImGui.BeginCombo($"##{Filter.GetLabel()}Combo", State.GetLabel()))
+        if (ImGui.BeginCombo($"##{Filter.ToString()}Combo", State.GetLabel()))
         {
             foreach(var value in Enum.GetValues<ToggleFilterState>())
             {
