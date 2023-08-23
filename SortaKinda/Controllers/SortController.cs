@@ -14,7 +14,7 @@ public class SortController : ISortController
     public const string DefaultId = "Default";
     public int SelectedRuleIndex = 0;
     public SortingRuleConfig RuleConfig { get; set; } = new();
-    public ISortingRule SelectedRule => RuleConfig.Rules[SelectedRuleIndex];
+    public ISortingRule SelectedRule => SelectedRuleIndex < RuleConfig.Rules.Count ? RuleConfig.Rules[SelectedRuleIndex] : DefaultRule;
     public SortControllerView? View { get; set; }
 
     private static SortingRule DefaultRule => new()
