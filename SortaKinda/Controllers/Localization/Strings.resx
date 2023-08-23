@@ -90,4 +90,25 @@
     <data name="Pink" xml:space="preserve">
         <value>Pink</value>
     </data>
+    <data name="Untradable" xml:space="preserve">
+        <value>Untradable</value>
+    </data>
+    <data name="Unique" xml:space="preserve">
+        <value>Unique</value>
+    </data>
+    <data name="Dyeable" xml:space="preserve">
+        <value>Dyeable</value>
+    </data>
+    <data name="Collectable" xml:space="preserve">
+        <value>Collectable</value>
+    </data>
+    <data name="Ignored" xml:space="preserve">
+        <value>Ignored</value>
+    </data>
+    <data name="Allow" xml:space="preserve">
+        <value>Allow</value>
+    </data>
+    <data name="Disallow" xml:space="preserve">
+        <value>Disallow</value>
+    </data>
 </root>

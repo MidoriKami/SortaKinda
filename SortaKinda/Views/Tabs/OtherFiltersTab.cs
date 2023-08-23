@@ -3,7 +3,7 @@ using Dalamud.Interface.Components;
 using ImGuiNET;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
 
 namespace SortaKinda.Views.Tabs;
 

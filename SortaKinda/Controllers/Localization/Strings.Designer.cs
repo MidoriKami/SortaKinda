@@ -60,6 +60,15 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow.
+        /// </summary>
+        internal static string Allow {
+            get {
+                return ResourceManager.GetString("Allow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alphabetical.
         /// </summary>
         internal static string Alphabetical {
@@ -96,11 +105,38 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collectable.
+        /// </summary>
+        internal static string Collectable {
+            get {
+                return ResourceManager.GetString("Collectable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Descending.
         /// </summary>
         internal static string Descending {
             get {
                 return ResourceManager.GetString("Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disallow.
+        /// </summary>
+        internal static string Disallow {
+            get {
+                return ResourceManager.GetString("Disallow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dyeable.
+        /// </summary>
+        internal static string Dyeable {
+            get {
+                return ResourceManager.GetString("Dyeable", resourceCulture);
             }
         }
         
@@ -119,6 +155,15 @@ namespace SortaKinda.Controllers.Localization {
         internal static string Green {
             get {
                 return ResourceManager.GetString("Green", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored.
+        /// </summary>
+        internal static string Ignored {
+            get {
+                return ResourceManager.GetString("Ignored", resourceCulture);
             }
         }
         
@@ -245,6 +290,24 @@ namespace SortaKinda.Controllers.Localization {
         internal static string Top {
             get {
                 return ResourceManager.GetString("Top", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unique.
+        /// </summary>
+        internal static string Unique {
+            get {
+                return ResourceManager.GetString("Unique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untradable.
+        /// </summary>
+        internal static string Untradable {
+            get {
+                return ResourceManager.GetString("Untradable", resourceCulture);
             }
         }
         

@@ -1,5 +1,5 @@
 ﻿using SortaKinda.Interfaces;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
 using SortaKinda.System;
 
 namespace SortaKinda.Views.Tabs;

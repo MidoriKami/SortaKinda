@@ -20,7 +20,8 @@ public class SortingRuleView
                 new ItemTypeFilterTab(rule),
                 new ItemNameFilterTab(rule),
                 new OtherFiltersTab(rule),
-                new SortOrderTab(rule)
+                new ToggleFiltersTab(rule),
+                new SortOrderTab(rule),
             }
         };
     }

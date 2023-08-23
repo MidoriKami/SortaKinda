@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using SortaKinda.Models;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
+using SortaKinda.Models.General;
 
 namespace SortaKinda.Interfaces;
 
@@ -17,11 +18,15 @@ public interface ISortingRule : IComparer<IInventorySlot>
     HashSet<ItemRarity> AllowedItemRarities { get; }
     RangeFilter ItemLevelFilter { get; }
     RangeFilter VendorPriceFilter { get; }
+    ToggleFilter UntradableFilter { get; }
+    ToggleFilter UniqueFilter { get; }
+    ToggleFilter CollectableFilter { get; }
+    ToggleFilter DyeableFilter { get; }
 
-    public SortOrderDirection Direction { get; set; }
-    public FillMode FillMode { get; set; }
-    public SortOrderMode SortMode { get; set; }
+    SortOrderDirection Direction { get; set; }
+    FillMode FillMode { get; set; }
+    SortOrderMode SortMode { get; set; }
 
     void ShowTooltip();
-    public bool IsItemSlotAllowed(IInventorySlot slot);
+    bool IsItemSlotAllowed(IInventorySlot slot);
 }

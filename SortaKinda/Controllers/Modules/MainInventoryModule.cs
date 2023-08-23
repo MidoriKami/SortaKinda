@@ -3,7 +3,7 @@ using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
 using SortaKinda.Views.SortControllerViews;
 
 namespace SortaKinda.System.Modules;

@@ -1,5 +1,5 @@
 ﻿using System;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
 
 namespace SortaKinda.Interfaces;
 

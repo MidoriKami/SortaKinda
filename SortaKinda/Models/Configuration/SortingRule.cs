@@ -5,7 +5,8 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
+using SortaKinda.Models.General;
 using SortaKinda.System;
 using SortaKinda.Views.SortControllerViews;
 
@@ -13,7 +14,6 @@ namespace SortaKinda.Models;
 
 public class SortingRule : ISortingRule
 {
-
     private readonly SortingRuleTooltipView view;
 
     public SortingRule()
@@ -30,6 +30,10 @@ public class SortingRule : ISortingRule
     public HashSet<ItemRarity> AllowedItemRarities { get; set; } = new();
     public RangeFilter ItemLevelFilter { get; set; } = new("Item Level Filter", 0, 1000);
     public RangeFilter VendorPriceFilter { get; set; } = new("Vendor Price Filter", 0, 1_000_000);
+    public ToggleFilter UntradableFilter { get; } = new(PropertyFilter.Untradable);
+    public ToggleFilter UniqueFilter { get; } = new(PropertyFilter.Unique);
+    public ToggleFilter CollectableFilter { get; } = new(PropertyFilter.Collectable);
+    public ToggleFilter DyeableFilter { get; } = new(PropertyFilter.Dyeable);
     public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;
@@ -57,6 +61,10 @@ public class SortingRule : ISortingRule
         if (AllowedItemRarities.Count > 0 && !AllowedItemRarities.Any(allowed => slot.Item?.Rarity == (byte) allowed)) return false;
         if (ItemLevelFilter.Enable && (slot.Item?.LevelItem.Row > ItemLevelFilter.MaxValue || slot.Item?.LevelItem.Row < ItemLevelFilter.MinValue)) return false;
         if (VendorPriceFilter.Enable && (slot.Item?.PriceLow > VendorPriceFilter.MaxValue || slot.Item?.PriceLow < VendorPriceFilter.MinValue)) return false;
+        if (!UntradableFilter.IsItemSlotAllowed(slot)) return false;
+        if (!UniqueFilter.IsItemSlotAllowed(slot)) return false;
+        if (!CollectableFilter.IsItemSlotAllowed(slot)) return false;
+        if (!DyeableFilter.IsItemSlotAllowed(slot)) return false;
 
         return true;
     }

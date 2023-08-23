@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SortaKinda.Interfaces;
-using SortaKinda.Models.Enum;
+using SortaKinda.Models.Enums;
 using SortaKinda.System.Modules;
 
 namespace SortaKinda.System;
