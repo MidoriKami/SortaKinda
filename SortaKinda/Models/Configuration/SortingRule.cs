@@ -47,20 +47,20 @@ public class SortingRule : ISortingRule
     {
         if (x is null) return 0;
         if (y is null) return 0;
-        if (x.Item is null) return 0;
-        if (y.Item is null) return 0;
-        if (IsItemMatch(x.Item, y.Item)) return 0;
+        if (x.ExdItem is null) return 0;
+        if (y.ExdItem is null) return 0;
+        if (IsItemMatch(x.ExdItem, y.ExdItem)) return 0;
         if (CompareSlots(x, y)) return 1;
         return -1;
     }
 
     public bool IsItemSlotAllowed(IInventorySlot slot)
     {
-        if (AllowedItemNames.Count > 0 && !AllowedItemNames.Any(allowed => Regex.IsMatch(slot.Item?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase))) return false;
-        if (AllowedItemTypes.Count > 0 && !AllowedItemTypes.Any(allowed => slot.Item?.ItemUICategory.Row == allowed)) return false;
-        if (AllowedItemRarities.Count > 0 && !AllowedItemRarities.Any(allowed => slot.Item?.Rarity == (byte) allowed)) return false;
-        if (ItemLevelFilter.Enable && (slot.Item?.LevelItem.Row > ItemLevelFilter.MaxValue || slot.Item?.LevelItem.Row < ItemLevelFilter.MinValue)) return false;
-        if (VendorPriceFilter.Enable && (slot.Item?.PriceLow > VendorPriceFilter.MaxValue || slot.Item?.PriceLow < VendorPriceFilter.MinValue)) return false;
+        if (AllowedItemNames.Count > 0 && !AllowedItemNames.Any(allowed => Regex.IsMatch(slot.ExdItem?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase))) return false;
+        if (AllowedItemTypes.Count > 0 && !AllowedItemTypes.Any(allowed => slot.ExdItem?.ItemUICategory.Row == allowed)) return false;
+        if (AllowedItemRarities.Count > 0 && !AllowedItemRarities.Any(allowed => slot.ExdItem?.Rarity == (byte) allowed)) return false;
+        if (ItemLevelFilter.Enable && (slot.ExdItem?.LevelItem.Row > ItemLevelFilter.MaxValue || slot.ExdItem?.LevelItem.Row < ItemLevelFilter.MinValue)) return false;
+        if (VendorPriceFilter.Enable && (slot.ExdItem?.PriceLow > VendorPriceFilter.MaxValue || slot.ExdItem?.PriceLow < VendorPriceFilter.MinValue)) return false;
         if (!UntradableFilter.IsItemSlotAllowed(slot)) return false;
         if (!UniqueFilter.IsItemSlotAllowed(slot)) return false;
         if (!CollectableFilter.IsItemSlotAllowed(slot)) return false;
@@ -71,8 +71,8 @@ public class SortingRule : ISortingRule
 
     public bool CompareSlots(IInventorySlot a, IInventorySlot b)
     {
-        var firstItem = a.Item;
-        var secondItem = b.Item;
+        var firstItem = a.ExdItem;
+        var secondItem = b.ExdItem;
 
         switch (a.HasItem, b.HasItem)
         {

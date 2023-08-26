@@ -44,8 +44,8 @@ public class ToggleFilter
     public bool IsItemSlotAllowed(IInventorySlot slot) => State switch
     {
         ToggleFilterState.Ignored => true,
-        ToggleFilterState.Allow => ItemHasProperty(slot.Item),
-        ToggleFilterState.Disallow => !ItemHasProperty(slot.Item),
+        ToggleFilterState.Allow => ItemHasProperty(slot.ExdItem),
+        ToggleFilterState.Disallow => !ItemHasProperty(slot.ExdItem),
         _ => true,
     };
 

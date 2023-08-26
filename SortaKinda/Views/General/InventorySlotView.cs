@@ -36,7 +36,7 @@ public class InventorySlotView
     {
         ImGui.SetCursorPos(drawPosition);
 
-        if (!inventorySlot.HasItem || IconCache.Instance.GetIcon(inventorySlot.Item.Icon) is not { } itemIcon)
+        if (!inventorySlot.HasItem || IconCache.Instance.GetIcon(inventorySlot.ExdItem.Icon) is not { } itemIcon)
         {
             // Draw Null Image, so we have an item to hover over
             ImGui.Image(nint.Zero, ItemSize);

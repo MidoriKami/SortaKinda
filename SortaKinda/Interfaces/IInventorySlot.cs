@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.GeneratedSheets;
 
@@ -8,7 +9,8 @@ public unsafe interface IInventorySlot
 {
     [MemberNotNullWhen(true, "Item")] bool HasItem { get; }
 
-    Item? Item { get; }
+    Item? ExdItem { get; }
+    InventoryItem* InventoryItem { get; }
     ItemOrderModuleSorterItemEntry* ItemOrderEntry { get; }
     int Slot { get; }
     ISortingRule Rule { get; }
