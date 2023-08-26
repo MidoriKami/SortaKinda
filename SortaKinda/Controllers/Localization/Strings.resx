@@ -111,4 +111,7 @@
     <data name="Disallow" xml:space="preserve">
         <value>Disallow</value>
     </data>
+    <data name="ItemType" xml:space="preserve">
+        <value>Item Type</value>
+    </data>
 </root>

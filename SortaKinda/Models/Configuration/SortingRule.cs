@@ -98,29 +98,43 @@ public class SortingRule : ISortingRule
         }
     }
 
-    private bool IsItemMatch(Item firstItem, Item secondItem)
+    private bool IsItemMatch(Item firstItem, Item secondItem) => SortMode switch
     {
-        return SortMode switch
-        {
-            SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
-            SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
-            SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
-            SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
-            SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
-            _ => false
-        };
-    }
+        SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
+        SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
+        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
+        SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
+        SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
+        SortOrderMode.ItemType => firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row,
+        _ => false
+    };
 
-    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode)
+    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch
     {
-        return sortMode switch
+        SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
+        SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
+        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
+        SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
+        SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
+        SortOrderMode.ItemType => ShouldSwapItemUiCategory(firstItem, secondItem),
+        _ => false
+    };
+
+    private static bool ShouldSwapItemUiCategory(Item firstItem, Item secondItem)
+    {
+        // If same category, don't swap, other system handles fallback to alphabetical in this case
+        if (firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row) return false;
+
+        if (firstItem is { ItemUICategory.Value: { } first } && secondItem is { ItemUICategory.Value: { } second })
         {
-            SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
-            SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
-            SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
-            SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
-            SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
-            _ => false
-        };
+            if (first.OrderMajor == second.OrderMajor)
+            {
+                return first.OrderMinor > second.OrderMinor;
+            }
+
+            return first.OrderMajor > second.OrderMajor;
+        }
+
+        return false;
     }
 }

@@ -186,6 +186,15 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Item Type.
+        /// </summary>
+        internal static string ItemType {
+            get {
+                return ResourceManager.GetString("ItemType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ordering Options.
         /// </summary>
         internal static string OrderingConfig {

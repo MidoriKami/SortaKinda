@@ -17,5 +17,8 @@ public enum SortOrderMode
     SellPrice,
 
     [EnumLabel("ItemId")] 
-    ItemId
+    ItemId,
+    
+    [EnumLabel("ItemType")]
+    ItemType,
 }
