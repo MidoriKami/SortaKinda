@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Enums;
@@ -12,7 +13,7 @@ using SortaKinda.Views.SortControllerViews;
 
 namespace SortaKinda.Models;
 
-public class SortingRule : ISortingRule
+public unsafe class SortingRule : ISortingRule
 {
     private readonly SortingRuleTooltipView view;
 
@@ -49,7 +50,7 @@ public class SortingRule : ISortingRule
         if (y is null) return 0;
         if (x.ExdItem is null) return 0;
         if (y.ExdItem is null) return 0;
-        if (IsItemMatch(x.ExdItem, y.ExdItem)) return 0;
+        if (IsFilterMatch(x.ExdItem, y.ExdItem)) return 0;
         if (CompareSlots(x, y)) return 1;
         return -1;
     }
@@ -86,19 +87,42 @@ public class SortingRule : ISortingRule
             case (true, false): return FillMode is FillMode.Bottom;
 
             case (true, true) when firstItem is not null && secondItem is not null:
-                var shouldSwap = ShouldSwap(firstItem, secondItem, IsItemMatch(firstItem, secondItem) ? SortOrderMode.Alphabetically : SortMode);
-
-                if (Direction is SortOrderDirection.Descending)
-                    shouldSwap = !shouldSwap;
-
-                return shouldSwap;
+                
+                var shouldSwap = false;
+                
+                // They are the same item
+                if (firstItem.RowId == secondItem.RowId)
+                {
+                    // if left is not HQ, and right is HQ, swap
+                    if (!a.InventoryItem->Flags.HasFlag(InventoryItem.ItemFlags.HQ) && b.InventoryItem->Flags.HasFlag(InventoryItem.ItemFlags.HQ))
+                    {
+                        shouldSwap = true;
+                    }
+                    // else if left has lower quantity then right, swap
+                    else if (a.InventoryItem->Quantity < b.InventoryItem->Quantity)
+                    {
+                        shouldSwap = true;
+                    }
+                }
+                // else if they match according to the default filter, fallback to alphabetical
+                else if (IsFilterMatch(firstItem, secondItem))
+                {
+                    shouldSwap = ShouldSwap(firstItem, secondItem, SortOrderMode.Alphabetically);
+                }
+                // else they are not the same item, and the filter result doesn't match
+                else
+                {
+                    shouldSwap = ShouldSwap(firstItem, secondItem, SortMode);
+                }
+                
+                return Direction is SortOrderDirection.Descending ? !shouldSwap : shouldSwap;
 
             // Something went horribly wrong... best not touch it and walk away.
             default: return false;
         }
     }
-
-    private bool IsItemMatch(Item firstItem, Item secondItem) => SortMode switch
+    
+    private bool IsFilterMatch(Item firstItem, Item secondItem) => SortMode switch
     {
         SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
         SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
