@@ -7,7 +7,7 @@ namespace SortaKinda.Interfaces;
 
 public unsafe interface IInventorySlot
 {
-    [MemberNotNullWhen(true, "Item")] bool HasItem { get; }
+    [MemberNotNullWhen(true, "ExdItem")] bool HasItem { get; }
 
     Item? ExdItem { get; }
     InventoryItem* InventoryItem { get; }
