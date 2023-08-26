@@ -54,6 +54,7 @@ public class SortingRuleListView
                 SortaKindaController.SortController.SelectedRuleIndex = sortingRules.Count - 1;
             }
             sortingRules.RemoveAt(ruleToDelete);
+            controller.SaveConfig();
         }
     }
 
@@ -158,7 +159,6 @@ public class SortingRuleListView
         if (ImGui.Button($"{FontAwesomeIcon.Trash.ToIconString()}##{index}", buttonSize) && hotkeyHeld)
         {
             deletionRuleId = index;
-            controller.SaveConfig();
         }
         ImGui.PopFont();
 
