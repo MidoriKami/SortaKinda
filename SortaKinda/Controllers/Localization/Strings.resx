@@ -114,4 +114,10 @@
     <data name="ItemType" xml:space="preserve">
         <value>Item Type</value>
     </data>
+    <data name="OpenConfigWindow" xml:space="preserve">
+        <value>Open configuration window</value>
+    </data>
+    <data name="HelpText" xml:space="preserve">
+        <value>Display this helptext</value>
+    </data>
 </root>

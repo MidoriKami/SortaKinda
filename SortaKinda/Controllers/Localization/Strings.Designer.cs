@@ -159,6 +159,15 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display this helptext.
+        /// </summary>
+        internal static string HelpText {
+            get {
+                return ResourceManager.GetString("HelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignored.
         /// </summary>
         internal static string Ignored {
@@ -191,6 +200,15 @@ namespace SortaKinda.Controllers.Localization {
         internal static string ItemType {
             get {
                 return ResourceManager.GetString("ItemType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open configuration window.
+        /// </summary>
+        internal static string OpenConfigWindow {
+            get {
+                return ResourceManager.GetString("OpenConfigWindow", resourceCulture);
             }
         }
         
