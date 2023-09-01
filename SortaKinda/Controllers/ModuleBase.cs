@@ -1,6 +1,7 @@
 ﻿using System;
 using Dalamud.Interface;
 using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -42,10 +43,14 @@ public abstract class ModuleBase : IModule
         IsLoaded = true;
 
         SaveConfig();
+
+        SortaKindaController.InventoryScanner.InventoryChanged += InventoryChanged;
     }
 
     public void UnloadModule()
     {
+        SortaKindaController.InventoryScanner.InventoryChanged -= InventoryChanged;
+        
         IsLoaded = false;
     }
 
@@ -73,10 +78,6 @@ public abstract class ModuleBase : IModule
             LoadViews();
         }
         lastScale = ImGuiHelpers.GlobalScale;
-        
-        // Don't update modules if the Retainer transfer window is open
-        if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;
-        Update();
     }
 
     public void SortModule()
@@ -88,7 +89,7 @@ public abstract class ModuleBase : IModule
 
     protected virtual void Load() { }
 
-    protected abstract void Update();
+    protected abstract void InventoryChanged(InventoryType type);
     
     protected abstract void Sort();
 

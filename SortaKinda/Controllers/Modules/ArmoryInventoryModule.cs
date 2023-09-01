@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -38,26 +39,12 @@ public class ArmoryInventoryModule : ModuleBase
         view?.Draw();
     }
 
-    protected override void Update()
+    protected override void InventoryChanged(InventoryType type)
     {
-        if (inventories is null) return;
+        var targetInventory = inventories?.FirstOrDefault(inventory => inventory.Type == type);
+        if (targetInventory is null) return;
 
-        foreach (var inventory in inventories)
-        {
-            var inventoryCount = InventoryController.GetInventoryItemCount(inventory.Type);
-
-            if (lastItemCounts.TryAdd(inventory.Type, inventoryCount)) continue;
-
-            if (lastItemCounts[inventory.Type] != inventoryCount)
-            {
-                if (SortaKindaController.SystemConfig.SortOnInventoryChange)
-                {
-                    SortaKindaController.SortingThreadController.AddSortingTask(inventory.Type, inventory);
-                }
-                
-                lastItemCounts[inventory.Type] = inventoryCount;
-            }
-        }
+        SortaKindaController.SortingThreadController.AddSortingTask(type, targetInventory);
     }
 
     protected override void Sort()

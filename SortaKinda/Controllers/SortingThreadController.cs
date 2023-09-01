@@ -35,22 +35,22 @@ public unsafe class SortingThreadController : IDisposable
     {
         if (SortPending)
         {
-            PluginLog.Debug("Sort Pending!");
+            PluginLog.Verbose($"Launching sorting tasks. {sortingTasks.Where(task => task.Status is TaskStatus.Created).Count()} Tasks Pending.");
             
             foreach (var task in sortingTasks.Where(task => task.Status is TaskStatus.Created))
             {
-                PluginLog.Debug("Starting Task");
+                PluginLog.Verbose("Starting Task");
                 task.Start();
             }
 
-            PluginLog.Debug("Scheduling Continuation");
+            PluginLog.Verbose("Scheduling Continuation");
             Task.WhenAll(sortingTasks).ContinueWith(_ => OnCompletion(), cancellationTokenSource.Token);
         }
     }
 
     private void OnCompletion()
     {
-        PluginLog.Debug("Continuing!");
+        PluginLog.Verbose("Continuing!");
         
         Service.Framework.RunOnTick(() =>
         {

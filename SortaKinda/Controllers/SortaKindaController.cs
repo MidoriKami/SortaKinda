@@ -12,12 +12,14 @@ public class SortaKindaController : IDisposable
     public static SortController SortController = null!;
     public static SystemConfig SystemConfig = null!;
     public static SortingThreadController SortingThreadController = null!;
+    public static InventoryScanner InventoryScanner = null!;
 
     private uint lastJob = uint.MaxValue;
 
     public SortaKindaController()
     {
         SortingThreadController = new SortingThreadController();
+        InventoryScanner = new InventoryScanner();
         SystemConfig = new SystemConfig();
         SortController = new SortController();
         ModuleController = new ModuleController();
@@ -74,7 +76,11 @@ public class SortaKindaController : IDisposable
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;
         if (Service.ClientState is not { LocalPlayer.ClassJob.Id: var classJobId }) return;
-
+        
+        // Don't update modules if the Retainer transfer window is open
+        if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;
+        
+        InventoryScanner.Update();
         ModuleController.Update();
 
         // Prevent sorting on load, we have a different option for that
@@ -102,13 +108,7 @@ public class SortaKindaController : IDisposable
         DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
     }
     
-    private static SystemConfig LoadConfig()
-    {
-        return CharacterFileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
-    }
-    
-    private static void SaveConfig()
-    {
-        CharacterFileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);
-    }
+    private static SystemConfig LoadConfig() => CharacterFileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
+
+    private static void SaveConfig() => CharacterFileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);
 }

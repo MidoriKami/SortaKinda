@@ -11,7 +11,6 @@ namespace SortaKinda.System.Modules;
 public class MainInventoryModule : ModuleBase
 {
     private List<IInventoryGrid>? inventories;
-    private long mainInventoryLastCount = long.MaxValue;
     private QuadInventoryView? view;
     public override ModuleName ModuleName => ModuleName.MainInventory;
     protected override IModuleConfig ModuleConfig { get; set; } = new MainInventoryConfig();
@@ -32,16 +31,11 @@ public class MainInventoryModule : ModuleBase
         view = new QuadInventoryView(inventories, Vector2.Zero);
     }
 
-    protected override void Update()
+    protected override void InventoryChanged(InventoryType type)
     {
-        var currentInventoryCount = InventoryController.GetInventoryItemCount(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4);
-
-        if (mainInventoryLastCount is long.MaxValue) mainInventoryLastCount = currentInventoryCount;
-        
-        if (mainInventoryLastCount != currentInventoryCount)
+        if (type is InventoryType.Inventory1)
         {
-            if (SortaKindaController.SystemConfig.SortOnInventoryChange) Sort();
-            mainInventoryLastCount = currentInventoryCount;
+            Sort();
         }
     }
 
