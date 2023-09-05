@@ -79,7 +79,7 @@ public unsafe class InventoryScanner
         foreach (var item in GetItems(type))
         {
             // Gained item or item changed
-            if (inventoryCache[type][item.Slot] == 0 && item.ItemID != 0 && inventoryCache[type][item.Slot] != item.ItemID)
+            if (inventoryCache[type][item.Slot] == 0 && item.ItemID != 0 || inventoryCache[type][item.Slot] != item.ItemID)
             {
                 changelog.Add(new ItemChangelog(ChangelogState.Added, item.ItemID));
             }
