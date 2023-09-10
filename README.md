@@ -1,5 +1,5 @@
 # SortaKinda
-[![Download count](https://img.shields.io/endpoint?url=https://vz32sgcoal.execute-api.us-east-1.amazonaws.com/SortaKinda)](https://github.com/MidoriKami/SortaKinda)
+[![Download count](https://img.shields.io/endpoint?url=https://qzysathwfhebdai6xgauhz4q7m0mzmrf.lambda-url.us-east-1.on.aws/SortaKinda)](https://github.com/MidoriKami/SortaKinda)
 
 SortaKinda is a XivLauncher/Dalamud plugin.
 
