@@ -112,6 +112,8 @@ public unsafe class InventorySorter
 
             foreach (var _ in targetSlotsForRule)
             {
+                var swapped = false;
+                
                 foreach (var index in Enumerable.Range(0, targetSlotsForRule.Count - 1))
                 {
                     if (rule.CompareSlots(targetSlotsForRule[index], targetSlotsForRule[index + 1]))
@@ -119,6 +121,8 @@ public unsafe class InventorySorter
                         SwapItem(targetSlotsForRule[index], targetSlotsForRule[index + 1]);
                     }
                 }
+
+                if (!swapped) break;
             }
         }
     }
