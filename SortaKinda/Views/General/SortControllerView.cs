@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.ChatCommands;
@@ -120,11 +121,7 @@ public class SortControllerView
     {
         var rules = sortController.Rules.ToArray()[1..];
         var jsonString = JsonConvert.SerializeObject(rules);
-
-        // Plaintext Approach
-        // ImGui.SetClipboardText(jsonString);
-
-        // Alternative approach that includes compression
+        
         var compressed = Util.CompressString(jsonString);
         ImGui.SetClipboardText(Convert.ToBase64String(compressed));
 

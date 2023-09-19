@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace SortaKinda.System;
@@ -22,11 +20,6 @@ public unsafe partial class InventoryController
     public static ItemOrderModuleSorterItemEntry* GetItemOrderData(InventoryType type, int slot)
     {
         return GetInventorySorter(type)->Items.Span[slot + GetInventoryStartIndex(type)];
-    }
-
-    public static int GetInventoryItemCount(params InventoryType[] types)
-    {
-        return types.Sum(GetInventoryItemCount);
     }
 }
 
@@ -54,7 +47,9 @@ public unsafe partial class InventoryController
             InventoryType.ArmoryRings => ItemOrderModule.Instance()->ArmouryRingsSorter,
             InventoryType.ArmorySoulCrystal => ItemOrderModule.Instance()->ArmourySoulCrystalSorter,
             InventoryType.SaddleBag1 => ItemOrderModule.Instance()->SaddleBagSorter,
-            InventoryType.SaddleBag2 => ItemOrderModule.Instance()->PremiumSaddleBagSorter,
+            InventoryType.SaddleBag2 => ItemOrderModule.Instance()->SaddleBagSorter,
+            InventoryType.PremiumSaddleBag1 => ItemOrderModule.Instance()->PremiumSaddleBagSorter,
+            InventoryType.PremiumSaddleBag2 => ItemOrderModule.Instance()->PremiumSaddleBagSorter,
             _ => throw new Exception($"Type Not Implemented: {type}")
         };
     }
@@ -80,27 +75,5 @@ public unsafe partial class InventoryController
             InventoryType.Inventory4 => GetInventorySorter(type)->ItemsPerPage * 3,
             _ => 0
         };
-    }
-
-    private static Span<InventoryItem> GetInventoryItems(InventoryType type)
-    {
-        var instance = InventoryManager.Instance();
-        if (instance is null) return Span<InventoryItem>.Empty;
-
-        var container = instance->GetInventoryContainer(type);
-        if (container is null) return Span<InventoryItem>.Empty;
-
-        return new Span<InventoryItem>(container->Items, (int) container->Size);
-    }
-
-    private static int GetInventoryItemCount(InventoryType type)
-    {
-        var count = 0;
-        foreach (var item in GetInventoryItems(type))
-        {
-            if (item is not { ItemID: 0 }) count++;
-        }
-
-        return count;
     }
 }

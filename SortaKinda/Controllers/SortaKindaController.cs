@@ -1,5 +1,5 @@
 ﻿using System;
-using Dalamud.Game;
+using Dalamud.Plugin.Services;
 using KamiLib.AutomaticUserInterface;
 using KamiLib.Utilities;
 using SortaKinda.Models.Configuration;
@@ -26,7 +26,7 @@ public class SortaKindaController : IDisposable
 
         if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 })
         {
-            OnLogin(this, EventArgs.Empty);
+            OnLogin();
         }
 
         Service.ClientState.Login += OnLogin;
@@ -46,7 +46,7 @@ public class SortaKindaController : IDisposable
         SortingThreadController.Dispose();
     }
 
-    private void OnLogin(object? sender, EventArgs e)
+    private void OnLogin()
     {
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;
@@ -61,17 +61,17 @@ public class SortaKindaController : IDisposable
         SortController.Load();
         ModuleController.Load();
 
-        if (SystemConfig.SortOnLogin && sender != this) ModuleController.Sort();
+        if (SystemConfig.SortOnLogin) ModuleController.Sort();
     }
 
-    private void OnLogout(object? sender, EventArgs e)
+    private void OnLogout()
     {
         ModuleController.Unload();
 
         lastJob = uint.MaxValue;
     }
 
-    private void OnUpdate(Framework framework)
+    private void OnUpdate(IFramework framework)
     {
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;
@@ -95,7 +95,7 @@ public class SortaKindaController : IDisposable
         SortingThreadController.Update();
     }
 
-    private void OnZoneChange(object? sender, ushort e)
+    private void OnZoneChange(ushort e)
     {
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;

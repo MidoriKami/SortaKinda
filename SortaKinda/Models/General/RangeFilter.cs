@@ -1,4 +1,4 @@
-﻿using Dalamud.Interface;
+﻿using Dalamud.Interface.Utility;
 using ImGuiNET;
 
 namespace SortaKinda.Models;

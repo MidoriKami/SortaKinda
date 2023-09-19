@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.SortControllerViews;

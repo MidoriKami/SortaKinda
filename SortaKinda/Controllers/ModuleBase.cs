@@ -1,5 +1,5 @@
 ﻿using System;
-using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Utilities;

@@ -10,8 +10,6 @@ namespace SortaKinda.System.Modules;
 
 public class ArmoryInventoryModule : ModuleBase
 {
-    private readonly Dictionary<InventoryType, int> lastItemCounts = new();
-
     private List<IInventoryGrid>? inventories;
     private ArmoryInventoryGridView? view;
     public override ModuleName ModuleName => ModuleName.ArmoryInventory;

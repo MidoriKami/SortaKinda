@@ -1,8 +1,8 @@
 ﻿// ReSharper disable UnusedMember.Global
 using System.Collections.Generic;
 using System.Numerics;
-using Dalamud.Interface;
 using Dalamud.Interface.Style;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using KamiLib.ChatCommands;

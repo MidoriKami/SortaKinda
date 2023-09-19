@@ -9,16 +9,11 @@ namespace SortaKinda.System;
 
 public class ModuleController : IDisposable
 {
-    private readonly IEnumerable<IModule> modules;
-
-    public ModuleController()
+    private readonly IEnumerable<IModule> modules = new List<IModule>
     {
-        modules = new List<IModule>
-        {
-            new MainInventoryModule(),
-            new ArmoryInventoryModule()
-        };
-    }
+        new MainInventoryModule(),
+        new ArmoryInventoryModule()
+    };
 
     public void Dispose()
     {
