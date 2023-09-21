@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Models.Enums;
 using SortaKinda.Models.General;
@@ -50,7 +49,7 @@ public unsafe class InventoryScanner
         
         InventoryChanged += type =>
         {
-            PluginLog.Verbose($"Inventory Changed: {type}");
+            Service.Log.Verbose($"Inventory Changed: {type}");
         };
     }
 
@@ -82,13 +81,13 @@ public unsafe class InventoryScanner
             if (inventoryCache[type][item.Slot] == 0 && item.ItemID != 0 || (inventoryCache[type][item.Slot] != item.ItemID && item.ItemID != 0))
             {
                 changelog.Add(new ItemChangelog(ChangelogState.Added, item.ItemID));
-                PluginLog.Verbose($"[InventoryScanner] Adding - {item.ItemID}");
+                Service.Log.Verbose($"[InventoryScanner] Adding - {item.ItemID}");
             }
             // Lost item
             else if (inventoryCache[type][item.Slot] != 0 && item.ItemID == 0)
             {
                 changelog.Add(new ItemChangelog(ChangelogState.Removed, inventoryCache[type][item.Slot]));
-                PluginLog.Verbose($"[InventoryScanner] Removing - {item.ItemID}");
+                Service.Log.Verbose($"[InventoryScanner] Removing - {item.ItemID}");
             }
 
             inventoryCache[type][item.Slot] = item.ItemID;

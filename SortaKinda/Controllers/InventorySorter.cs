@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Hooking;
 using SortaKinda.Interfaces;
@@ -30,7 +29,7 @@ public unsafe class InventorySorter
     public static void SortInventory(InventoryType type, params IInventoryGrid[] grids) => Safety.ExecuteSafe(() =>
     {
         var stopwatch = Stopwatch.StartNew();
-        PluginLog.Debug($"Sorting Inventory: {type}");
+        Service.Log.Debug($"Sorting Inventory: {type}");
 
         // Get all rules for this inventory for priority determinations
         var rulesForInventory = grids
@@ -47,7 +46,7 @@ public unsafe class InventorySorter
         // Step 3: Sort remaining items in categories
         SortCategories(grids);
 
-        PluginLog.Debug($"Sorted {type} in {stopwatch.Elapsed.TotalMilliseconds}ms");
+        Service.Log.Debug($"Sorted {type} in {stopwatch.Elapsed.TotalMilliseconds}ms");
     }, $"Exception Caught During Sorting '{type}'");
 
     private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IReadOnlyCollection<ISortingRule> rulesForInventory)

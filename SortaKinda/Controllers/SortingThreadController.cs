@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using SortaKinda.Interfaces;
@@ -35,26 +34,26 @@ public unsafe class SortingThreadController : IDisposable
     {
         if (SortPending)
         {
-            PluginLog.Verbose($"Launching sorting tasks. {sortingTasks.Where(task => task.Status is TaskStatus.Created).Count()} Tasks Pending.");
+            Service.Log.Verbose($"Launching sorting tasks. {sortingTasks.Where(task => task.Status is TaskStatus.Created).Count()} Tasks Pending.");
             
             foreach (var task in sortingTasks.Where(task => task.Status is TaskStatus.Created))
             {
-                PluginLog.Verbose("Starting Task");
+                Service.Log.Verbose("Starting Task");
                 task.Start();
             }
 
-            PluginLog.Verbose("Scheduling Continuation");
+            Service.Log.Verbose("Scheduling Continuation");
             Task.WhenAll(sortingTasks).ContinueWith(_ => OnCompletion(), cancellationTokenSource.Token);
         }
     }
 
     private void OnCompletion()
     {
-        PluginLog.Verbose("Continuing!");
+        Service.Log.Verbose("Continuing!");
         
         Service.Framework.RunOnTick(() =>
         {
-            PluginLog.Debug("Marked ItemODR as changed.");
+            Service.Log.Debug("Marked ItemODR as changed.");
 
             ItemOrderModule.Instance()->UserFileEvent.IsSavePending = true;
         }, TimeSpan.Zero, 5);

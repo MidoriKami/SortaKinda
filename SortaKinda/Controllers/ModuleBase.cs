@@ -1,6 +1,5 @@
 ﻿using System;
 using Dalamud.Interface.Utility;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
@@ -34,7 +33,7 @@ public abstract class ModuleBase : IModule
 
     public void LoadModule()
     {
-        PluginLog.Debug($"[{ModuleName}] Loading Module");
+        Service.Log.Debug($"[{ModuleName}] Loading Module");
 
         ModuleConfig = DefaultConfig;
         ModuleConfig = LoadConfig();
