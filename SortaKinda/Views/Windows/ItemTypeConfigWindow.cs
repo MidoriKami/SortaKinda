@@ -55,7 +55,7 @@ public class ItemTypeConfigWindow : Window
                 if (!enabled) sortingRule.AllowedItemTypes.Remove(result.RowId);
             }
 
-            if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
+            if (Service.TextureProvider.GetIcon((uint) result.Icon) is { } icon)
             {
                 ImGui.SameLine();
                 ImGui.SetCursorPos(ImGui.GetCursorPos() with { Y = ImGui.GetCursorPos().Y + 2.0f });

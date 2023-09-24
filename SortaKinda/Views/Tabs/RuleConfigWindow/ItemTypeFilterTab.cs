@@ -44,7 +44,7 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
             foreach (var category in SortingRule.AllowedItemTypes)
             {
                 if (LuminaCache<ItemUICategory>.Instance.GetRow(category) is not { Icon: var iconCategory, Name.RawString: var entryName }) continue;
-                if (IconCache.Instance.GetIcon((uint) iconCategory) is not { } iconTexture) continue;
+                if (Service.TextureProvider.GetIcon((uint) iconCategory) is not { } iconTexture) continue;
 
                 if (ImGuiComponents.IconButton($"##RemoveButton{category}", FontAwesomeIcon.Trash))
                 {
@@ -124,7 +124,7 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
                         }
                     }
 
-                    if (IconCache.Instance.GetIcon((uint) result.Icon) is { } icon)
+                    if (Service.TextureProvider.GetIcon((uint) result.Icon) is { } icon)
                     {
                         ImGui.SameLine();
                         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 1.0f * ImGuiHelpers.GlobalScale);
