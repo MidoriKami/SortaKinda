@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Numerics;
+using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 using KamiLib.Interfaces;
-using KamiLib.Utilities;
 using SortaKinda.System;
 
 namespace SortaKinda.Interfaces;
@@ -35,7 +35,7 @@ public interface IRuleConfigurationTab : ITabItem
         var buttonSize = ImGuiHelpers.ScaledVector2(100.0f, 23.0f);
 
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
-        ImGui.TextColored(KnownColor.Gray.AsVector4(), SortingRule.Id);
+        ImGui.TextColored(KnownColor.Gray.Vector(), SortingRule.Id);
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X * 2.0f - ImGui.GetStyle().ItemSpacing.X);
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);

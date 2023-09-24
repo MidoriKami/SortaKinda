@@ -8,7 +8,6 @@ using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib;
 using KamiLib.Caching;
-using KamiLib.Utilities;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
 using SortaKinda.Views.Windows;
@@ -39,7 +38,7 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
         {
             if (SortingRule.AllowedItemTypes.Count is 0)
             {
-                ImGui.TextColored(KnownColor.Orange.AsVector4(), "Nothing Filtered");
+                ImGui.TextColored(KnownColor.Orange.Vector(), "Nothing Filtered");
             }
 
             foreach (var category in SortingRule.AllowedItemTypes)
@@ -104,7 +103,7 @@ public class ItemTypeFilterTab : ITwoColumnRuleConfigurationTab
         {
             if (searchResults is null || searchResults.Count is 0)
             {
-                ImGui.TextColored(KnownColor.Gray.AsVector4(), "No Results");
+                ImGui.TextColored(KnownColor.Gray.Vector(), "No Results");
             }
             else
             {

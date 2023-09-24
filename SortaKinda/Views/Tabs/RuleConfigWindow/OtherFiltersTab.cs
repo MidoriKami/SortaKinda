@@ -31,7 +31,7 @@ public class OtherFiltersTab : ITwoColumnRuleConfigurationTab
         foreach (var enumValue in Enum.GetValues<ItemRarity>())
         {
             var enabled = SortingRule.AllowedItemRarities.Contains(enumValue);
-            if (ImGuiComponents.ToggleButton($"{enumValue.GetLabel()}", ref enabled))
+            if (ImGuiComponents.ToggleButton($"{enumValue.Label()}", ref enabled))
             {
                 if (enabled) SortingRule.AllowedItemRarities.Add(enumValue);
                 if (!enabled) SortingRule.AllowedItemRarities.Remove(enumValue);
@@ -39,7 +39,7 @@ public class OtherFiltersTab : ITwoColumnRuleConfigurationTab
 
             ImGui.SameLine();
             ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f);
-            ImGui.TextUnformatted(enumValue.GetLabel());
+            ImGui.TextUnformatted(enumValue.Label());
         }
     }
 }

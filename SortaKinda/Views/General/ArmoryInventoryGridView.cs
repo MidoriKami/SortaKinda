@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 using Dalamud.Interface;
+using Dalamud.Interface.Internal;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
-using ImGuiScene;
-using KamiLib.Utilities;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.SortControllerViews;
@@ -15,8 +14,8 @@ namespace SortaKinda.Views.SortControllerViews;
 public class ArmoryInventoryGridView : IDisposable
 {
     private readonly UldWrapper armouryBoard;
-    private readonly Dictionary<InventoryType, TextureWrap?> leftTabTextures = new();
-    private readonly Dictionary<InventoryType, TextureWrap?> rightTabTextures = new();
+    private readonly Dictionary<InventoryType, IDalamudTextureWrap?> leftTabTextures = new();
+    private readonly Dictionary<InventoryType, IDalamudTextureWrap?> rightTabTextures = new();
 
     private readonly Dictionary<InventoryType, InventoryGridView> views = new();
     private InventoryType selectedTab = InventoryType.ArmoryMainHand;
@@ -75,7 +74,7 @@ public class ArmoryInventoryGridView : IDisposable
         DrawTabBar(rightTabTextures, rightBarPosition);
     }
 
-    private void DrawTabBar(Dictionary<InventoryType, TextureWrap?> textures, Vector2 drawPosition)
+    private void DrawTabBar(Dictionary<InventoryType, IDalamudTextureWrap?> textures, Vector2 drawPosition)
     {
         var itemSpacing = new Vector2(0.0f, ButtonSize.Y + ButtonPadding.Y);
 
@@ -90,8 +89,8 @@ public class ArmoryInventoryGridView : IDisposable
             {
                 var windowPosition = ImGui.GetWindowPos();
 
-                var borderColor = ImGui.GetColorU32(KnownColor.White.AsVector4());
-                var backgroundColor = ImGui.GetColorU32(KnownColor.Gray.AsVector4() with { W = 0.50f });
+                var borderColor = ImGui.GetColorU32(KnownColor.White.Vector());
+                var backgroundColor = ImGui.GetColorU32(KnownColor.Gray.Vector() with { W = 0.50f });
 
                 var rectStart = windowPosition + drawPosition + itemSpacing * index;
                 var rectStop = rectStart + ButtonSize;

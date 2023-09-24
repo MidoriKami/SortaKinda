@@ -4,7 +4,6 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
-using KamiLib.Utilities;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.Tabs;
@@ -36,7 +35,7 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
         {
             if (SortingRule.AllowedItemNames.Count is 0)
             {
-                ImGui.TextColored(KnownColor.Orange.AsVector4(), "Nothing Filtered");
+                ImGui.TextColored(KnownColor.Orange.Vector(), "Nothing Filtered");
             }
 
             foreach (var name in SortingRule.AllowedItemNames)
@@ -67,7 +66,7 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
             setNameFocus = false;
         }
 
-        ImGui.TextColored(KnownColor.Gray.AsVector4(), "Supports Regex for item name filtering");
+        ImGui.TextColored(KnownColor.Gray.Vector(), "Supports Regex for item name filtering");
 
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - buttonSize.X - ImGui.GetStyle().ItemSpacing.X);
         if (ImGui.InputTextWithHint("##NewName", "Item Name", ref newName, 1024, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))

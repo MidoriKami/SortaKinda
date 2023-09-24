@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using KamiLib.Utilities;
+using Dalamud.Interface;
 using SortaKinda.System;
 
 namespace SortaKinda.Models.Configuration;
@@ -11,7 +11,7 @@ public class SortingRuleConfig
     {
         new SortingRule
         {
-            Color = KnownColor.White.AsVector4(),
+            Color = KnownColor.White.Vector(),
             Id = SortController.DefaultId,
             Name = "Unsorted"
         }

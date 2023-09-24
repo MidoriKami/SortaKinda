@@ -21,17 +21,17 @@ public class ToggleFilter
     public void DrawConfig()
     {
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
-        ImGui.TextUnformatted(Filter.GetLabel());
+        ImGui.TextUnformatted(Filter.Label());
         
         ImGui.SameLine(ImGui.GetContentRegionMax().X / 2.0f);
         
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.PushItemWidth(ImGui.GetContentRegionMax().X / 2.0f);
-        if (ImGui.BeginCombo($"##{Filter.ToString()}Combo", State.GetLabel()))
+        if (ImGui.BeginCombo($"##{Filter.ToString()}Combo", State.Label()))
         {
             foreach(var value in Enum.GetValues<ToggleFilterState>())
             {
-                if (ImGui.Selectable(value.GetLabel(), value == State))
+                if (ImGui.Selectable(value.Label(), value == State))
                 {
                     State = value;
                 }

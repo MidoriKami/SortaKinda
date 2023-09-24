@@ -53,7 +53,7 @@ public class SortOrderTab : ITwoColumnRuleConfigurationTab
         foreach (Enum value in Enum.GetValues(configValue.GetType()))
         {
             var isSelected = Convert.ToInt32(configValue);
-            if (ImGui.RadioButton($"{value.GetLabel()}##{configValue.GetType()}", ref isSelected, Convert.ToInt32(value)))
+            if (ImGui.RadioButton($"{value.Label()}##{configValue.GetType()}", ref isSelected, Convert.ToInt32(value)))
             {
                 configValue = (T) value;
             }

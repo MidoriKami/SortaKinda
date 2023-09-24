@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Dalamud.Interface;
 using KamiLib.Utilities;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;
@@ -22,7 +23,7 @@ public class SortController : ISortController
         Id = DefaultId,
         Name = "Unsorted",
         Index = 0,
-        Color = KnownColor.White.AsVector4()
+        Color = KnownColor.White.Vector()
     };
 
     public List<SortingRule> Rules => RuleConfig.Rules;

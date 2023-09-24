@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using Dalamud.Interface;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.Caching;
@@ -37,8 +38,8 @@ public class SortingRuleTooltipView
         {
             var itemFiltersString = GetAllowedItemsString();
 
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), itemFiltersString.IsNullOrEmpty() ? "Any Item" : itemFiltersString);
-            ImGui.TextColored(KnownColor.Gray.AsVector4(), rule.SortMode.GetLabel());
+            ImGui.TextColored(KnownColor.Gray.Vector(), itemFiltersString.IsNullOrEmpty() ? "Any Item" : itemFiltersString);
+            ImGui.TextColored(KnownColor.Gray.Vector(), rule.SortMode.Label());
         }
 
         ImGui.EndTooltip();
@@ -50,7 +51,7 @@ public class SortingRuleTooltipView
         {
             rule.AllowedItemTypes.Count > 0 ? string.Join(", ", rule.AllowedItemTypes.Select(type => LuminaCache<ItemUICategory>.Instance.GetRow(type)?.Name.RawString)) : string.Empty,
             rule.AllowedItemNames.Count > 0 ? string.Join(", ", rule.AllowedItemNames.Select(name => @$"""{name}""")) : string.Empty,
-            rule.AllowedItemRarities.Count > 0 ? string.Join(", ", rule.AllowedItemRarities.Select(rarity => rarity.GetLabel())) : string.Empty,
+            rule.AllowedItemRarities.Count > 0 ? string.Join(", ", rule.AllowedItemRarities.Select(rarity => rarity.Label())) : string.Empty,
             rule.ItemLevelFilter.Enable ? $"{rule.ItemLevelFilter.MinValue} ilvl → {rule.ItemLevelFilter.MaxValue} ilvl" : string.Empty,
             rule.VendorPriceFilter.Enable ? $"{rule.VendorPriceFilter.MinValue} gil → {rule.VendorPriceFilter.MaxValue} gil" : string.Empty
         };
