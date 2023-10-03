@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using Dalamud.Interface;
-using KamiLib.Utilities;
+using KamiLib.FileIO;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;
 using SortaKinda.Models.Configuration;

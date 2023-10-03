@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using KamiLib.Hooking;
+using KamiLib.NativeUi;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.System;

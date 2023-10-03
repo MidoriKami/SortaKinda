@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Numerics;
 using ImGuiNET;
 using KamiLib;
-using SortaKinda.Utility;
+using KamiLib.Utility;
 using SortaKinda.Views.Windows;
 
 namespace SortaKinda.System;

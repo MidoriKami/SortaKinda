@@ -2,7 +2,7 @@
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
-using KamiLib.Utilities;
+using KamiLib.Utility;
 using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.Tabs;

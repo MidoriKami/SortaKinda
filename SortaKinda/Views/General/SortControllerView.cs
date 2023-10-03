@@ -4,7 +4,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
-using KamiLib.ChatCommands;
+using KamiLib.Game;
 using Newtonsoft.Json;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;

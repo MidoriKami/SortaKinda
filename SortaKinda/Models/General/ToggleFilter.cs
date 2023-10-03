@@ -1,7 +1,7 @@
 ﻿using System;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
-using KamiLib.Utilities;
+using KamiLib.Utility;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Enums;

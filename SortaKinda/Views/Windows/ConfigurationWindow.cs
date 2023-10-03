@@ -5,10 +5,11 @@ using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
-using KamiLib.ChatCommands;
-using KamiLib.Commands;
+using KamiLib.Command;
+using KamiLib.Game;
 using KamiLib.Interfaces;
-using KamiLib.Windows;
+using KamiLib.System;
+using KamiLib.UserInterface;
 using SortaKinda.System;
 using SortaKinda.Views.Tabs;
 

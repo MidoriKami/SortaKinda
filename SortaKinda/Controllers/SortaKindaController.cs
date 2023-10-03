@@ -1,7 +1,7 @@
 ﻿using System;
 using Dalamud.Plugin.Services;
 using KamiLib.AutomaticUserInterface;
-using KamiLib.Utilities;
+using KamiLib.FileIO;
 using SortaKinda.Models.Configuration;
 
 namespace SortaKinda.System;

@@ -3,7 +3,7 @@ using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using KamiLib;
 using KamiLib.Interfaces;
-using KamiLib.Windows;
+using KamiLib.UserInterface;
 using SortaKinda.Views.Tabs;
 
 namespace SortaKinda.Views.Windows;

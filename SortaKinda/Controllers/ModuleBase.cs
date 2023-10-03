@@ -1,7 +1,7 @@
 ﻿using System;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using KamiLib.Utilities;
+using KamiLib.FileIO;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
 using SortaKinda.Models.Enums;

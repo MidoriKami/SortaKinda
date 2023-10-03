@@ -7,7 +7,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib;
-using KamiLib.Caching;
+using KamiLib.Game;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
 using SortaKinda.Views.Windows;

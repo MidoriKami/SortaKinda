@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using KamiLib.Interfaces;
-using KamiLib.Windows;
+using KamiLib.UserInterface;
 using SortaKinda.Interfaces;
 using SortaKinda.Views.Tabs;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using Dalamud.Interface.Components;
 using ImGuiNET;
-using KamiLib.Utilities;
+using KamiLib.Utility;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Enums;
 
