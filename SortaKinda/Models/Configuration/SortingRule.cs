@@ -129,9 +129,42 @@ public unsafe class SortingRule : ISortingRule
         SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
         SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
-        SortOrderMode.ItemType => firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row,
+        SortOrderMode.ItemType => ItemTypeSwap(firstItem, secondItem) == 0,
         _ => false
     };
+
+    private static int ItemTypeSwap(Item firstItem, Item secondItem)
+    {
+        switch (firstItem.ItemSortCategory.Value!.Param.CompareTo(secondItem.ItemSortCategory.Value!.Param))
+        {
+            case < 0: return -1;
+            case > 0: return 1;
+            default: break;
+        }
+
+        switch (ShouldSwapItemUiCategory(firstItem, secondItem))
+        {
+            case < 0: return -1;
+            case > 0: return 1;
+            default: break;
+        }
+
+        switch (firstItem.Unknown19.CompareTo(secondItem.Unknown19))
+        {
+            case < 0: return -1;
+            case > 0: return 1;
+            default: break;
+        }
+
+        switch (firstItem.RowId.CompareTo(secondItem.RowId))
+        {
+            case < 0: return -1;
+            case > 0: return 1;
+            default: break;
+        }
+
+        return 0;
+    }
 
     private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch
     {
@@ -140,25 +173,29 @@ public unsafe class SortingRule : ISortingRule
         SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
         SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
-        SortOrderMode.ItemType => ShouldSwapItemUiCategory(firstItem, secondItem),
+        SortOrderMode.ItemType => ItemTypeSwap(firstItem, secondItem) > 0,
         _ => false
     };
 
-    private static bool ShouldSwapItemUiCategory(Item firstItem, Item secondItem)
+    private static int ShouldSwapItemUiCategory(Item firstItem, Item secondItem)
     {
-        // If same category, don't swap, other system handles fallback to alphabetical in this case
-        if (firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row) return false;
-
         if (firstItem is { ItemUICategory.Value: { } first } && secondItem is { ItemUICategory.Value: { } second })
         {
-            if (first.OrderMajor == second.OrderMajor)
+            switch (first.OrderMajor.CompareTo(second.OrderMajor))
             {
-                return first.OrderMinor > second.OrderMinor;
+                case < 0: return -1;
+                case > 0: return 1;
+                default: break;
             }
 
-            return first.OrderMajor > second.OrderMajor;
+            switch (first.OrderMinor.CompareTo(second.OrderMinor))
+            {
+                case < 0: return -1;
+                case > 0: return 1;
+                default: break;
+            }
         }
 
-        return false;
+        return 0;
     }
 }
