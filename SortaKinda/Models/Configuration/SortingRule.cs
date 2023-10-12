@@ -126,7 +126,7 @@ public unsafe class SortingRule : ISortingRule
     {
         SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
         SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
-        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) == 0,
+        SortOrderMode.Alphabetically => string.Equals(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase),
         SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
         SortOrderMode.ItemType => firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row,
