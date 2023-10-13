@@ -16,10 +16,59 @@ namespace SortaKinda.Models;
 public unsafe class SortingRule : ISortingRule
 {
     private readonly SortingRuleTooltipView view;
+    private readonly List<SortingFilter> filterRules;
 
     public SortingRule()
     {
         view = new SortingRuleTooltipView(this);
+        filterRules = new List<SortingFilter>
+        {
+            new()
+            {
+                Active = () => AllowedItemNames.Any(),
+                IsSlotAllowed = slot => AllowedItemNames.Any(allowed => Regex.IsMatch(slot.ExdItem?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase)),
+            },
+            new()
+            {
+                Active = () => AllowedItemTypes.Any(),
+                IsSlotAllowed = slot => AllowedItemTypes.Any(allowed => slot.ExdItem?.ItemUICategory.Row == allowed),
+            },
+            new()
+            {
+                Active = () => AllowedItemRarities.Any(),
+                IsSlotAllowed = slot => AllowedItemRarities.Any(allowed => slot.ExdItem?.Rarity == (byte) allowed),
+            },
+            new()
+            {
+                Active = () => ItemLevelFilter.Enable,
+                IsSlotAllowed = slot => ItemLevelFilter.IsItemSlotAllowed(slot.ExdItem?.LevelItem.Row),
+            },
+            new()
+            {
+                Active = () => VendorPriceFilter.Enable,
+                IsSlotAllowed = slot => VendorPriceFilter.IsItemSlotAllowed(slot.ExdItem?.PriceLow),
+            },
+            new()
+            {
+                Active = () => UntradableFilter.State is not ToggleFilterState.Ignored,
+                IsSlotAllowed = slot => UntradableFilter.IsItemSlotAllowed(slot),
+            },
+            new()
+            {
+                Active = () => UniqueFilter.State is not ToggleFilterState.Ignored,
+                IsSlotAllowed = slot => UniqueFilter.IsItemSlotAllowed(slot),
+            },
+            new()
+            {
+                Active = () => CollectableFilter.State is not ToggleFilterState.Ignored,
+                IsSlotAllowed = slot => CollectableFilter.IsItemSlotAllowed(slot),
+            },
+            new()
+            {
+                Active = () => DyeableFilter.State is not ToggleFilterState.Ignored,
+                IsSlotAllowed = slot => DyeableFilter.IsItemSlotAllowed(slot),
+            },
+        };
     }
 
     public Vector4 Color { get; set; }
@@ -38,6 +87,7 @@ public unsafe class SortingRule : ISortingRule
     public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;
+    public bool InclusiveAnd = false;
 
     public void ShowTooltip()
     {
@@ -55,20 +105,9 @@ public unsafe class SortingRule : ISortingRule
         return -1;
     }
 
-    public bool IsItemSlotAllowed(IInventorySlot slot)
-    {
-        if (AllowedItemNames.Count > 0 && !AllowedItemNames.Any(allowed => Regex.IsMatch(slot.ExdItem?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase))) return false;
-        if (AllowedItemTypes.Count > 0 && !AllowedItemTypes.Any(allowed => slot.ExdItem?.ItemUICategory.Row == allowed)) return false;
-        if (AllowedItemRarities.Count > 0 && !AllowedItemRarities.Any(allowed => slot.ExdItem?.Rarity == (byte) allowed)) return false;
-        if (ItemLevelFilter.Enable && (slot.ExdItem?.LevelItem.Row > ItemLevelFilter.MaxValue || slot.ExdItem?.LevelItem.Row < ItemLevelFilter.MinValue)) return false;
-        if (VendorPriceFilter.Enable && (slot.ExdItem?.PriceLow > VendorPriceFilter.MaxValue || slot.ExdItem?.PriceLow < VendorPriceFilter.MinValue)) return false;
-        if (!UntradableFilter.IsItemSlotAllowed(slot)) return false;
-        if (!UniqueFilter.IsItemSlotAllowed(slot)) return false;
-        if (!CollectableFilter.IsItemSlotAllowed(slot)) return false;
-        if (!DyeableFilter.IsItemSlotAllowed(slot)) return false;
-
-        return true;
-    }
+    public bool IsItemSlotAllowed(IInventorySlot slot) => InclusiveAnd ? 
+        filterRules.Any(rule => rule.Active() && rule.IsSlotAllowed(slot)) : 
+        filterRules.All(rule => !rule.Active() || rule.Active() && rule.IsSlotAllowed(slot));
 
     public bool CompareSlots(IInventorySlot a, IInventorySlot b)
     {

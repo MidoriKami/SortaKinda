@@ -38,4 +38,16 @@ public class RangeFilter
 
         ImGuiHelpers.ScaledDummy(8.0f);
     }
+
+    public bool IsItemSlotAllowed(uint? itemSlotValue) 
+        => IsItemSlotAllowed((int?) itemSlotValue);
+    
+    public bool IsItemSlotAllowed(int? itemSlotValue)
+    {
+        if (itemSlotValue is null) return false;
+        if (itemSlotValue < MinValue) return false;
+        if (itemSlotValue > MaxValue) return false;
+
+        return true;
+    }
 }

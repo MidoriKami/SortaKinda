@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
@@ -48,6 +50,7 @@ public class RuleConfigWindow : Window
     {
         DrawHeader();
         view.Draw();
+        DrawPopupWindow();
     }
     
     public override void PostDraw()
@@ -60,6 +63,8 @@ public class RuleConfigWindow : Window
         DrawColorEdit();
         DrawNameEdit();
         DrawDeleteButton();
+        DrawAdvancedOptionsButton();
+        ImGuiHelpers.ScaledDummy(5.0f);
     }
 
     private void DrawColorEdit()
@@ -103,7 +108,30 @@ public class RuleConfigWindow : Window
         {
             ImGui.SetTooltip("Hold Shift + Control while clicking to delete this rule");
         }
-        ImGuiHelpers.ScaledDummy(5.0f);
+    }
+
+    private void DrawAdvancedOptionsButton()
+    {
+        ImGui.SameLine();
+        ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - ImGui.GetFrameHeight());
+        if (ImGuiComponents.IconButton("AdvancedOptions", FontAwesomeIcon.Cog))
+        {
+            ImGui.OpenPopup("Advanced Options");
+        }
+    }
+
+    private void DrawPopupWindow()
+    {
+        ImGui.SetNextWindowSize(new Vector2(200.0f, 200.0f), ImGuiCond.Always);
+        if (ImGui.BeginPopup("Advanced Options"))
+        {
+            if (ImGui.Checkbox("Use Inclusive And", ref Rule.InclusiveAnd))
+            {
+                SortaKindaController.SortController.SaveConfig();
+            }
+            
+            ImGui.EndPopup();
+        }
     }
 
     public override void OnClose()
