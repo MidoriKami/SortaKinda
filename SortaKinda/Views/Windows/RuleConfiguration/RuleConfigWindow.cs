@@ -125,7 +125,7 @@ public class RuleConfigWindow : Window
         ImGui.SetNextWindowSize(new Vector2(200.0f, 200.0f), ImGuiCond.Always);
         if (ImGui.BeginPopup("Advanced Options"))
         {
-            if (ImGui.Checkbox("Use Inclusive And", ref Rule.InclusiveAnd))
+            if (ImGui.Checkbox("Use Inclusive Logic", ref Rule.InclusiveAnd))
             {
                 SortaKindaController.SortController.SaveConfig();
             }
