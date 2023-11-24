@@ -96,7 +96,7 @@ public unsafe class InventoryScanner
         return changelog;
     }
 
-    private Span<InventoryItem> GetItems(InventoryType type)
+    private ReadOnlySpan<InventoryItem> GetItems(InventoryType type)
     {
         var inventoryManager = InventoryManager.Instance();
         if (inventoryManager is null) return Span<InventoryItem>.Empty;
@@ -104,7 +104,7 @@ public unsafe class InventoryScanner
         var inventory = inventoryManager->GetInventoryContainer(type);
         if (inventory is null) return Span<InventoryItem>.Empty;
 
-        return new Span<InventoryItem>(inventory->Items, (int)inventory->Size);
+        return new ReadOnlySpan<InventoryItem>(inventory->Items, (int)inventory->Size);
     }
 
     private static IEnumerable<ItemChangelog> Normalize(IEnumerable<ItemChangelog> changelogs)
