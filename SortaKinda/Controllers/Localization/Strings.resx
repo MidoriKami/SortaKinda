@@ -120,4 +120,7 @@
     <data name="HelpText" xml:space="preserve">
         <value>Display this helptext</value>
     </data>
+    <data name="Repairable" xml:space="preserve">
+        <value>Repairable</value>
+    </data>
 </root>

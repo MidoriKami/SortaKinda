@@ -249,6 +249,15 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repairable.
+        /// </summary>
+        internal static string Repairable {
+            get {
+                return ResourceManager.GetString("Repairable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sell Price.
         /// </summary>
         internal static string SellPrice {

@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum PropertyFilter
-{
+public enum PropertyFilter {
     [EnumLabel("Untradable")]
     Untradable,
     
@@ -15,4 +14,7 @@ public enum PropertyFilter
     
     [EnumLabel("Collectable")]
     Collectable,
+    
+    [EnumLabel("Repairable")]
+    Repairable,
 }

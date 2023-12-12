@@ -6,8 +6,7 @@ using SortaKinda.Models.General;
 
 namespace SortaKinda.Interfaces;
 
-public interface ISortingRule : IComparer<IInventorySlot>
-{
+public interface ISortingRule : IComparer<IInventorySlot> {
     Vector4 Color { get; set; }
     string Id { get; }
     string Name { get; }
@@ -22,6 +21,7 @@ public interface ISortingRule : IComparer<IInventorySlot>
     ToggleFilter UniqueFilter { get; }
     ToggleFilter CollectableFilter { get; }
     ToggleFilter DyeableFilter { get; }
+    ToggleFilter RepairableFilter { get; }
 
     SortOrderDirection Direction { get; set; }
     FillMode FillMode { get; set; }

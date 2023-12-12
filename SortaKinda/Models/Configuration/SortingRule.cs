@@ -13,58 +13,46 @@ using SortaKinda.Views.SortControllerViews;
 
 namespace SortaKinda.Models;
 
-public unsafe class SortingRule : ISortingRule
-{
+public unsafe class SortingRule : ISortingRule {
     private readonly SortingRuleTooltipView view;
     private readonly List<SortingFilter> filterRules;
 
-    public SortingRule()
-    {
+    public SortingRule() {
         view = new SortingRuleTooltipView(this);
-        filterRules = new List<SortingFilter>
-        {
-            new()
-            {
+        filterRules = new List<SortingFilter> {
+            new() {
                 Active = () => AllowedItemNames.Any(),
                 IsSlotAllowed = slot => AllowedItemNames.Any(allowed => Regex.IsMatch(slot.ExdItem?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase)),
             },
-            new()
-            {
+            new() {
                 Active = () => AllowedItemTypes.Any(),
                 IsSlotAllowed = slot => AllowedItemTypes.Any(allowed => slot.ExdItem?.ItemUICategory.Row == allowed),
             },
-            new()
-            {
+            new() {
                 Active = () => AllowedItemRarities.Any(),
                 IsSlotAllowed = slot => AllowedItemRarities.Any(allowed => slot.ExdItem?.Rarity == (byte) allowed),
             },
-            new()
-            {
+            new() {
                 Active = () => ItemLevelFilter.Enable,
                 IsSlotAllowed = slot => ItemLevelFilter.IsItemSlotAllowed(slot.ExdItem?.LevelItem.Row),
             },
-            new()
-            {
+            new() {
                 Active = () => VendorPriceFilter.Enable,
                 IsSlotAllowed = slot => VendorPriceFilter.IsItemSlotAllowed(slot.ExdItem?.PriceLow),
             },
-            new()
-            {
+            new() {
                 Active = () => UntradableFilter.State is not ToggleFilterState.Ignored,
                 IsSlotAllowed = slot => UntradableFilter.IsItemSlotAllowed(slot),
             },
-            new()
-            {
+            new() {
                 Active = () => UniqueFilter.State is not ToggleFilterState.Ignored,
                 IsSlotAllowed = slot => UniqueFilter.IsItemSlotAllowed(slot),
             },
-            new()
-            {
+            new() {
                 Active = () => CollectableFilter.State is not ToggleFilterState.Ignored,
                 IsSlotAllowed = slot => CollectableFilter.IsItemSlotAllowed(slot),
             },
-            new()
-            {
+            new() {
                 Active = () => DyeableFilter.State is not ToggleFilterState.Ignored,
                 IsSlotAllowed = slot => DyeableFilter.IsItemSlotAllowed(slot),
             },
@@ -84,18 +72,17 @@ public unsafe class SortingRule : ISortingRule
     public ToggleFilter UniqueFilter { get; set; } = new(PropertyFilter.Unique);
     public ToggleFilter CollectableFilter { get; set; } = new(PropertyFilter.Collectable);
     public ToggleFilter DyeableFilter { get; set; } = new(PropertyFilter.Dyeable);
+    public ToggleFilter RepairableFilter { get; set; } = new(PropertyFilter.Repairable);
     public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;
     public bool InclusiveAnd = false;
 
-    public void ShowTooltip()
-    {
+    public void ShowTooltip() {
         view.Draw();
     }
 
-    public int Compare(IInventorySlot? x, IInventorySlot? y)
-    {
+    public int Compare(IInventorySlot? x, IInventorySlot? y) {
         if (x is null) return 0;
         if (y is null) return 0;
         if (x.ExdItem is null) return 0;
@@ -109,13 +96,11 @@ public unsafe class SortingRule : ISortingRule
         filterRules.Any(rule => rule.Active() && rule.IsSlotAllowed(slot)) : 
         filterRules.All(rule => !rule.Active() || rule.Active() && rule.IsSlotAllowed(slot));
 
-    public bool CompareSlots(IInventorySlot a, IInventorySlot b)
-    {
+    public bool CompareSlots(IInventorySlot a, IInventorySlot b) {
         var firstItem = a.ExdItem;
         var secondItem = b.ExdItem;
 
-        switch (a.HasItem, b.HasItem)
-        {
+        switch (a.HasItem, b.HasItem) {
             // If both items are null, don't swap
             case (false, false): return false;
 
@@ -130,27 +115,22 @@ public unsafe class SortingRule : ISortingRule
                 var shouldSwap = false;
                 
                 // They are the same item
-                if (firstItem.RowId == secondItem.RowId)
-                {
+                if (firstItem.RowId == secondItem.RowId) {
                     // if left is not HQ, and right is HQ, swap
-                    if (!a.InventoryItem->Flags.HasFlag(InventoryItem.ItemFlags.HQ) && b.InventoryItem->Flags.HasFlag(InventoryItem.ItemFlags.HQ))
-                    {
+                    if (!a.InventoryItem->Flags.HasFlag(InventoryItem.ItemFlags.HQ) && b.InventoryItem->Flags.HasFlag(InventoryItem.ItemFlags.HQ)) {
                         shouldSwap = true;
                     }
                     // else if left has lower quantity then right, swap
-                    else if (a.InventoryItem->Quantity < b.InventoryItem->Quantity)
-                    {
+                    else if (a.InventoryItem->Quantity < b.InventoryItem->Quantity) {
                         shouldSwap = true;
                     }
                 }
                 // else if they match according to the default filter, fallback to alphabetical
-                else if (IsFilterMatch(firstItem, secondItem))
-                {
+                else if (IsFilterMatch(firstItem, secondItem)) {
                     shouldSwap = ShouldSwap(firstItem, secondItem, SortOrderMode.Alphabetically);
                 }
                 // else they are not the same item, and the filter result doesn't match
-                else
-                {
+                else {
                     shouldSwap = ShouldSwap(firstItem, secondItem, SortMode);
                 }
                 
@@ -161,8 +141,7 @@ public unsafe class SortingRule : ISortingRule
         }
     }
     
-    private bool IsFilterMatch(Item firstItem, Item secondItem) => SortMode switch
-    {
+    private bool IsFilterMatch(Item firstItem, Item secondItem) => SortMode switch {
         SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
         SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
         SortOrderMode.Alphabetically => string.Equals(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase),
@@ -172,8 +151,7 @@ public unsafe class SortingRule : ISortingRule
         _ => false
     };
 
-    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch
-    {
+    private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch {
         SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
         SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
         SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
@@ -183,15 +161,12 @@ public unsafe class SortingRule : ISortingRule
         _ => false
     };
 
-    private static bool ShouldSwapItemUiCategory(Item firstItem, Item secondItem)
-    {
+    private static bool ShouldSwapItemUiCategory(Item firstItem, Item secondItem) {
         // If same category, don't swap, other system handles fallback to alphabetical in this case
         if (firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row) return false;
 
-        if (firstItem is { ItemUICategory.Value: { } first } && secondItem is { ItemUICategory.Value: { } second })
-        {
-            if (first.OrderMajor == second.OrderMajor)
-            {
+        if (firstItem is { ItemUICategory.Value: { } first } && secondItem is { ItemUICategory.Value: { } second }) {
+            if (first.OrderMajor == second.OrderMajor) {
                 return first.OrderMinor > second.OrderMinor;
             }
 
