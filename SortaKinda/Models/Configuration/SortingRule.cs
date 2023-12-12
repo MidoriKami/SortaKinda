@@ -56,6 +56,10 @@ public unsafe class SortingRule : ISortingRule {
                 Active = () => DyeableFilter.State is not ToggleFilterState.Ignored,
                 IsSlotAllowed = slot => DyeableFilter.IsItemSlotAllowed(slot),
             },
+            new() {
+                Active = () => RepairableFilter.State is not ToggleFilterState.Ignored,
+                IsSlotAllowed = slot => RepairableFilter.IsItemSlotAllowed(slot),
+            }
         };
     }
 
