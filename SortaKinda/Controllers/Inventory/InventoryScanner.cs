@@ -99,10 +99,10 @@ public unsafe class InventoryScanner
     private ReadOnlySpan<InventoryItem> GetItems(InventoryType type)
     {
         var inventoryManager = InventoryManager.Instance();
-        if (inventoryManager is null) return Span<InventoryItem>.Empty;
+        if (inventoryManager is null) return ReadOnlySpan<InventoryItem>.Empty;
 
         var inventory = inventoryManager->GetInventoryContainer(type);
-        if (inventory is null) return Span<InventoryItem>.Empty;
+        if (inventory is null) return ReadOnlySpan<InventoryItem>.Empty;
 
         return new ReadOnlySpan<InventoryItem>(inventory->Items, (int)inventory->Size);
     }
