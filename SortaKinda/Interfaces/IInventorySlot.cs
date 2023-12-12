@@ -5,8 +5,7 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace SortaKinda.Interfaces;
 
-public unsafe interface IInventorySlot
-{
+public unsafe interface IInventorySlot {
     [MemberNotNullWhen(true, "ExdItem")] bool HasItem { get; }
 
     Item? ExdItem { get; }

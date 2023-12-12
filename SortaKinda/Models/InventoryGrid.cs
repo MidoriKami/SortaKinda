@@ -7,16 +7,13 @@ using SortaKinda.Models.Inventory;
 
 namespace SortaKinda.System;
 
-public class InventoryGrid : IInventoryGrid
-{
-    public InventoryGrid(InventoryType type, InventoryConfig config)
-    {
+public class InventoryGrid : IInventoryGrid {
+    public InventoryGrid(InventoryType type, InventoryConfig config) {
         Type = type;
         Config = config;
         Inventory = new List<IInventorySlot>();
 
-        foreach (var index in Enumerable.Range(0, InventoryController.GetInventoryPageSize(Type)))
-        {
+        foreach (var index in Enumerable.Range(0, InventoryController.GetInventoryPageSize(Type))) {
             Inventory.Add(new InventorySlot(Type, config.SlotConfigs[index], index));
         }
     }

@@ -6,17 +6,13 @@ using SortaKinda.Views.Tabs;
 
 namespace SortaKinda.Views.SortControllerViews;
 
-public class SortingRuleView
-{
+public class SortingRuleView {
     private readonly TabBar tabBar;
 
-    public SortingRuleView(ISortingRule rule)
-    {
-        tabBar = new TabBar
-        {
+    public SortingRuleView(ISortingRule rule) {
+        tabBar = new TabBar {
             Id = "SortingRuleTabBar",
-            TabItems = new List<ITabItem>
-            {
+            TabItems = new List<ITabItem> {
                 new ItemTypeFilterTab(rule),
                 new ItemNameFilterTab(rule),
                 new OtherFiltersTab(rule),
@@ -26,8 +22,5 @@ public class SortingRuleView
         };
     }
 
-    public void Draw()
-    {
-        tabBar.Draw();
-    }
+    public void Draw() => tabBar.Draw();
 }

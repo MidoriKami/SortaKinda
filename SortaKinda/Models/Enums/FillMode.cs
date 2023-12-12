@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum FillMode
-{
+public enum FillMode {
     [EnumLabel("Top")] 
     Top,
 

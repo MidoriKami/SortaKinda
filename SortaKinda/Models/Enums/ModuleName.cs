@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum ModuleName
-{
+public enum ModuleName {
     [EnumLabel("MainInventory")] 
     MainInventory,
 

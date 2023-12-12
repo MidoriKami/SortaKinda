@@ -6,8 +6,7 @@ using SortaKinda.Models.Configuration;
 
 namespace SortaKinda.System;
 
-public class SortaKindaController : IDisposable
-{
+public class SortaKindaController : IDisposable {
     public static ModuleController ModuleController = null!;
     public static SortController SortController = null!;
     public static SystemConfig SystemConfig = null!;
@@ -16,16 +15,14 @@ public class SortaKindaController : IDisposable
 
     private uint lastJob = uint.MaxValue;
 
-    public SortaKindaController()
-    {
+    public SortaKindaController() {
         SortingThreadController = new SortingThreadController();
         InventoryScanner = new InventoryScanner();
         SystemConfig = new SystemConfig();
         SortController = new SortController();
         ModuleController = new ModuleController();
 
-        if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 })
-        {
+        if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 }) {
             OnLogin();
         }
 
@@ -35,8 +32,7 @@ public class SortaKindaController : IDisposable
         Service.ClientState.TerritoryChanged += OnZoneChange;
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
         Service.ClientState.Login -= OnLogin;
         Service.ClientState.Logout -= OnLogout;
         Service.Framework.Update -= OnUpdate;
@@ -46,8 +42,7 @@ public class SortaKindaController : IDisposable
         SortingThreadController.Dispose();
     }
 
-    private void OnLogin()
-    {
+    private void OnLogin() {
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;
         if (Service.ClientState is not { LocalPlayer: { Name.TextValue: var playerName, HomeWorld.GameData.InternalName.RawString: var worldName } }) return;
@@ -64,15 +59,13 @@ public class SortaKindaController : IDisposable
         if (SystemConfig.SortOnLogin) ModuleController.Sort();
     }
 
-    private void OnLogout()
-    {
+    private void OnLogout() {
         ModuleController.Unload();
 
         lastJob = uint.MaxValue;
     }
 
-    private void OnUpdate(IFramework framework)
-    {
+    private void OnUpdate(IFramework framework) {
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;
         if (Service.ClientState is not { LocalPlayer.ClassJob.Id: var classJobId }) return;
@@ -86,8 +79,7 @@ public class SortaKindaController : IDisposable
         // Prevent sorting on load, we have a different option for that
         if (lastJob is uint.MaxValue) lastJob = classJobId;
 
-        if (SystemConfig.SortOnJobChange && lastJob != classJobId)
-        {
+        if (SystemConfig.SortOnJobChange && lastJob != classJobId) {
             ModuleController.Sort();
             lastJob = classJobId;
         }
@@ -95,19 +87,15 @@ public class SortaKindaController : IDisposable
         SortingThreadController.Update();
     }
 
-    private void OnZoneChange(ushort e)
-    {
+    private void OnZoneChange(ushort e) {
         if (!Service.ClientState.IsLoggedIn) return;
         if (Service.ClientState.IsPvP) return;
 
         if (SystemConfig.SortOnZoneChange) ModuleController.Sort();
     }
 
-    public static void DrawConfig()
-    {
-        DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
-    }
-    
+    public static void DrawConfig() => DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
+
     private static SystemConfig LoadConfig() => CharacterFileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
 
     private static void SaveConfig() => CharacterFileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);

@@ -3,23 +3,20 @@ using ImGuiNET;
 
 namespace SortaKinda.Models;
 
-public class RangeFilter
-{
+public class RangeFilter {
     public bool Enable;
 
     public string Label;
     public int MaxValue;
     public int MinValue;
 
-    public RangeFilter(string label, int defaultMinimum, int defaultMaximum)
-    {
+    public RangeFilter(string label, int defaultMinimum, int defaultMaximum) {
         Label = label;
         MinValue = defaultMinimum;
         MaxValue = defaultMaximum;
     }
 
-    public void DrawConfig()
-    {
+    public void DrawConfig() {
         ImGui.TextUnformatted(Label);
 
         ImGui.Checkbox($"##Enable{Label}", ref Enable);
@@ -42,8 +39,7 @@ public class RangeFilter
     public bool IsItemSlotAllowed(uint? itemSlotValue) 
         => IsItemSlotAllowed((int?) itemSlotValue);
     
-    public bool IsItemSlotAllowed(int? itemSlotValue)
-    {
+    public bool IsItemSlotAllowed(int? itemSlotValue) {
         if (itemSlotValue is null) return false;
         if (itemSlotValue < MinValue) return false;
         if (itemSlotValue > MaxValue) return false;

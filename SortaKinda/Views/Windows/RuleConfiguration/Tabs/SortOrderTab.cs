@@ -7,10 +7,8 @@ using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.Tabs;
 
-public class SortOrderTab : ITwoColumnRuleConfigurationTab
-{
-    public SortOrderTab(ISortingRule rule)
-    {
+public class SortOrderTab : ITwoColumnRuleConfigurationTab {
+    public SortOrderTab(ISortingRule rule) {
         SortingRule = rule;
     }
 
@@ -20,8 +18,7 @@ public class SortOrderTab : ITwoColumnRuleConfigurationTab
     public string FirstLabel => "Sort By";
     public string SecondLabel => "Sort Options";
 
-    public void DrawLeftSideContents()
-    {
+    public void DrawLeftSideContents() {
         ImGui.Text("Order items using");
         ImGuiComponents.HelpMarker("The primary property of an item to use for ordering");
         var sortMode = SortingRule.SortMode;
@@ -30,8 +27,7 @@ public class SortOrderTab : ITwoColumnRuleConfigurationTab
         SortingRule.SortMode = sortMode;
     }
 
-    public void DrawRightSideContents()
-    {
+    public void DrawRightSideContents() {
         ImGui.Text("Sort item by");
         ImGuiComponents.HelpMarker("Ascending: A -> Z\nDescending Z -> A");
         var sortDirection = SortingRule.Direction;
@@ -45,16 +41,12 @@ public class SortOrderTab : ITwoColumnRuleConfigurationTab
 
         SortingRule.Direction = sortDirection;
         SortingRule.FillMode = fillMode;
-
     }
 
-    private static void DrawRadioEnum<T>(ref T configValue) where T : Enum
-    {
-        foreach (Enum value in Enum.GetValues(configValue.GetType()))
-        {
+    private static void DrawRadioEnum<T>(ref T configValue) where T : Enum {
+        foreach (Enum value in Enum.GetValues(configValue.GetType())) {
             var isSelected = Convert.ToInt32(configValue);
-            if (ImGui.RadioButton($"{value.Label()}##{configValue.GetType()}", ref isSelected, Convert.ToInt32(value)))
-            {
+            if (ImGui.RadioButton($"{value.Label()}##{configValue.GetType()}", ref isSelected, Convert.ToInt32(value))) {
                 configValue = (T) value;
             }
         }

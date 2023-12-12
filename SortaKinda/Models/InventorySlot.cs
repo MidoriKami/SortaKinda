@@ -8,10 +8,8 @@ using SortaKinda.System;
 
 namespace SortaKinda.Models.Inventory;
 
-public unsafe class InventorySlot : IInventorySlot
-{
-    public InventorySlot(InventoryType type, SlotConfig config, int index)
-    {
+public unsafe class InventorySlot : IInventorySlot {
+    public InventorySlot(InventoryType type, SlotConfig config, int index) {
         Type = type;
         Config = config;
         Slot = index;
@@ -24,14 +22,11 @@ public unsafe class InventorySlot : IInventorySlot
     public InventoryItem* InventoryItem => InventoryController.GetItemForSlot(Type, Slot);
     public ItemOrderModuleSorterItemEntry* ItemOrderEntry => InventoryController.GetItemOrderData(Type, Slot);
 
-    public ISortingRule Rule
-    {
-        get
-        {
+    public ISortingRule Rule {
+        get {
             var sortControllerRule = SortaKindaController.SortController.GetRule(Config.RuleId);
 
-            if (sortControllerRule.Id != Config.RuleId)
-            {
+            if (sortControllerRule.Id != Config.RuleId) {
                 TryApplyRule(sortControllerRule.Id);
             }
             return sortControllerRule;
@@ -40,30 +35,16 @@ public unsafe class InventorySlot : IInventorySlot
 
     public int Slot { get; init; }
 
-    public void OnLeftClick()
-    {
-        TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
-    }
+    public void OnLeftClick() => TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
 
-    public void OnRightClick()
-    {
-        TryApplyRule(SortController.DefaultId);
-    }
+    public void OnRightClick() => TryApplyRule(SortController.DefaultId);
 
-    public void OnDragCollision()
-    {
-        TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
-    }
+    public void OnDragCollision() => TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
 
-    public void OnHover()
-    {
-        Rule.ShowTooltip();
-    }
+    public void OnHover() => Rule.ShowTooltip();
 
-    private void TryApplyRule(string id)
-    {
-        if (Config.RuleId != id)
-        {
+    private void TryApplyRule(string id) {
+        if (Config.RuleId != id) {
             Config.RuleId = id;
             Config.Dirty = true;
         }

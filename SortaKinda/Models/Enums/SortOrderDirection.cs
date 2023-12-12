@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum SortOrderDirection
-{
+public enum SortOrderDirection {
     [EnumLabel("Ascending")] 
     Ascending,
 

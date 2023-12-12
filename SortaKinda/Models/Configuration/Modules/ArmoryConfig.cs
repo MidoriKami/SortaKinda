@@ -3,10 +3,8 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace SortaKinda.Models.Configuration;
 
-public class ArmoryConfig : IModuleConfig
-{
-    public List<InventoryConfig> InventoryConfigs { get; set; } = new()
-    {
+public class ArmoryConfig : IModuleConfig {
+    public List<InventoryConfig> InventoryConfigs { get; set; } = new() {
         new InventoryConfig(InventoryType.ArmoryMainHand),
         new InventoryConfig(InventoryType.ArmoryOffHand),
         new InventoryConfig(InventoryType.ArmoryHead),

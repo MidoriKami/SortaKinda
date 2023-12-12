@@ -3,8 +3,7 @@ using SortaKinda.Models;
 
 namespace SortaKinda.Interfaces;
 
-public interface ISortController
-{
+public interface ISortController {
     List<SortingRule> Rules { get; }
 
     void SortAllInventories();

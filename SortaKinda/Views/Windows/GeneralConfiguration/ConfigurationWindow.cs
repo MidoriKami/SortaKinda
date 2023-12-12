@@ -15,14 +15,11 @@ using SortaKinda.Views.Tabs;
 
 namespace SortaKinda.Views.Windows;
 
-public class ConfigurationWindow : Window
-{
+public class ConfigurationWindow : Window {
     private readonly AreaPaintController areaPaintController = new();
 
-    private readonly TabBar tabBar = new()
-    {
-        TabItems = new List<ITabItem>
-        {
+    private readonly TabBar tabBar = new() {
+        TabItems = new List<ITabItem> {
             new MainInventoryTab(),
             new ArmoryInventoryTab(),
             new GeneralConfigurationTab()
@@ -30,8 +27,7 @@ public class ConfigurationWindow : Window
         Id = "SortaKindaConfigTabBar"
     };
 
-    public ConfigurationWindow() : base("SortaKinda - Configuration Window")
-    {
+    public ConfigurationWindow() : base("SortaKinda - Configuration Window") {
         Size = new Vector2(840, 636);
 
         Flags |= ImGuiWindowFlags.NoScrollbar;
@@ -41,13 +37,9 @@ public class ConfigurationWindow : Window
         CommandController.RegisterCommands(this);
     }
 
-    public override bool DrawConditions()
-    {
-        return Service.ClientState is { IsLoggedIn: true, IsPvP: false, LocalContentId: not 0, LocalPlayer: not null };
-    }
+    public override bool DrawConditions() => Service.ClientState is { IsLoggedIn: true, IsPvP: false, LocalContentId: not 0, LocalPlayer: not null };
 
-    public override void PreDraw()
-    {
+    public override void PreDraw() {
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, StyleModelV1.DalamudStandard.WindowPadding * ImGuiHelpers.GlobalScale);
         ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, StyleModelV1.DalamudStandard.FramePadding * ImGuiHelpers.GlobalScale);
         ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, StyleModelV1.DalamudStandard.CellPadding * ImGuiHelpers.GlobalScale);
@@ -56,23 +48,19 @@ public class ConfigurationWindow : Window
         ImGui.PushStyleVar(ImGuiStyleVar.IndentSpacing, StyleModelV1.DalamudStandard.IndentSpacing * ImGuiHelpers.GlobalScale);
     }
 
-    public override void Draw()
-    {
+    public override void Draw() {
         tabBar.Draw();
         areaPaintController.Draw();
     }
 
-    public override void PostDraw()
-    {
+    public override void PostDraw() {
         ImGui.PopStyleVar(6);
     }
 
     [BaseCommandHandler("OpenConfigWindow")]
-    public void OpenConfigWindow()
-    {
+    public void OpenConfigWindow() {
         if (!Service.ClientState.IsLoggedIn) return;
-        if (Service.ClientState.IsPvP)
-        {
+        if (Service.ClientState.IsPvP) {
             Chat.PrintError("The configuration menu cannot be opened while in a PvP area");
             return;
         }

@@ -5,13 +5,10 @@ using KamiLib.Interfaces;
 
 namespace SortaKinda.Views.Tabs;
 
-public class TutorialAboutTab : ITabItem
-{
+public class TutorialAboutTab : ITabItem {
     public string TabName => "About";
     public bool Enabled => true;
-    
-    public void Draw()
-    {
+    public void Draw() {
         ImGuiHelpers.ScaledDummy(10.0f);
         
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(ImGui.GetStyle().ItemSpacing.X, 10.0f * ImGuiHelpers.GlobalScale));

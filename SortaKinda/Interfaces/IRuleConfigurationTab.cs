@@ -8,21 +8,17 @@ using SortaKinda.System;
 
 namespace SortaKinda.Interfaces;
 
-public interface IRuleConfigurationTab : ITabItem
-{
+public interface IRuleConfigurationTab : ITabItem {
     private static Vector2 FooterSize => ImGuiHelpers.ScaledVector2(0.0f, 30.0f);
     protected ISortingRule SortingRule { get; }
 
-    void ITabItem.Draw()
-    {
-        if (ImGui.BeginChild("##RuleConfigurationTabChild", ImGui.GetContentRegionAvail() - FooterSize - ImGui.GetStyle().FramePadding))
-        {
+    void ITabItem.Draw() {
+        if (ImGui.BeginChild("##RuleConfigurationTabChild", ImGui.GetContentRegionAvail() - FooterSize - ImGui.GetStyle().FramePadding)) {
             DrawConfigurationTab();
         }
         ImGui.EndChild();
 
-        if (ImGui.BeginChild("##RuleConfigurationTabFooter", FooterSize - ImGui.GetStyle().FramePadding))
-        {
+        if (ImGui.BeginChild("##RuleConfigurationTabFooter", FooterSize - ImGui.GetStyle().FramePadding)) {
             DrawFooter();
         }
         ImGui.EndChild();
@@ -30,8 +26,7 @@ public interface IRuleConfigurationTab : ITabItem
 
     void DrawConfigurationTab();
 
-    void DrawFooter()
-    {
+    void DrawFooter() {
         var buttonSize = ImGuiHelpers.ScaledVector2(100.0f, 23.0f);
 
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
@@ -39,16 +34,14 @@ public interface IRuleConfigurationTab : ITabItem
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X * 2.0f - ImGui.GetStyle().ItemSpacing.X);
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.Button("Save", buttonSize))
-        {
+        if (ImGui.Button("Save", buttonSize)) {
             SortaKindaController.ModuleController.Sort();
             SortaKindaController.SortController.SaveConfig();
         }
 
         ImGui.SameLine();
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.Button("Save & Close", buttonSize))
-        {
+        if (ImGui.Button("Save & Close", buttonSize)) {
             SortaKindaController.ModuleController.Sort();
             SortaKindaController.SortController.SaveConfig();
             RuleConfigWindowController.RemoveRuleConfigWindow(SortingRule.Id);

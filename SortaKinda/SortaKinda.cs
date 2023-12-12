@@ -7,12 +7,10 @@ using SortaKinda.Views.Windows;
 
 namespace SortaKinda;
 
-public sealed class SortaKindaPlugin : IDalamudPlugin
-{
+public sealed class SortaKindaPlugin : IDalamudPlugin {
     public static SortaKindaController Controller = null!;
 
-    public SortaKindaPlugin(DalamudPluginInterface pluginInterface)
-    {
+    public SortaKindaPlugin(DalamudPluginInterface pluginInterface) {
         pluginInterface.Create<Service>();
 
         KamiCommon.Initialize(pluginInterface, "SortaKinda");
@@ -25,8 +23,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin
         KamiCommon.WindowManager.AddConfigurationWindow(new ConfigurationWindow());
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
         KamiCommon.Dispose();
 
         Controller.Dispose();

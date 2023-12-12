@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum ItemRarity
-{
+public enum ItemRarity {
     [EnumLabel("White")] 
     White = 1,
 

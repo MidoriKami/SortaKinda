@@ -8,15 +8,13 @@ using SortaKinda.Models.Enums;
 
 namespace SortaKinda.System;
 
-public abstract class ModuleBase : IModule
-{
+public abstract class ModuleBase : IModule {
     private bool IsLoaded { get; set; }
     private float lastScale;
     
     protected abstract IModuleConfig ModuleConfig { get; set; }
 
-    private IModuleConfig DefaultConfig => ModuleName switch
-    {
+    private IModuleConfig DefaultConfig => ModuleName switch {
         ModuleName.MainInventory => new MainInventoryConfig(),
         ModuleName.ArmoryInventory => new ArmoryConfig(),
         _ => throw new ArgumentOutOfRangeException()
@@ -27,12 +25,9 @@ public abstract class ModuleBase : IModule
     public abstract void Draw();
     protected abstract void LoadViews();
 
-    public virtual void Dispose()
-    {
-    }
+    public virtual void Dispose() { }
 
-    public void LoadModule()
-    {
+    public void LoadModule() {
         Service.Log.Debug($"[{ModuleName}] Loading Module");
 
         ModuleConfig = DefaultConfig;
@@ -46,24 +41,19 @@ public abstract class ModuleBase : IModule
         SortaKindaController.InventoryScanner.InventoryChanged += InventoryChanged;
     }
 
-    public void UnloadModule()
-    {
+    public void UnloadModule() {
         SortaKindaController.InventoryScanner.InventoryChanged -= InventoryChanged;
         
         IsLoaded = false;
     }
 
-    public void UpdateModule()
-    {
+    public void UpdateModule() {
         if (!IsLoaded) return;
 
         var needsSaving = false;
-        foreach (var inventory in ModuleConfig.InventoryConfigs)
-        {
-            foreach (var slot in inventory.SlotConfigs)
-            {
-                if (slot.Dirty)
-                {
+        foreach (var inventory in ModuleConfig.InventoryConfigs) {
+            foreach (var slot in inventory.SlotConfigs) {
+                if (slot.Dirty) {
                     needsSaving = true;
                     slot.Dirty = false;
                 }
@@ -72,15 +62,13 @@ public abstract class ModuleBase : IModule
 
         if (needsSaving) SaveConfig();
 
-        if (!ImGuiHelpers.GlobalScale.Equals(lastScale))
-        {
+        if (!ImGuiHelpers.GlobalScale.Equals(lastScale)) {
             LoadViews();
         }
         lastScale = ImGuiHelpers.GlobalScale;
     }
 
-    public void SortModule()
-    {
+    public void SortModule() {
         if (!IsLoaded) return;
 
         Sort();
@@ -92,13 +80,7 @@ public abstract class ModuleBase : IModule
     
     protected abstract void Sort();
 
-    private IModuleConfig LoadConfig()
-    {
-        return CharacterFileController.LoadFile<IModuleConfig>($"{ModuleName}.config.json", ModuleConfig);
-    }
-    
-    private void SaveConfig()
-    {
-        CharacterFileController.SaveFile($"{ModuleName}.config.json", ModuleConfig.GetType(), ModuleConfig);
-    }
+    private IModuleConfig LoadConfig() => CharacterFileController.LoadFile<IModuleConfig>($"{ModuleName}.config.json", ModuleConfig);
+
+    private void SaveConfig() => CharacterFileController.SaveFile($"{ModuleName}.config.json", ModuleConfig.GetType(), ModuleConfig);
 }

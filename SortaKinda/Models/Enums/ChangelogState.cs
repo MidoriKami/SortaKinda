@@ -1,7 +1,6 @@
 namespace SortaKinda.Models.Enums;
 
-public enum ChangelogState
-{
+public enum ChangelogState {
     Added,
     Removed
 }

@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum ToggleFilterState
-{
+public enum ToggleFilterState {
     [EnumLabel("Ignored")]
     Ignored,
     

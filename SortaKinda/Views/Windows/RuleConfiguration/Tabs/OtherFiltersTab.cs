@@ -7,10 +7,8 @@ using SortaKinda.Models.Enums;
 
 namespace SortaKinda.Views.Tabs;
 
-public class OtherFiltersTab : ITwoColumnRuleConfigurationTab
-{
-    public OtherFiltersTab(ISortingRule rule)
-    {
+public class OtherFiltersTab : ITwoColumnRuleConfigurationTab {
+    public OtherFiltersTab(ISortingRule rule) {
         SortingRule = rule;
     }
 
@@ -20,19 +18,15 @@ public class OtherFiltersTab : ITwoColumnRuleConfigurationTab
     public string FirstLabel => "Range Filters";
     public string SecondLabel => "Item Rarity Filter";
 
-    public void DrawLeftSideContents()
-    {
+    public void DrawLeftSideContents() {
         SortingRule.ItemLevelFilter.DrawConfig();
         SortingRule.VendorPriceFilter.DrawConfig();
     }
 
-    public void DrawRightSideContents()
-    {
-        foreach (var enumValue in Enum.GetValues<ItemRarity>())
-        {
+    public void DrawRightSideContents() {
+        foreach (var enumValue in Enum.GetValues<ItemRarity>()) {
             var enabled = SortingRule.AllowedItemRarities.Contains(enumValue);
-            if (ImGuiComponents.ToggleButton($"{enumValue.Label()}", ref enabled))
-            {
+            if (ImGuiComponents.ToggleButton($"{enumValue.Label()}", ref enabled)) {
                 if (enabled) SortingRule.AllowedItemRarities.Add(enumValue);
                 if (!enabled) SortingRule.AllowedItemRarities.Remove(enumValue);
             }

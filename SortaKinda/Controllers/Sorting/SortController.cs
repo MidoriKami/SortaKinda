@@ -10,16 +10,14 @@ using SortaKinda.Views.SortControllerViews;
 
 namespace SortaKinda.System;
 
-public class SortController : ISortController
-{
+public class SortController : ISortController {
     public const string DefaultId = "Default";
     public int SelectedRuleIndex = 0;
     public SortingRuleConfig RuleConfig { get; set; } = new();
     public ISortingRule SelectedRule => SelectedRuleIndex < RuleConfig.Rules.Count ? RuleConfig.Rules[SelectedRuleIndex] : DefaultRule;
     public SortControllerView? View { get; set; }
 
-    private static SortingRule DefaultRule => new()
-    {
+    private static SortingRule DefaultRule => new() {
         Id = DefaultId,
         Name = "Unsorted",
         Index = 0,
@@ -28,49 +26,30 @@ public class SortController : ISortController
 
     public List<SortingRule> Rules => RuleConfig.Rules;
 
-    public void SortAllInventories()
-    {
-        SortaKindaController.ModuleController.Sort();
-    }
-    
-    public void SaveConfig()
-    {
-        CharacterFileController.SaveFile("SortingRules.config.json", RuleConfig.GetType(), RuleConfig);
-    }
+    public void SortAllInventories() => SortaKindaController.ModuleController.Sort();
 
-    public void Load()
-    {
+    public void Load() {
         RuleConfig = new SortingRuleConfig();
         RuleConfig = LoadConfig();
         View = new SortControllerView(this);
         EnsureDefaultRule();
     }
 
-    public void Draw()
-    {
-        View?.Draw();
-    }
+    public void Draw() => View?.Draw();
 
-    public ISortingRule GetRule(string id)
-    {
-        return RuleConfig.Rules.FirstOrDefault(rule => rule.Id == id) ?? RuleConfig.Rules[0];
-    }
+    public ISortingRule GetRule(string id) => RuleConfig.Rules.FirstOrDefault(rule => rule.Id == id) ?? RuleConfig.Rules[0];
 
-    private void EnsureDefaultRule()
-    {
-        if (RuleConfig.Rules.Count is 0)
-        {
+    private void EnsureDefaultRule() {
+        if (RuleConfig.Rules.Count is 0) {
             RuleConfig.Rules.Add(DefaultRule);
         }
 
-        if (RuleConfig.Rules[0] is not { Id: DefaultId, Name: "Unsorted", Index: 0 })
-        {
+        if (RuleConfig.Rules[0] is not { Id: DefaultId, Name: "Unsorted", Index: 0 }) {
             RuleConfig.Rules[0] = DefaultRule;
         }
     }
+    
+    public void SaveConfig() => CharacterFileController.SaveFile("SortingRules.config.json", RuleConfig.GetType(), RuleConfig);
 
-    private SortingRuleConfig LoadConfig()
-    {
-        return CharacterFileController.LoadFile<SortingRuleConfig>("SortingRules.config.json", RuleConfig);
-    }
+    private SortingRuleConfig LoadConfig() => CharacterFileController.LoadFile<SortingRuleConfig>("SortingRules.config.json", RuleConfig);
 }

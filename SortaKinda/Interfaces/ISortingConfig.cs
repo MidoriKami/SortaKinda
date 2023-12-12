@@ -3,8 +3,7 @@
 namespace SortaKinda.Models;
 
 [Category("SortingOptions")]
-public interface ISortingConfig
-{
+public interface ISortingConfig {
     [BoolConfig("SortOnInventoryChange")] 
     public bool SortOnInventoryChange { get; set; }
 

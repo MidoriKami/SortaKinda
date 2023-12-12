@@ -2,8 +2,7 @@
 
 namespace SortaKinda.Models.Enums;
 
-public enum SortOrderMode
-{
+public enum SortOrderMode {
     [EnumLabel("Alphabetical")] 
     Alphabetically,
     

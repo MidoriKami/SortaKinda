@@ -3,8 +3,7 @@ using SortaKinda.Models.Enums;
 
 namespace SortaKinda.Interfaces;
 
-public interface IModule : IDisposable
-{
+public interface IModule : IDisposable {
     ModuleName ModuleName { get; }
 
     void LoadModule();

@@ -9,35 +9,28 @@ using SortaKinda.Interfaces;
 
 namespace SortaKinda.System;
 
-public unsafe class SortingThreadController : IDisposable
-{
+public unsafe class SortingThreadController : IDisposable {
     private readonly List<Task> sortingTasks = new();
     private bool SortPending => sortingTasks.Any(task => task.Status is TaskStatus.Created);
     private readonly CancellationTokenSource cancellationTokenSource = new();
 
-    public void Dispose()
-    {
+    public void Dispose() {
         cancellationTokenSource.Cancel();
     }
 
-    public void AddSortingTask(InventoryType type, params IInventoryGrid[] grids)
-    {
-        var sortingTask = new Task(() =>
-        {
+    public void AddSortingTask(InventoryType type, params IInventoryGrid[] grids) {
+        var sortingTask = new Task(() => {
             InventorySorter.SortInventory(type, grids);
         }, cancellationTokenSource.Token);
         
         sortingTasks.Add(sortingTask);
     }
 
-    public void Update()
-    {
-        if (SortPending)
-        {
+    public void Update() {
+        if (SortPending) {
             Service.Log.Verbose($"Launching sorting tasks. {sortingTasks.Where(task => task.Status is TaskStatus.Created).Count()} Tasks Pending.");
             
-            foreach (var task in sortingTasks.Where(task => task.Status is TaskStatus.Created))
-            {
+            foreach (var task in sortingTasks.Where(task => task.Status is TaskStatus.Created)) {
                 Service.Log.Verbose("Starting Task");
                 task.Start();
             }
@@ -47,12 +40,10 @@ public unsafe class SortingThreadController : IDisposable
         }
     }
 
-    private void OnCompletion()
-    {
+    private void OnCompletion() {
         Service.Log.Verbose("Continuing!");
         
-        Service.Framework.RunOnTick(() =>
-        {
+        Service.Framework.RunOnTick(() => {
             Service.Log.Debug("Marked ItemODR as changed.");
 
             ItemOrderModule.Instance()->UserFileEvent.IsSavePending = true;

@@ -12,31 +12,25 @@ using SortaKinda.System;
 
 namespace SortaKinda.Views.SortControllerViews;
 
-public class SortingRuleListView
-{
+public class SortingRuleListView {
     private readonly ISortController controller;
     private readonly List<SortingRule> sortingRules;
     private int? deletionRuleId;
 
-    public SortingRuleListView(ISortController sortController, List<SortingRule> rules)
-    {
+    public SortingRuleListView(ISortController sortController, List<SortingRule> rules) {
         controller = sortController;
         sortingRules = rules;
     }
 
-    public void Draw()
-    {
+    public void Draw() {
         var region = ImGui.GetContentRegionAvail();
         var negativeOffset = new Vector2(0.0f, 23.0f * ImGuiHelpers.GlobalScale + ImGui.GetStyle().ItemSpacing.Y + 1.0f);
         deletionRuleId = null;
         
-        if (ImGui.BeginChild("##RuleListChild", region - negativeOffset))
-        {
-            foreach (var index in Enumerable.Range(0, sortingRules.Count))
-            {
+        if (ImGui.BeginChild("##RuleListChild", region - negativeOffset)) {
+            foreach (var index in Enumerable.Range(0, sortingRules.Count)) {
                 var rule = sortingRules[index];
-                if (rule.Index != index)
-                {
+                if (rule.Index != index) {
                     rule.Index = index;
                     controller.SaveConfig();
                 }
@@ -48,10 +42,8 @@ public class SortingRuleListView
 
         AddNewRuleButton();
 
-        if (deletionRuleId is { } ruleToDelete)
-        {
-            if (ruleToDelete == sortingRules.Count)
-            {
+        if (deletionRuleId is { } ruleToDelete) {
+            if (ruleToDelete == sortingRules.Count) {
                 SortaKindaController.SortController.SelectedRuleIndex = sortingRules.Count - 1;
             }
             sortingRules.RemoveAt(ruleToDelete);
@@ -59,16 +51,13 @@ public class SortingRuleListView
         }
     }
 
-    private void AddNewRuleButton()
-    {
+    private void AddNewRuleButton() {
         var region = ImGui.GetContentRegionAvail();
 
         ImGui.PushFont(UiBuilder.IconFont);
 
-        if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNewRuleButton", region with { Y = 23.0f * ImGuiHelpers.GlobalScale }))
-        {
-            var newRule = new SortingRule
-            {
+        if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNewRuleButton", region with { Y = 23.0f * ImGuiHelpers.GlobalScale })) {
+            var newRule = new SortingRule {
                 Color = GetRandomColor(),
                 Id = Guid.NewGuid().ToString("N"),
                 Name = "New Rule",
@@ -84,22 +73,18 @@ public class SortingRuleListView
         ImGui.PopFont();
     }
 
-    private void DrawRule(SortingRule rule, int index)
-    {
+    private void DrawRule(SortingRule rule, int index) {
         DrawArrows(index);
         DrawRadioButton(index);
         DrawRuleEntry(rule, index);
     }
 
-    private void DrawArrows(int index)
-    {
+    private void DrawArrows(int index) {
         var rule = sortingRules[index];
 
         ImGui.BeginDisabled(index is 0 || index == sortingRules.Count - 1);
-        if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown))
-        {
-            if (sortingRules.Count > 1)
-            {
+        if (ImGuiComponents.IconButton($"##DownButton{rule.Id}", FontAwesomeIcon.ArrowDown)) {
+            if (sortingRules.Count > 1) {
                 sortingRules.Remove(rule);
                 sortingRules.Insert(index + 1, rule);
                 controller.SaveConfig();
@@ -110,10 +95,8 @@ public class SortingRuleListView
         ImGui.SameLine();
 
         ImGui.BeginDisabled(index is 1 or 0);
-        if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp))
-        {
-            if (sortingRules.Count > 1)
-            {
+        if (ImGuiComponents.IconButton($"##UpButton{rule.Id}", FontAwesomeIcon.ArrowUp)) {
+            if (sortingRules.Count > 1) {
                 sortingRules.Remove(rule);
                 sortingRules.Insert(index - 1, rule);
                 controller.SaveConfig();
@@ -122,14 +105,12 @@ public class SortingRuleListView
         ImGui.EndDisabled();
     }
 
-    private static void DrawRadioButton(int index)
-    {
+    private static void DrawRadioButton(int index) {
         ImGui.SameLine();
         ImGui.RadioButton($"##Selected{index}", ref SortaKindaController.SortController.SelectedRuleIndex, index);
     }
 
-    private void DrawRuleEntry(SortingRule rule, int index)
-    {
+    private void DrawRuleEntry(SortingRule rule, int index) {
         ImGui.SameLine();
 
         var ruleColor = rule.Color;
@@ -147,8 +128,7 @@ public class SortingRuleListView
         ImGui.EndDisabled();
     }
 
-    private void DrawDeleteButton(int index)
-    {
+    private void DrawDeleteButton(int index) {
         var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyCtrl;
         var buttonSize = ImGuiHelpers.ScaledVector2(23.0f, 23.0f);
 
@@ -157,35 +137,30 @@ public class SortingRuleListView
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X * 2.0f - ImGui.GetStyle().ItemSpacing.X);
 
         ImGui.PushFont(UiBuilder.IconFont);
-        if (ImGui.Button($"{FontAwesomeIcon.Trash.ToIconString()}##{index}", buttonSize) && hotkeyHeld)
-        {
+        if (ImGui.Button($"{FontAwesomeIcon.Trash.ToIconString()}##{index}", buttonSize) && hotkeyHeld) {
             deletionRuleId = index;
         }
         ImGui.PopFont();
 
         if (!hotkeyHeld) ImGui.PopStyleVar();
 
-        if (ImGui.IsItemHovered() && !hotkeyHeld)
-        {
+        if (ImGui.IsItemHovered() && !hotkeyHeld) {
             ImGui.SetTooltip("Hold Shift + Control while clicking to delete this rule");
         }
     }
 
-    private void DrawConfigButton(SortingRule rule)
-    {
+    private void DrawConfigButton(SortingRule rule) {
         var buttonSize = ImGuiHelpers.ScaledVector2(23.0f, 23.0f);
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X);
 
         ImGui.PushFont(UiBuilder.IconFont);
-        if (ImGui.Button($"{FontAwesomeIcon.Cog.ToIconString()}##{rule.Id}", buttonSize))
-        {
+        if (ImGui.Button($"{FontAwesomeIcon.Cog.ToIconString()}##{rule.Id}", buttonSize)) {
             RuleConfigWindowController.AddRuleConfigWindow(rule, sortingRules);
         }
         ImGui.PopFont();
     }
 
-    private static Vector4 GetRandomColor()
-    {
+    private static Vector4 GetRandomColor() {
         var random = new Random();
 
         return new Vector4(

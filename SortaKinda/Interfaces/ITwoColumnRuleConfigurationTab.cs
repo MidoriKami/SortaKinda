@@ -2,15 +2,12 @@
 
 namespace SortaKinda.Interfaces;
 
-public interface ITwoColumnRuleConfigurationTab : IRuleConfigurationTab
-{
+public interface ITwoColumnRuleConfigurationTab : IRuleConfigurationTab {
     string FirstLabel { get; }
     string SecondLabel { get; }
 
-    void IRuleConfigurationTab.DrawConfigurationTab()
-    {
-        if (ImGui.BeginTable("##RuleConfigTable", 2, ImGuiTableFlags.SizingStretchSame | ImGuiTableFlags.BordersInnerV, ImGui.GetContentRegionAvail()))
-        {
+    void IRuleConfigurationTab.DrawConfigurationTab() {
+        if (ImGui.BeginTable("##RuleConfigTable", 2, ImGuiTableFlags.SizingStretchSame | ImGuiTableFlags.BordersInnerV, ImGui.GetContentRegionAvail())) {
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(FirstLabel);
             ImGui.Separator();

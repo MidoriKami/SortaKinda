@@ -5,12 +5,10 @@ using SortaKinda.Interfaces;
 
 namespace SortaKinda.Views.SortControllerViews;
 
-public class QuadInventoryView
-{
+public class QuadInventoryView {
     private readonly List<InventoryGridView> views = new();
 
-    public QuadInventoryView(IReadOnlyList<IInventoryGrid> inventoryGrids, Vector2 position)
-    {
+    public QuadInventoryView(IReadOnlyList<IInventoryGrid> inventoryGrids, Vector2 position) {
         var grid1 = new InventoryGridView(inventoryGrids[0], position + Vector2.Zero);
         var grid2 = new InventoryGridView(inventoryGrids[1], position + new Vector2(grid1.GetGridSize().X + GridSpacing.X, 0.0f));
         var grid3 = new InventoryGridView(inventoryGrids[2], position + new Vector2(0.0f, grid1.GetGridSize().Y + GridSpacing.Y));
@@ -21,12 +19,11 @@ public class QuadInventoryView
         views.Add(grid3);
         views.Add(grid4);
     }
+    
     private static Vector2 GridSpacing => ImGuiHelpers.ScaledVector2(8.0f, 8.0f);
 
-    public void Draw()
-    {
-        foreach (var gridView in views)
-        {
+    public void Draw() {
+        foreach (var gridView in views) {
             gridView.Draw();
         }
     }

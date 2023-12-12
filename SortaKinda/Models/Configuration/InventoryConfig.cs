@@ -5,16 +5,12 @@ using SortaKinda.System;
 
 namespace SortaKinda.Models.Configuration;
 
-public class InventoryConfig
-{
-    public InventoryConfig(InventoryType type)
-    {
+public class InventoryConfig {
+    public InventoryConfig(InventoryType type) {
         Type = type;
         SlotConfigs = new List<SlotConfig>();
-        foreach (var _ in Enumerable.Range(0, InventoryController.GetInventoryPageSize(type)))
-        {
-            SlotConfigs.Add(new SlotConfig
-            {
+        foreach (var _ in Enumerable.Range(0, InventoryController.GetInventoryPageSize(type))) {
+            SlotConfigs.Add(new SlotConfig {
                 RuleId = SortController.DefaultId
             });
         }

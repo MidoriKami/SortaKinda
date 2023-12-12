@@ -2,7 +2,6 @@
 
 namespace SortaKinda.Models.Configuration;
 
-public interface IModuleConfig
-{
+public interface IModuleConfig {
     List<InventoryConfig> InventoryConfigs { get; set; }
 }
