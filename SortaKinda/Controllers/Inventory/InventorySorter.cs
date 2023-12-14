@@ -44,7 +44,7 @@ public unsafe class InventorySorter {
         Service.Log.Debug($"Sorted {type} in {stopwatch.Elapsed.TotalMilliseconds}ms");
     }, $"Exception Caught During Sorting '{type}'");
 
-    private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IReadOnlyCollection<ISortingRule> rulesForInventory) {
+    private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IEnumerable<ISortingRule> rulesForInventory) {
         foreach (var rule in SortaKindaController.SortController.Rules) {
             if (rule.Id is SortController.DefaultId) continue;
 
@@ -55,14 +55,15 @@ public unsafe class InventorySorter {
                 .Where(slot => rule.IsItemSlotAllowed(slot))
                 .Where(slot => !rulesForInventory.Any(otherRules => otherRules.Index > rule.Index && otherRules.IsItemSlotAllowed(slot)))
                 .Order(rule)
-                .ToList();
+                .ToArray();
+
 
             // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
             var targetSlotsForRule = grids
                 .SelectMany(grid => grid.Inventory)
                 .Where(slot => slot.Rule.Equals(rule))
                 .Where(slot => !rule.IsItemSlotAllowed(slot))
-                .ToList();
+                .ToArray();
 
             SwapItems(targetSlotsForRule, itemSlotsForRule);
         }
