@@ -30,7 +30,8 @@ public unsafe class InventorySorter {
         var rulesForInventory = grids
             .SelectMany(grid => grid.Inventory)
             .Select(slots => slots.Rule)
-            .ToHashSet();
+            .Distinct()
+            .ToArray();
 
         // Step 1: Put all items that belong into a category into a category
         MoveItemsIntoCategories(grids, rulesForInventory);
@@ -44,16 +45,19 @@ public unsafe class InventorySorter {
         Service.Log.Debug($"Sorted {type} in {stopwatch.Elapsed.TotalMilliseconds}ms");
     }, $"Exception Caught During Sorting '{type}'");
 
-    private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IEnumerable<ISortingRule> rulesForInventory) {
+    private static void MoveItemsIntoCategories(IInventoryGrid[] grids, IReadOnlyCollection<ISortingRule> rulesForInventory) {
         foreach (var rule in SortaKindaController.SortController.Rules) {
             if (rule.Id is SortController.DefaultId) continue;
+
+            var higherPriorityRules = rulesForInventory.Where(otherRules => otherRules.Index > rule.Index).ToList();
 
             // Get all items this rule applies to, and aren't already in any of the slots for that rule
             var itemSlotsForRule = grids
                 .SelectMany(grid => grid.Inventory)
+                .Where(slot => slot.HasItem)
                 .Where(slot => !slot.Rule.Equals(rule))
                 .Where(slot => rule.IsItemSlotAllowed(slot))
-                .Where(slot => !rulesForInventory.Any(otherRules => otherRules.Index > rule.Index && otherRules.IsItemSlotAllowed(slot)))
+                .Where(slot => !higherPriorityRules.Any(otherRules => otherRules.IsItemSlotAllowed(slot)))
                 .Order(rule)
                 .ToArray();
 
