@@ -57,7 +57,6 @@ public unsafe class InventorySorter {
                 .Order(rule)
                 .ToArray();
 
-
             // Get all target slots this rule applies to, that doesn't have an item that's supposed to be there
             var targetSlotsForRule = grids
                 .SelectMany(grid => grid.Inventory)
