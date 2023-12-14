@@ -16,13 +16,31 @@ namespace SortaKinda.Models;
 public unsafe class SortingRule : ISortingRule {
     private readonly SortingRuleTooltipView view;
     private readonly List<SortingFilter> filterRules;
+    private static readonly Dictionary<string, Dictionary<uint, bool>> RegexCache = new();
 
     public SortingRule() {
         view = new SortingRuleTooltipView(this);
         filterRules = new List<SortingFilter> {
             new() {
                 Active = () => AllowedItemNames.Any(),
-                IsSlotAllowed = slot => AllowedItemNames.Any(allowed => Regex.IsMatch(slot.ExdItem?.Name.RawString ?? string.Empty, allowed, RegexOptions.IgnoreCase)),
+                IsSlotAllowed = slot => {
+                    foreach (var allowedItemName in AllowedItemNames) {
+                        if (slot is { ExdItem.RowId: not 0 }) {
+                            RegexCache.TryAdd(allowedItemName, new Dictionary<uint, bool>());
+
+                            if (RegexCache[allowedItemName].TryGetValue(slot.ExdItem.RowId, out var isAllowed)) {
+                                if (isAllowed) return true;
+                            }
+                            else {
+                                var regexMatch = Regex.IsMatch(slot.ExdItem.Name.RawString, allowedItemName, RegexOptions.IgnoreCase);
+                                RegexCache[allowedItemName].TryAdd(slot.ExdItem.RowId, regexMatch);
+                                if (regexMatch) return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                },
             },
             new() {
                 Active = () => AllowedItemTypes.Any(),
