@@ -77,6 +77,7 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
         if (UserRegex.DrawRegexInput("##NewName", ref newRegex, "Item Name", null, ImGui.GetContentRegionAvail().X - buttonSize.X - ImGui.GetStyle().ItemSpacing.X, ImGui.GetColorU32(KnownColor.OrangeRed.Vector()))) {
             if (newRegex.Regex is not null) {
                 SortingRule.AllowedNameRegexes.Add(newRegex);
+                newRegex = new UserRegex();
             }
             setNameFocus = true;
         }
@@ -87,6 +88,7 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
         if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNameButton", buttonSize)) {
             if (newRegex.Regex is not null) {
                 SortingRule.AllowedNameRegexes.Add(newRegex);
+                newRegex = new UserRegex();
             }
         }
         ImGui.PopFont();
