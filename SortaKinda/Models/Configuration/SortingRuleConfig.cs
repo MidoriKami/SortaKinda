@@ -6,11 +6,11 @@ using SortaKinda.System;
 namespace SortaKinda.Models.Configuration;
 
 public class SortingRuleConfig {
-    public List<SortingRule> Rules { get; set; } = new() {
+    public List<SortingRule> Rules { get; set; } = [
         new SortingRule {
             Color = KnownColor.White.Vector(),
             Id = SortController.DefaultId,
             Name = "Unsorted"
         }
-    };
+    ];
 }
