@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using Dalamud.Game.Inventory;
+using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -27,8 +29,8 @@ public class MainInventoryModule : ModuleBase {
         view = new QuadInventoryView(inventories, Vector2.Zero);
     }
 
-    protected override void InventoryChanged(InventoryType type) {
-        if (type is InventoryType.Inventory1) {
+    protected override void InventoryChanged(GameInventoryEvent gameInventoryEvent, InventoryEventArgs data) {
+        if ((InventoryType)data.Item.ContainerType is InventoryType.Inventory1 or InventoryType.Inventory2 or InventoryType.Inventory3 or InventoryType.Inventory4) {
             Sort();
         }
     }

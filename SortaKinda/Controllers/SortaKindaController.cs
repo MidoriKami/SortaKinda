@@ -11,13 +11,11 @@ public class SortaKindaController : IDisposable {
     public static SortController SortController = null!;
     public static SystemConfig SystemConfig = null!;
     public static SortingThreadController SortingThreadController = null!;
-    public static InventoryScanner InventoryScanner = null!;
 
     private uint lastJob = uint.MaxValue;
 
     public SortaKindaController() {
         SortingThreadController = new SortingThreadController();
-        InventoryScanner = new InventoryScanner();
         SystemConfig = new SystemConfig();
         SortController = new SortController();
         ModuleController = new ModuleController();
@@ -73,7 +71,6 @@ public class SortaKindaController : IDisposable {
         // Don't update modules if the Retainer transfer window is open
         if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;
         
-        InventoryScanner.Update();
         ModuleController.Update();
 
         // Prevent sorting on load, we have a different option for that

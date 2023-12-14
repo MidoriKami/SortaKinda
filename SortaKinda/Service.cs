@@ -11,4 +11,5 @@ public class Service {
     [PluginService] public static IFramework Framework { get; set; } = null!;
     [PluginService] public static IPluginLog Log { get; set; } = null!;
     [PluginService] public static ITextureProvider TextureProvider { get; set; } = null!;
+    [PluginService] public static IGameInventory GameInventory { get; set; } = null!;
 }

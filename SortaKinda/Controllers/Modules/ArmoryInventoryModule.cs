@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Dalamud.Game.Inventory;
+using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -32,11 +34,11 @@ public class ArmoryInventoryModule : ModuleBase {
         view?.Draw();
     }
 
-    protected override void InventoryChanged(InventoryType type) {
-        var targetInventory = inventories?.FirstOrDefault(inventory => inventory.Type == type);
+    protected override void InventoryChanged(GameInventoryEvent gameInventoryEvent, InventoryEventArgs data) {
+        var targetInventory = inventories?.FirstOrDefault(inventory => inventory.Type == (InventoryType)data.Item.ContainerType);
         if (targetInventory is null) return;
 
-        SortaKindaController.SortingThreadController.AddSortingTask(type, targetInventory);
+        SortaKindaController.SortingThreadController.AddSortingTask(targetInventory.Type, targetInventory); 
     }
 
     protected override void Sort() {

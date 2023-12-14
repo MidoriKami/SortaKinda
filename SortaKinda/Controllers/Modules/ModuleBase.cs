@@ -1,6 +1,7 @@
 ﻿using System;
+using Dalamud.Game.Inventory;
+using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.Interface.Utility;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.FileIO;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -38,11 +39,13 @@ public abstract class ModuleBase : IModule {
 
         SaveConfig();
 
-        SortaKindaController.InventoryScanner.InventoryChanged += InventoryChanged;
+        Service.GameInventory.ItemAdded += InventoryChanged;
+        Service.GameInventory.ItemRemoved += InventoryChanged;
     }
 
     public void UnloadModule() {
-        SortaKindaController.InventoryScanner.InventoryChanged -= InventoryChanged;
+        Service.GameInventory.ItemAdded -= InventoryChanged;
+        Service.GameInventory.ItemRemoved -= InventoryChanged;
         
         IsLoaded = false;
     }
@@ -76,7 +79,7 @@ public abstract class ModuleBase : IModule {
 
     protected virtual void Load() { }
 
-    protected abstract void InventoryChanged(InventoryType type);
+    protected abstract void InventoryChanged(GameInventoryEvent gameInventoryEvent, InventoryEventArgs data);
     
     protected abstract void Sort();
 
