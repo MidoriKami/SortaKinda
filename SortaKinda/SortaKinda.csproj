@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageProjectUrl>https://github.com/MidoriKami/SortaKinda.git</PackageProjectUrl>
-        <Version>1.0.4.0</Version>
+        <Version>1.0.4.1</Version>
     </PropertyGroup>
 
     <PropertyGroup>
