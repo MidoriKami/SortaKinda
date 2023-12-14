@@ -47,7 +47,7 @@ public unsafe class SortingThreadController : IDisposable {
             Service.Log.Debug("Marked ItemODR as changed.");
 
             ItemOrderModule.Instance()->UserFileEvent.IsSavePending = true;
-        }, TimeSpan.Zero, 5);
+        }, delayTicks: 5);
 
         sortingTasks.RemoveAll(task => task.Status is TaskStatus.RanToCompletion or TaskStatus.Canceled or TaskStatus.Faulted);
     }
