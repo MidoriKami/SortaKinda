@@ -20,7 +20,7 @@ public class MainInventoryModule : ModuleBase {
     }
     
     protected override void LoadViews() {
-        Inventories = [];
+        Inventories = new List<IInventoryGrid>();
         foreach (var config in ModuleConfig.InventoryConfigs) {
             Inventories.Add(new InventoryGrid(config.Type, config));
         }
