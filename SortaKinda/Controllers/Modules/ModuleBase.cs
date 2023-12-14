@@ -1,7 +1,8 @@
 ﻿using System;
-using Dalamud.Game.Inventory;
-using Dalamud.Game.Inventory.InventoryEventArgTypes;
+using System.Collections.Generic;
+using System.Linq;
 using Dalamud.Interface.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.FileIO;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -12,7 +13,9 @@ namespace SortaKinda.System;
 public abstract class ModuleBase : IModule {
     private bool IsLoaded { get; set; }
     private float lastScale;
-    
+    protected abstract List<IInventoryGrid> Inventories { get; set; }
+    public IEnumerable<InventoryType> InventoryTypes => Inventories.Select(inventory => inventory.Type);
+
     protected abstract IModuleConfig ModuleConfig { get; set; }
 
     private IModuleConfig DefaultConfig => ModuleName switch {
@@ -22,8 +25,9 @@ public abstract class ModuleBase : IModule {
     };
 
     public abstract ModuleName ModuleName { get; }
-    
+
     public abstract void Draw();
+
     protected abstract void LoadViews();
 
     public virtual void Dispose() { }
@@ -38,15 +42,9 @@ public abstract class ModuleBase : IModule {
         IsLoaded = true;
 
         SaveConfig();
-
-        Service.GameInventory.ItemAdded += InventoryChanged;
-        Service.GameInventory.ItemRemoved += InventoryChanged;
     }
 
     public void UnloadModule() {
-        Service.GameInventory.ItemAdded -= InventoryChanged;
-        Service.GameInventory.ItemRemoved -= InventoryChanged;
-        
         IsLoaded = false;
     }
 
@@ -74,14 +72,14 @@ public abstract class ModuleBase : IModule {
     public void SortModule() {
         if (!IsLoaded) return;
 
-        Sort();
+        Sort(InventoryTypes.ToArray());
     }
 
     protected virtual void Load() { }
 
-    protected abstract void InventoryChanged(GameInventoryEvent gameInventoryEvent, InventoryEventArgs data);
-    
-    protected abstract void Sort();
+    public void InventoryChanged(params InventoryType[] changedInventories) => Sort(changedInventories);
+
+    protected abstract void Sort(params InventoryType[] inventories);
 
     private IModuleConfig LoadConfig() => CharacterFileController.LoadFile<IModuleConfig>($"{ModuleName}.config.json", ModuleConfig);
 

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Game.Inventory;
-using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
@@ -11,18 +9,18 @@ using SortaKinda.Views.SortControllerViews;
 namespace SortaKinda.System.Modules;
 
 public class ArmoryInventoryModule : ModuleBase {
-    private List<IInventoryGrid>? inventories;
+    protected override List<IInventoryGrid> Inventories { get; set; } = null!;
     private ArmoryInventoryGridView? view;
     public override ModuleName ModuleName => ModuleName.ArmoryInventory;
     protected override IModuleConfig ModuleConfig { get; set; } = new ArmoryConfig();
 
     protected override void LoadViews() {
-        inventories = new List<IInventoryGrid>();
+        Inventories = [];
         foreach (var config in ModuleConfig.InventoryConfigs) {
-            inventories.Add(new InventoryGrid(config.Type, config));
+            Inventories.Add(new InventoryGrid(config.Type, config));
         }
 
-        view = new ArmoryInventoryGridView(inventories);
+        view = new ArmoryInventoryGridView(Inventories);
     }
 
     public override void Dispose() {
@@ -34,18 +32,13 @@ public class ArmoryInventoryModule : ModuleBase {
         view?.Draw();
     }
 
-    protected override void InventoryChanged(GameInventoryEvent gameInventoryEvent, InventoryEventArgs data) {
-        var targetInventory = inventories?.FirstOrDefault(inventory => inventory.Type == (InventoryType)data.Item.ContainerType);
-        if (targetInventory is null) return;
-
-        SortaKindaController.SortingThreadController.AddSortingTask(targetInventory.Type, targetInventory); 
-    }
-
-    protected override void Sort() {
-        if (inventories is null) return;
-
-        foreach (var inventory in inventories) {
-            SortaKindaController.SortingThreadController.AddSortingTask(inventory.Type, inventory);
+    protected override void Sort(params InventoryType[] inventoryTypes) {
+        foreach (var type in inventoryTypes) {
+            if (Inventories.FirstOrDefault(inventory => inventory.Type == type) is { } targetInventory) {
+                if (targetInventory.Inventory.Any(slot => slot.Rule.Id is not SortController.DefaultId)) {
+                    SortaKindaController.SortingThreadController.AddSortingTask(targetInventory.Type, targetInventory);
+                }
+            }
         }
     }
 }

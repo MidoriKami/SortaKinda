@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.Plugin.Services;
 using KamiLib.AutomaticUserInterface;
 using KamiLib.FileIO;
@@ -28,6 +30,7 @@ public class SortaKindaController : IDisposable {
         Service.ClientState.Logout += OnLogout;
         Service.Framework.Update += OnUpdate;
         Service.ClientState.TerritoryChanged += OnZoneChange;
+        Service.GameInventory.InventoryChanged += OnInventoryChanged;
     }
 
     public void Dispose() {
@@ -35,6 +38,7 @@ public class SortaKindaController : IDisposable {
         Service.ClientState.Logout -= OnLogout;
         Service.Framework.Update -= OnUpdate;
         Service.ClientState.TerritoryChanged -= OnZoneChange;
+        Service.GameInventory.InventoryChanged -= OnInventoryChanged;
 
         ModuleController.Dispose();
         SortingThreadController.Dispose();
@@ -90,6 +94,8 @@ public class SortaKindaController : IDisposable {
 
         if (SystemConfig.SortOnZoneChange) ModuleController.Sort();
     }
+
+    private void OnInventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) => ModuleController.InventoryChanged(events);
 
     public static void DrawConfig() => DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
 

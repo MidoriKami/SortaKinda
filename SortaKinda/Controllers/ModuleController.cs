@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dalamud.Game.Inventory;
+using Dalamud.Game.Inventory.InventoryEventArgTypes;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Interfaces;
 using SortaKinda.Models.Enums;
 using SortaKinda.System.Modules;
@@ -42,6 +45,21 @@ public class ModuleController : IDisposable {
     public void Sort() {
         foreach (var module in modules) {
             module.SortModule();
+        }
+    }
+
+    public void InventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) {
+        foreach (var module in modules) {
+            var inventoryTypes = events
+                .Where(itemEvent => itemEvent.Type is GameInventoryEvent.Added or GameInventoryEvent.Removed)
+                .Select(itemEvent => (InventoryType) itemEvent.Item.ContainerType)
+                .Where(inventoryType => module.InventoryTypes.Contains(inventoryType))
+                .Distinct()
+                .ToArray();
+
+            if (inventoryTypes.Any()) {
+                module.InventoryChanged(inventoryTypes);
+            }
         }
     }
 
