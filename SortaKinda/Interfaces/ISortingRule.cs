@@ -13,6 +13,7 @@ public interface ISortingRule : IComparer<IInventorySlot> {
     int Index { get; }
 
     HashSet<string> AllowedItemNames { get; }
+    HashSet<UserRegex> AllowedNameRegexes { get; }
     HashSet<uint> AllowedItemTypes { get; }
     HashSet<ItemRarity> AllowedItemRarities { get; }
     RangeFilter ItemLevelFilter { get; }

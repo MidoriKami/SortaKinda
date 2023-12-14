@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -36,6 +37,18 @@ public unsafe class SortingRule : ISortingRule {
                                 RegexCache[allowedItemName].TryAdd(slot.ExdItem.RowId, regexMatch);
                                 if (regexMatch) return true;
                             }
+                        }
+                    }
+
+                    return false;
+                },
+            },
+            new() {
+                Active = () => AllowedNameRegexes.Any(),
+                IsSlotAllowed = slot => {
+                    foreach (var allowedRegex in AllowedNameRegexes) {
+                        if (slot is { ExdItem: { Name.RawString: var itemName, RowId: not 0 } }) {
+                            if (allowedRegex.Match(itemName)) return true;
                         }
                     }
 
@@ -86,6 +99,7 @@ public unsafe class SortingRule : ISortingRule {
     public string Name { get; set; } = "New Rule";
     public int Index { get; set; }
     public HashSet<string> AllowedItemNames { get; set; } = new();
+    public HashSet<UserRegex> AllowedNameRegexes { get; set; } = new();
     public HashSet<uint> AllowedItemTypes { get; set; } = new();
     public HashSet<ItemRarity> AllowedItemRarities { get; set; } = new();
     public RangeFilter ItemLevelFilter { get; set; } = new("Item Level Filter", 0, 1000);

@@ -5,17 +5,19 @@ using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 using SortaKinda.Interfaces;
+using SortaKinda.Models;
 
 namespace SortaKinda.Views.Tabs;
 
 public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
 {
-    private string newName = string.Empty;
+    private UserRegex newRegex = new();
     private bool setNameFocus = true;
 
     public ItemNameFilterTab(ISortingRule rule) {
         SortingRule = rule;
     }
+
     public string TabName => "Item Name Filter";
     public bool Enabled => true;
     public string FirstLabel => "Allowed Item Names";
@@ -28,8 +30,10 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
 
     private void DrawFilteredNames() {
         string? removalString = null;
+        UserRegex? removalRegex = null;
+
         if (ImGui.BeginChild("##NameFilterChild", new Vector2(0.0f, -50.0f))) {
-            if (SortingRule.AllowedItemNames.Count is 0) {
+            if (SortingRule.AllowedItemNames.Count is 0 && SortingRule.AllowedNameRegexes.Count is 0) {
                 ImGui.TextColored(KnownColor.Orange.Vector(), "Nothing Filtered");
             }
 
@@ -40,11 +44,23 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
                 ImGui.SameLine();
                 ImGui.TextUnformatted(name);
             }
+
+            foreach (var userRegex in SortingRule.AllowedNameRegexes) {
+                if (ImGuiComponents.IconButton($"##RemoveNameRegex{userRegex.Text}", FontAwesomeIcon.Trash)) {
+                    removalRegex = userRegex;
+                }
+                ImGui.SameLine();
+                ImGui.TextUnformatted(userRegex.Text);
+            }
         }
         ImGui.EndChild();
 
         if (removalString is { } toRemove) {
             SortingRule.AllowedItemNames.Remove(toRemove);
+        }
+
+        if (removalRegex is { } toRemoveRegex) {
+            SortingRule.AllowedNameRegexes.Remove(toRemoveRegex);
         }
     }
 
@@ -58,10 +74,9 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
 
         ImGui.TextColored(KnownColor.Gray.Vector(), "Supports Regex for item name filtering");
 
-        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - buttonSize.X - ImGui.GetStyle().ItemSpacing.X);
-        if (ImGui.InputTextWithHint("##NewName", "Item Name", ref newName, 1024, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue)) {
-            if (newName is not "") {
-                SortingRule.AllowedItemNames.Add(newName);
+        if (UserRegex.DrawRegexInput("##NewName", ref newRegex, "Item Name", null, ImGui.GetContentRegionAvail().X - buttonSize.X - ImGui.GetStyle().ItemSpacing.X, ImGui.GetColorU32(KnownColor.OrangeRed.Vector()))) {
+            if (newRegex.Regex is not null) {
+                SortingRule.AllowedNameRegexes.Add(newRegex);
             }
             setNameFocus = true;
         }
@@ -70,8 +85,8 @@ public class ItemNameFilterTab : IOneColumnRuleConfigurationTab
 
         ImGui.PushFont(UiBuilder.IconFont);
         if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNameButton", buttonSize)) {
-            if (newName is not "") {
-                SortingRule.AllowedItemNames.Add(newName);
+            if (newRegex.Regex is not null) {
+                SortingRule.AllowedNameRegexes.Add(newRegex);
             }
         }
         ImGui.PopFont();
