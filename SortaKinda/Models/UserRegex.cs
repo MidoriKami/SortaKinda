@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
+using Newtonsoft.Json;
 
 namespace SortaKinda.Models;
 
@@ -24,6 +25,7 @@ public struct UserRegex
     /// <summary> Create a filter from text. </summary>
     /// <param name="text"> The input text. </param>
     /// <param name="options"> The regex-compile options. Compiled is always set. </param>
+    [JsonConstructor]
     public UserRegex(string text, RegexOptions options = DefaultOptions)
         => UpdateText(text, options);
 
