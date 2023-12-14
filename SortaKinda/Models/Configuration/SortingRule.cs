@@ -16,7 +16,7 @@ namespace SortaKinda.Models;
 public unsafe class SortingRule : ISortingRule {
     private readonly SortingRuleTooltipView view;
     private readonly List<SortingFilter> filterRules;
-    private static readonly Dictionary<string, Dictionary<uint, bool>> RegexCache = new();
+    private static readonly ConcurrentDictionary<string, Dictionary<uint, bool>> RegexCache = new();
 
     public SortingRule() {
         view = new SortingRuleTooltipView(this);
