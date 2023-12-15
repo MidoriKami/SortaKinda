@@ -267,6 +267,15 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort all Inventories.
+        /// </summary>
+        internal static string SortAll {
+            get {
+                return ResourceManager.GetString("SortAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorting Options.
         /// </summary>
         internal static string SortingOptions {

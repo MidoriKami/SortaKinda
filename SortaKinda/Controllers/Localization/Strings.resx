@@ -123,4 +123,7 @@
     <data name="Repairable" xml:space="preserve">
         <value>Repairable</value>
     </data>
+    <data name="SortAll" xml:space="preserve">
+        <value>Sort all Inventories</value>
+    </data>
 </root>

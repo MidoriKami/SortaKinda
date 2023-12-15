@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.Plugin.Services;
 using KamiLib.AutomaticUserInterface;
+using KamiLib.Command;
 using KamiLib.FileIO;
+using KamiLib.Game;
+using KamiLib.System;
 using SortaKinda.Models.Configuration;
 
 namespace SortaKinda.System;
@@ -15,6 +18,7 @@ public class SortaKindaController : IDisposable {
     public static SortingThreadController SortingThreadController = null!;
 
     private uint lastJob = uint.MaxValue;
+    private DateTime lastSortCommand = DateTime.MinValue;
 
     public SortaKindaController() {
         SortingThreadController = new SortingThreadController();
@@ -25,6 +29,8 @@ public class SortaKindaController : IDisposable {
         if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 }) {
             OnLogin();
         }
+        
+        CommandController.RegisterCommands(this);
 
         Service.ClientState.Login += OnLogin;
         Service.ClientState.Logout += OnLogout;
@@ -42,6 +48,7 @@ public class SortaKindaController : IDisposable {
 
         ModuleController.Dispose();
         SortingThreadController.Dispose();
+        CommandController.UnregisterCommands(this);
     }
 
     private void OnLogin() {
@@ -97,6 +104,20 @@ public class SortaKindaController : IDisposable {
 
     private void OnInventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) => ModuleController.InventoryChanged(events);
 
+    [SingleTierCommandHandler("SortAll", "sort")]
+    // ReSharper disable once UnusedMember.Local
+    private void SortCommand() {
+        var timeSinceLastSort = DateTime.UtcNow - lastSortCommand;
+        
+        if (timeSinceLastSort.TotalSeconds > 10) {
+            ModuleController.Sort();
+            lastSortCommand = DateTime.UtcNow;
+        }
+        else {
+            Chat.PrintError($"Attempted to sort too soon after last sort. Try again in {10 - timeSinceLastSort.Seconds} seconds.");
+        }
+    }
+    
     public static void DrawConfig() => DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
 
     private static SystemConfig LoadConfig() => CharacterFileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
