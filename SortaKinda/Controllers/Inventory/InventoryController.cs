@@ -60,10 +60,6 @@ public unsafe partial class InventoryController {
         InventoryType.ArmoryWrist => ItemOrderModule.Instance()->ArmouryWristsSorter,
         InventoryType.ArmoryRings => ItemOrderModule.Instance()->ArmouryRingsSorter,
         InventoryType.ArmorySoulCrystal => ItemOrderModule.Instance()->ArmourySoulCrystalSorter,
-        InventoryType.SaddleBag1 => ItemOrderModule.Instance()->SaddleBagSorter,
-        InventoryType.SaddleBag2 => ItemOrderModule.Instance()->SaddleBagSorter,
-        InventoryType.PremiumSaddleBag1 => ItemOrderModule.Instance()->PremiumSaddleBagSorter,
-        InventoryType.PremiumSaddleBag2 => ItemOrderModule.Instance()->PremiumSaddleBagSorter,
         _ => throw new Exception($"Type Not Implemented: {type}")
     };
 
