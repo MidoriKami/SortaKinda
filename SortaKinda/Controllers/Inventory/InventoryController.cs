@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
@@ -10,7 +9,7 @@ public unsafe partial class InventoryController {
         => GetInventorySorter(type)->ItemsPerPage;
 
     public static InventoryItem* GetItemForSlot(InventoryType type, int slot)
-        => GetInventoryContainer(GetAdjustedInventoryType(type) + GetItemOrderData(type, slot)->Page)->GetInventorySlot(GetItemOrderData(type, slot)->Slot);
+        => InventoryManager.Instance()->GetInventoryContainer(GetAdjustedInventoryType(type) + GetItemOrderData(type, slot)->Page)->GetInventorySlot(GetItemOrderData(type, slot)->Slot);
 
     public static ItemOrderModuleSorterItemEntry* GetItemOrderData(InventoryType type, int slot) 
         => GetInventorySorter(type)->Items.Span[slot + GetInventoryStartIndex(type)];
@@ -18,32 +17,7 @@ public unsafe partial class InventoryController {
 
 // Helper Methods
 public unsafe partial class InventoryController {
-    private static readonly Dictionary<InventoryType, nint> InventorySorterCache = new();
-    private static readonly Dictionary<InventoryType, nint> InventoryContainerCache = new();
-
-    private static InventoryContainer* GetInventoryContainer(InventoryType type) {
-        if (InventoryContainerCache.TryGetValue(type, out var pointer)) {
-            return (InventoryContainer*) pointer;
-        }
-        else {
-            var inventoryContainer = InventoryManager.Instance()->GetInventoryContainer(type);
-            InventoryContainerCache.Add(type, (nint)inventoryContainer);
-            return inventoryContainer;
-        }
-    }
-    
-    private static ItemOrderModuleSorter* GetInventorySorter(InventoryType type) {
-        if (InventorySorterCache.TryGetValue(type, out var pointer)) {
-            return (ItemOrderModuleSorter*) pointer;
-        }
-        else {
-            var sorter = GetInventorySorter_Internal(type);
-            InventorySorterCache.Add(type, (nint)sorter);
-            return sorter;
-        }
-    }
-    
-    private static ItemOrderModuleSorter* GetInventorySorter_Internal(InventoryType type) => type switch {
+    private static ItemOrderModuleSorter* GetInventorySorter(InventoryType type) => type switch {
         InventoryType.Inventory1 => ItemOrderModule.Instance()->InventorySorter,
         InventoryType.Inventory2 => ItemOrderModule.Instance()->InventorySorter,
         InventoryType.Inventory3 => ItemOrderModule.Instance()->InventorySorter,

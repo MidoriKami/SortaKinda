@@ -49,6 +49,8 @@ public class ModuleController : IDisposable {
     }
 
     public void InventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) {
+        if (!Service.ClientState.IsLoggedIn) return;
+        
         foreach (var module in modules) {
             var inventoryTypes = events
                 .Where(itemEvent => itemEvent.Type is GameInventoryEvent.Added or GameInventoryEvent.Removed)
