@@ -17,7 +17,7 @@ namespace SortaKinda.Models;
 public unsafe class SortingRule : ISortingRule {
     private readonly SortingRuleTooltipView view;
     private readonly List<SortingFilter> filterRules;
-    private static readonly ConcurrentDictionary<string, Dictionary<uint, bool>> RegexCache = new();
+    private static readonly ConcurrentDictionary<string, ConcurrentDictionary<uint, bool>> RegexCache = new();
 
     public SortingRule() {
         view = new SortingRuleTooltipView(this);
@@ -27,7 +27,7 @@ public unsafe class SortingRule : ISortingRule {
                 IsSlotAllowed = slot => {
                     foreach (var allowedItemName in AllowedItemNames) {
                         if (slot is { ExdItem.RowId: not 0 }) {
-                            RegexCache.TryAdd(allowedItemName, new Dictionary<uint, bool>());
+                            RegexCache.TryAdd(allowedItemName, new ConcurrentDictionary<uint, bool>());
 
                             if (RegexCache[allowedItemName].TryGetValue(slot.ExdItem.RowId, out var isAllowed)) {
                                 if (isAllowed) return true;
