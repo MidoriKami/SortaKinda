@@ -27,11 +27,8 @@
     <data name="SortingOptions" xml:space="preserve">
         <value>Sorting Options</value>
     </data>
-    <data name="SortOnInventoryChange" xml:space="preserve">
-        <value>Sort on Inventory Change</value>
-    </data>
-    <data name="SortOnInventoryChangeHelp" xml:space="preserve">
-        <value>Triggers when the number of items in an inventory changes</value>
+    <data name="SortOnItemAdded" xml:space="preserve">
+        <value>Sort on Item Added</value>
     </data>
     <data name="SortOnZoneChange" xml:space="preserve">
         <value>Sort on Zone Change</value>
@@ -125,5 +122,23 @@
     </data>
     <data name="SortAll" xml:space="preserve">
         <value>Sort all Inventories</value>
+    </data>
+    <data name="SortOnItemRemoved" xml:space="preserve">
+        <value>Sort on Item Removed</value>
+    </data>
+    <data name="SortOnItemChanged" xml:space="preserve">
+        <value>Sort on Item Changed</value>
+    </data>
+    <data name="SortOnItemMoved" xml:space="preserve">
+        <value>Sort on Item Moved</value>
+    </data>
+    <data name="SortOnItemMerged" xml:space="preserve">
+        <value>Sort on Item Stack Merged</value>
+    </data>
+    <data name="SortOnItemSplit" xml:space="preserve">
+        <value>Sort on Item Stack Split</value>
+    </data>
+    <data name="SortOnItemMovedWarning" xml:space="preserve">
+        <value>May lead to very undesired behavior, use at your own risk.</value>
     </data>
 </root>

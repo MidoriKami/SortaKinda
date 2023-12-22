@@ -53,7 +53,15 @@ public class ModuleController : IDisposable {
         
         foreach (var module in modules) {
             var inventoryTypes = events
-                .Where(itemEvent => itemEvent.Type is GameInventoryEvent.Added or GameInventoryEvent.Removed)
+                .Where(itemEvent => itemEvent.Type switch {
+                    GameInventoryEvent.Added when SortaKindaController.SystemConfig.SortOnItemAdded => true,
+                    GameInventoryEvent.Removed when SortaKindaController.SystemConfig.SortOnItemRemoved => true,
+                    GameInventoryEvent.Changed when SortaKindaController.SystemConfig.SortOnItemChanged => true,
+                    GameInventoryEvent.Moved when SortaKindaController.SystemConfig.SortOnItemMoved => true,
+                    GameInventoryEvent.Split when SortaKindaController.SystemConfig.SortOnItemSplit => true,
+                    GameInventoryEvent.Merged when SortaKindaController.SystemConfig.SortOnItemMerged => true,
+                    _ => false
+                })
                 .Select(itemEvent => (InventoryType) itemEvent.Item.ContainerType)
                 .Where(inventoryType => module.InventoryTypes.Contains(inventoryType))
                 .Distinct()

@@ -285,20 +285,65 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sort on Inventory Change.
+        ///   Looks up a localized string similar to Sort on Item Added.
         /// </summary>
-        internal static string SortOnInventoryChange {
+        internal static string SortOnItemAdded {
             get {
-                return ResourceManager.GetString("SortOnInventoryChange", resourceCulture);
+                return ResourceManager.GetString("SortOnItemAdded", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Triggers when the number of items in an inventory changes.
+        ///   Looks up a localized string similar to Sort on Item Changed.
         /// </summary>
-        internal static string SortOnInventoryChangeHelp {
+        internal static string SortOnItemChanged {
             get {
-                return ResourceManager.GetString("SortOnInventoryChangeHelp", resourceCulture);
+                return ResourceManager.GetString("SortOnItemChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Item Stack Merged.
+        /// </summary>
+        internal static string SortOnItemMerged {
+            get {
+                return ResourceManager.GetString("SortOnItemMerged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Item Moved.
+        /// </summary>
+        internal static string SortOnItemMoved {
+            get {
+                return ResourceManager.GetString("SortOnItemMoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May lead to very undesired behavior, use at your own risk..
+        /// </summary>
+        internal static string SortOnItemMovedWarning {
+            get {
+                return ResourceManager.GetString("SortOnItemMovedWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Item Removed.
+        /// </summary>
+        internal static string SortOnItemRemoved {
+            get {
+                return ResourceManager.GetString("SortOnItemRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort on Item Stack Split.
+        /// </summary>
+        internal static string SortOnItemSplit {
+            get {
+                return ResourceManager.GetString("SortOnItemSplit", resourceCulture);
             }
         }
         
