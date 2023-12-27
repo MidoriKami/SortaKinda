@@ -94,7 +94,7 @@ public unsafe class InventorySorter {
 
     private static void SortCategories(IInventoryGrid[] grids) {
         foreach (var rule in SortaKindaController.SortController.Rules) {
-            if (rule.Id is SortController.DefaultId) continue;
+            if (rule.Id is SortController.DefaultId && !SortaKindaController.SystemConfig.ReorderUnsortedItems) continue;
 
             // Get all target slots this rule applies to
             var targetSlotsForRule = grids

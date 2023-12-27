@@ -12,4 +12,5 @@ public class SystemConfig : ISortingConfig {
     public bool SortOnZoneChange { get; set; } = true;
     public bool SortOnJobChange { get; set; } = true;
     public bool SortOnLogin { get; set; } = true;
+    public bool ReorderUnsortedItems { get; set; } = false;
 }

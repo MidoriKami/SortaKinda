@@ -13,7 +13,7 @@ public interface ISortingConfig {
     [BoolConfig("SortOnItemChanged")]
     public bool SortOnItemChanged { get; set; }
     
-    [BoolConfig("SortOnItemMoved", "SortOnItemMovedWarning")]
+    [BoolConfig("SortOnItemMoved")]
     public bool SortOnItemMoved { get; set; }
     
     [BoolConfig("SortOnItemMerged")]
@@ -30,4 +30,7 @@ public interface ISortingConfig {
 
     [BoolConfig("SortOnLogin")] 
     public bool SortOnLogin { get; set; }
+    
+    [BoolConfig("ReorderUnsorted", "ReorderUnsortedHelp")]
+    public bool ReorderUnsortedItems { get; set; }
 }
