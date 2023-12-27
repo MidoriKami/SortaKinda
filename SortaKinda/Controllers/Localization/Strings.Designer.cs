@@ -249,6 +249,25 @@ namespace SortaKinda.Controllers.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reorder Unsorted After Sort.
+        /// </summary>
+        internal static string ReorderUnsorted {
+            get {
+                return ResourceManager.GetString("ReorderUnsorted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled will alphabetically sort all &quot;Unsorted&quot; slots
+        ///No further options for unsorted slots will be provided.
+        /// </summary>
+        internal static string ReorderUnsortedHelp {
+            get {
+                return ResourceManager.GetString("ReorderUnsortedHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repairable.
         /// </summary>
         internal static string Repairable {
@@ -317,15 +336,6 @@ namespace SortaKinda.Controllers.Localization {
         internal static string SortOnItemMoved {
             get {
                 return ResourceManager.GetString("SortOnItemMoved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to May lead to very undesired behavior, use at your own risk..
-        /// </summary>
-        internal static string SortOnItemMovedWarning {
-            get {
-                return ResourceManager.GetString("SortOnItemMovedWarning", resourceCulture);
             }
         }
         

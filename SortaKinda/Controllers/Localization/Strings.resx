@@ -138,7 +138,11 @@
     <data name="SortOnItemSplit" xml:space="preserve">
         <value>Sort on Item Stack Split</value>
     </data>
-    <data name="SortOnItemMovedWarning" xml:space="preserve">
-        <value>May lead to very undesired behavior, use at your own risk.</value>
+    <data name="ReorderUnsorted" xml:space="preserve">
+        <value>Reorder Unsorted After Sort</value>
+    </data>
+    <data name="ReorderUnsortedHelp" xml:space="preserve">
+        <value>When enabled will alphabetically sort all "Unsorted" slots
+No further options for unsorted slots will be provided</value>
     </data>
 </root>
