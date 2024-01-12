@@ -27,7 +27,7 @@ public struct UserRegex
     /// <param name="options"> The regex-compile options. Compiled is always set. </param>
     [JsonConstructor]
     public UserRegex(string text, RegexOptions options = DefaultOptions)
-        => UpdateText(text, options);
+        => UpdateText(text);
 
     /// <summary> Create a filter from an existing regex. </summary>
     public UserRegex(Regex? regex)
