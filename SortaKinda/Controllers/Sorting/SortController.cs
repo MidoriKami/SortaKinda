@@ -31,8 +31,28 @@ public class SortController : ISortController {
     public void Load() {
         RuleConfig = new SortingRuleConfig();
         RuleConfig = LoadConfig();
+
+        TryMigrate();
+        
         View = new SortControllerView(this);
         EnsureDefaultRule();
+    }
+    
+    private void TryMigrate() {
+        var needsSaving = false;
+        
+        foreach (var rule in Rules.Where(rule => rule.AllowedItemNames.Any())) {
+            foreach (var oldNameRule in rule.AllowedItemNames) {
+                rule.AllowedNameRegexes.Add(new UserRegex(oldNameRule));
+            }
+                
+            rule.AllowedItemNames.Clear();
+            needsSaving = true;
+        }
+
+        if (needsSaving) {
+            SaveConfig();
+        }
     }
 
     public void Draw() => View?.Draw();
