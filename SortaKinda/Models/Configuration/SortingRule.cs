@@ -18,16 +18,6 @@ public unsafe class SortingRule : ISortingRule {
 
     public SortingRule() {
         view = new SortingRuleTooltipView(this);
-
-        if (AllowedItemNames.Any()) {
-            foreach (var oldNameFilter in AllowedItemNames) {
-                AllowedNameRegexes.Add(new UserRegex(oldNameFilter));
-            }
-            
-            AllowedItemNames.Clear();
-            SortaKindaController.SortController.SaveConfig();
-        }
-        
         filterRules = new List<SortingFilter> {
             new() {
                 Active = () => AllowedNameRegexes.Any(),
