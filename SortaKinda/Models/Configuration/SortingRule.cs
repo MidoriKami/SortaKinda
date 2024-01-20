@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text.RegularExpressions;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
 using SortaKinda.Interfaces;
@@ -17,32 +15,10 @@ namespace SortaKinda.Models;
 public unsafe class SortingRule : ISortingRule {
     private readonly SortingRuleTooltipView view;
     private readonly List<SortingFilter> filterRules;
-    private static readonly ConcurrentDictionary<string, ConcurrentDictionary<uint, bool>> RegexCache = new();
 
     public SortingRule() {
         view = new SortingRuleTooltipView(this);
         filterRules = new List<SortingFilter> {
-            new() {
-                Active = () => AllowedItemNames.Any(),
-                IsSlotAllowed = slot => {
-                    foreach (var allowedItemName in AllowedItemNames) {
-                        if (slot is { ExdItem.RowId: not 0 }) {
-                            RegexCache.TryAdd(allowedItemName, new ConcurrentDictionary<uint, bool>());
-
-                            if (RegexCache[allowedItemName].TryGetValue(slot.ExdItem.RowId, out var isAllowed)) {
-                                if (isAllowed) return true;
-                            }
-                            else {
-                                var regexMatch = Regex.IsMatch(slot.ExdItem.Name.RawString, allowedItemName, RegexOptions.IgnoreCase);
-                                RegexCache[allowedItemName].TryAdd(slot.ExdItem.RowId, regexMatch);
-                                if (regexMatch) return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                },
-            },
             new() {
                 Active = () => AllowedNameRegexes.Any(),
                 IsSlotAllowed = slot => {
