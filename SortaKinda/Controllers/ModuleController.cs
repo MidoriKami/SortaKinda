@@ -109,7 +109,7 @@ public class ModuleController : IDisposable {
         modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
     }
 
-    private static bool IsEventAllowed(InventoryEventArgs arg) => arg.Type switch {
+    private static bool IsEventAllowed(InventoryEventArgs argument) => argument.Type switch {
         GameInventoryEvent.Added when SortaKindaController.SystemConfig.SortOnItemAdded => true,
         GameInventoryEvent.Removed when SortaKindaController.SystemConfig.SortOnItemRemoved => true,
         GameInventoryEvent.Changed when SortaKindaController.SystemConfig.SortOnItemChanged => true,

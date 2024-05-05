@@ -2,20 +2,35 @@
 using System.Collections.Generic;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.Plugin.Services;
-using KamiLib.AutomaticUserInterface;
-using KamiLib.Command;
-using KamiLib.FileIO;
-using KamiLib.Game;
-using KamiLib.System;
-using SortaKinda.Models.Configuration;
+using ImGuiNET;
+using KamiLib.Classes;
+using KamiLib.CommandManager;
+using KamiLib.Configuration;
+using KamiLib.Window;
+using SortaKinda.Views.Windows;
 
 namespace SortaKinda.System;
+
+public class SystemConfig : CharacterConfiguration {
+    public bool SortOnItemAdded = true;
+    public bool SortOnItemRemoved = true;
+    public bool SortOnItemChanged;
+    public bool SortOnItemMoved;
+    public bool SortOnItemMerged;
+    public bool SortOnItemSplit;
+    public bool SortOnZoneChange = true;
+    public bool SortOnJobChange = true;
+    public bool SortOnLogin = true;
+    public bool ReorderUnsortedItems;
+}
 
 public class SortaKindaController : IDisposable {
     public static ModuleController ModuleController = null!;
     public static SortController SortController = null!;
     public static SystemConfig SystemConfig = null!;
     public static SortingThreadController SortingThreadController = null!;
+    public static CommandManager CommandManager = null!;
+    public static WindowManager WindowManager = null!;
 
     private uint lastJob = uint.MaxValue;
     private DateTime lastSortCommand = DateTime.MinValue;
@@ -25,13 +40,20 @@ public class SortaKindaController : IDisposable {
         SystemConfig = new SystemConfig();
         SortController = new SortController();
         ModuleController = new ModuleController();
+        CommandManager = new CommandManager(Service.PluginInterface, "sortakinda", "sorta");
+        WindowManager = new WindowManager(Service.PluginInterface);
 
+        CommandManager.RegisterCommand(new CommandHandler {
+            Delegate = SortCommand,
+            ActivationPath = "/sort",
+        });
+        
+        WindowManager.AddWindow(new ConfigurationWindow(), false, true);
+        
         if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 }) {
             OnLogin();
         }
         
-        CommandController.RegisterCommands(this);
-
         Service.ClientState.Login += OnLogin;
         Service.ClientState.Logout += OnLogout;
         Service.Framework.Update += OnUpdate;
@@ -48,18 +70,15 @@ public class SortaKindaController : IDisposable {
 
         ModuleController.Dispose();
         SortingThreadController.Dispose();
-        CommandController.UnregisterCommands(this);
+        CommandManager.Dispose();
     }
 
     private void OnLogin() {
-        if (!Service.ClientState.IsLoggedIn) return;
-        if (Service.ClientState.IsPvP) return;
-        if (Service.ClientState is not { LocalPlayer: { Name.TextValue: var playerName, HomeWorld.GameData.InternalName.RawString: var worldName } }) return;
+        if (!Service.ClientState.IsLoggedInNotPvP()) return;
 
         SystemConfig = new SystemConfig();
         SystemConfig = LoadConfig();
-        SystemConfig.CharacterName = playerName;
-        SystemConfig.HomeWorld = worldName;
+        SystemConfig.UpdateCharacterData(Service.ClientState);
         SaveConfig();
 
         SortController.Load();
@@ -70,7 +89,6 @@ public class SortaKindaController : IDisposable {
 
     private void OnLogout() {
         ModuleController.Unload();
-
         lastJob = uint.MaxValue;
     }
 
@@ -104,9 +122,7 @@ public class SortaKindaController : IDisposable {
 
     private void OnInventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) => ModuleController.InventoryChanged(events);
 
-    [SingleTierCommandHandler("SortAll", "sort")]
-    // ReSharper disable once UnusedMember.Local
-    private void SortCommand() {
+    private void SortCommand(params string[] args) {
         var timeSinceLastSort = DateTime.UtcNow - lastSortCommand;
         
         if (timeSinceLastSort.TotalSeconds > 10) {
@@ -114,13 +130,30 @@ public class SortaKindaController : IDisposable {
             lastSortCommand = DateTime.UtcNow;
         }
         else {
-            Chat.PrintError($"Attempted to sort too soon after last sort. Try again in {10 - timeSinceLastSort.Seconds} seconds.");
+            Service.ChatGui.PrintError($"Attempted to sort too soon after last sort. Try again in {10 - timeSinceLastSort.Seconds} seconds.");
         }
     }
     
-    public static void DrawConfig() => DrawableAttribute.DrawAttributes(SystemConfig, SaveConfig);
+    public static void DrawConfig() {
+        var settingsChanged = ImGui.Checkbox("Sort on Item Added", ref SystemConfig.SortOnItemAdded);
+        settingsChanged |= ImGui.Checkbox("Sort on Item Removed", ref SystemConfig.SortOnItemRemoved);
+        settingsChanged |= ImGui.Checkbox("Sort on Item Changed", ref SystemConfig.SortOnItemChanged);
+        settingsChanged |= ImGui.Checkbox("Sort on Item Moved", ref SystemConfig.SortOnItemMoved);
+        settingsChanged |= ImGui.Checkbox("Sort on Item Merged", ref SystemConfig.SortOnItemMerged);
+        settingsChanged |= ImGui.Checkbox("Sort on Item Split", ref SystemConfig.SortOnItemSplit);
+        settingsChanged |= ImGui.Checkbox("Sort on Zone Change", ref SystemConfig.SortOnZoneChange);
+        settingsChanged |= ImGui.Checkbox("Sort on Job Change", ref SystemConfig.SortOnJobChange);
+        settingsChanged |= ImGui.Checkbox("Sort on Login", ref SystemConfig.SortOnLogin);
+        settingsChanged |= ImGui.Checkbox("Reorder Unsorted Items", ref SystemConfig.ReorderUnsortedItems);
 
-    private static SystemConfig LoadConfig() => CharacterFileController.LoadFile<SystemConfig>("System.config.json", SystemConfig);
+        if (settingsChanged) {
+            SaveConfig();
+        }
+    }
 
-    private static void SaveConfig() => CharacterFileController.SaveFile("System.config.json", SystemConfig.GetType(), SystemConfig);
+    private static SystemConfig LoadConfig() 
+        => Service.PluginInterface.LoadCharacterFile(Service.ClientState.LocalContentId, "System.config.json", () => new SystemConfig());
+
+    private static void SaveConfig()
+        => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, "System.config.json", SystemConfig);
 }
