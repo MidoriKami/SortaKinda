@@ -1,13 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Classes;
-using SortaKinda.Interfaces;
 using SortaKinda.Models.Configuration;
 using SortaKinda.Models.Enums;
 
 namespace SortaKinda.System;
+
+public interface IModule : IDisposable {
+    ModuleName ModuleName { get; }
+    
+    IEnumerable<InventoryType> InventoryTypes { get; }
+
+    void LoadModule();
+    
+    void UnloadModule();
+    
+    void UpdateModule();
+    
+    void SortModule();
+    
+    void Draw();
+    
+    void InventoryChanged(params InventoryType[] changedInventories);
+}
+
+public interface IModuleConfig {
+    List<InventoryConfig> InventoryConfigs { get; set; }
+}
 
 public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
     private bool IsLoaded { get; set; }
