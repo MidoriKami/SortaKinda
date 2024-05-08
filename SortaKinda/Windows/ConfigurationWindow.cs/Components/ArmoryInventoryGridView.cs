@@ -19,8 +19,11 @@ public class ArmoryInventoryGridView : IDisposable {
     private readonly Dictionary<InventoryType, InventoryGridView> views = new();
     private InventoryType selectedTab = InventoryType.ArmoryMainHand;
 
-    private Vector2 ButtonSize => ImGuiHelpers.ScaledVector2(80.0f, 80.0f) * .75f;
-    private Vector2 ButtonPadding => ImGuiHelpers.ScaledVector2(5.0f, 5.0f);
+    private static Vector2 ButtonSize 
+        => ImGuiHelpers.ScaledVector2(80.0f, 80.0f) * .75f;
+    
+    private static Vector2 ButtonPadding 
+        => ImGuiHelpers.ScaledVector2(5.0f, 5.0f);
 
     public ArmoryInventoryGridView(List<InventoryGrid> armoryInventories) {
         var region = ImGuiHelpers.ScaledVector2(404, 565);

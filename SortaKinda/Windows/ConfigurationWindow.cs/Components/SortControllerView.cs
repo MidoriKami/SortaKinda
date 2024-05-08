@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
-using Newtonsoft.Json;
+using KamiLib.TabBar;
 using SortaKinda.Models;
 using SortaKinda.System;
 using SortaKinda.Views.Windows;
@@ -27,28 +28,20 @@ public class SortControllerView(SortController sortingController) {
         ImGui.TextUnformatted("Sorting Rules");
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - importExportButtonSize.X * 3.0f - sortButtonSize.X - ImGui.GetStyle().ItemSpacing.X * 3.0f);
-        ImGui.PushFont(UiBuilder.IconFont);
-        if (ImGui.Button($"{FontAwesomeIcon.Question.ToIconString()}##HelpButton", importExportButtonSize)) {
+
+        if (ImGuiTweaks.IconButtonWithSize(FontAwesomeIcon.Question, "HelpButton", importExportButtonSize, "Open Help Window")) {
             SortaKindaController.WindowManager.AddWindow(new TutorialWindow());
         }
-        ImGui.PopFont();
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Open Help Window");
 
         ImGui.SameLine();
-        ImGui.PushFont(UiBuilder.IconFont);
-        if (ImGui.Button($"{FontAwesomeIcon.Clipboard.ToIconString()}##ImportButton", importExportButtonSize)) {
+        if (ImGuiTweaks.IconButtonWithSize(FontAwesomeIcon.Clipboard, "ImportButton", importExportButtonSize, "Import rules from clipboard")) {
             ImportRules();
         }
-        ImGui.PopFont();
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Import rules from clipboard");
-
+        
         ImGui.SameLine();
-        ImGui.PushFont(UiBuilder.IconFont);
-        if (ImGui.Button($"{FontAwesomeIcon.ExternalLinkAlt.ToIconString()}##ImportButton", importExportButtonSize)) {
+        if (ImGuiTweaks.IconButtonWithSize(FontAwesomeIcon.ExternalLinkAlt, "ExportButton", importExportButtonSize, "Export rules to clipboard")) {
             ExportRules();
         }
-        ImGui.PopFont();
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Export rules to clipboard");
 
         ImGui.SameLine();
         if (ImGui.Button("Sort All", sortButtonSize)) {
@@ -68,7 +61,7 @@ public class SortControllerView(SortController sortingController) {
                 return;
             }
 
-            if (JsonConvert.DeserializeObject<SortingRule[]>(uncompressed) is { } rules) {
+            if (JsonSerializer.Deserialize<SortingRule[]>(uncompressed) is { } rules) {
                 if (rules.Length is 0) {
                     Service.ChatGui.PrintError("Tried to import sorting rules, but got nothing, try copying the code again.");
                     return;
@@ -95,7 +88,7 @@ public class SortControllerView(SortController sortingController) {
 
     private void ExportRules() {
         var rules = sortingController.Rules.ToArray()[1..];
-        var jsonString = JsonConvert.SerializeObject(rules);
+        var jsonString = JsonSerializer.Serialize(rules);
         
         var compressed = Util.CompressString(jsonString);
         ImGui.SetClipboardText(Convert.ToBase64String(compressed));

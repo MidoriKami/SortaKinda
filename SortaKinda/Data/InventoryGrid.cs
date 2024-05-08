@@ -10,7 +10,7 @@ public class InventoryGrid {
     public InventoryGrid(InventoryType type, InventoryConfig config) {
         Type = type;
         Config = config;
-        Inventory = new List<InventorySlot>();
+        Inventory = [];
 
         foreach (var index in Enumerable.Range(0, InventoryController.GetInventoryPageSize(Type))) {
             Inventory.Add(new InventorySlot(Type, config.SlotConfigs[index], index));

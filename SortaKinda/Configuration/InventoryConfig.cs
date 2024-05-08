@@ -8,7 +8,7 @@ namespace SortaKinda.Models.Configuration;
 public class InventoryConfig {
     public InventoryConfig(InventoryType type) {
         Type = type;
-        SlotConfigs = new List<SlotConfig>();
+        SlotConfigs = [];
         foreach (var _ in Enumerable.Range(0, InventoryController.GetInventoryPageSize(type))) {
             SlotConfigs.Add(new SlotConfig {
                 RuleId = SortController.DefaultId

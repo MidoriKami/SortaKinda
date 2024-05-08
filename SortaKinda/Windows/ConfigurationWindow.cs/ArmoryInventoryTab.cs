@@ -9,5 +9,6 @@ public class ArmoryInventoryTab : IInventoryConfigurationTab {
     
     public bool Disabled => false;
     
-    public void DrawInventory() => SortaKindaController.ModuleController.DrawModule(ModuleName.ArmoryInventory);
+    public void DrawInventory() 
+        => SortaKindaController.ModuleController.DrawModule(ModuleName.ArmoryInventory);
 }

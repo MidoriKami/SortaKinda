@@ -11,7 +11,7 @@ public class SortingRuleView(SortingRule rule) {
         new OtherFiltersTab(rule),
         new ToggleFiltersTab(rule),
         new SortOrderTab(rule)
-    ]);
+    ], false);
 
     public void Draw() => tabBar.Draw();
 }

@@ -36,7 +36,7 @@ public class SortingRuleTooltipView(SortingRule sortingRule) {
     private string GetAllowedItemsString() {
         var strings = new[] {
             sortingRule.AllowedItemTypes.Count > 0 ? string.Join(", ", sortingRule.AllowedItemTypes.Select(type => Service.DataManager.GetExcelSheet<ItemUICategory>()!.GetRow(type)?.Name.RawString)) : string.Empty,
-            sortingRule.AllowedItemNames.Count > 0 ? string.Join(", ", sortingRule.AllowedItemNames.Select(name => @$"""{name}""")) : string.Empty,
+            sortingRule.AllowedNameRegexes.Count > 0 ? string.Join(", ", sortingRule.AllowedNameRegexes.Select(name => @$"""{name}""")) : string.Empty,
             sortingRule.AllowedItemRarities.Count > 0 ? string.Join(", ", sortingRule.AllowedItemRarities.Select(rarity => rarity.GetDescription())) : string.Empty,
             sortingRule.ItemLevelFilter.Enable ? $"{sortingRule.ItemLevelFilter.MinValue} ilvl → {sortingRule.ItemLevelFilter.MaxValue} ilvl" : string.Empty,
             sortingRule.VendorPriceFilter.Enable ? $"{sortingRule.VendorPriceFilter.MinValue} gil → {sortingRule.VendorPriceFilter.MaxValue} gil" : string.Empty

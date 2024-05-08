@@ -8,7 +8,8 @@ using SortaKinda.System;
 namespace SortaKinda.Views.SortControllerViews;
 
 public class InventorySlotView(InventorySlot slot, Vector2 position) {
-    public static Vector2 ItemSize => ImGuiHelpers.ScaledVector2(35.0f, 35.0f);
+    public static Vector2 ItemSize 
+        => ImGuiHelpers.ScaledVector2(35.0f, 35.0f);
 
     public void Draw() {
         DrawItem();

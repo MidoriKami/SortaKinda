@@ -20,7 +20,8 @@ public class QuadInventoryView {
         views.Add(grid4);
     }
     
-    private static Vector2 GridSpacing => ImGuiHelpers.ScaledVector2(8.0f, 8.0f);
+    private static Vector2 GridSpacing 
+        => ImGuiHelpers.ScaledVector2(8.0f, 8.0f);
 
     public void Draw() {
         foreach (var gridView in views) {

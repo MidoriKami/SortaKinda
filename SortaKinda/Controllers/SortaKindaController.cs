@@ -48,7 +48,7 @@ public class SortaKindaController : IDisposable {
             ActivationPath = "/sort",
         });
         
-        WindowManager.AddWindow(new ConfigurationWindow(), false, true);
+        WindowManager.AddWindow(new ConfigurationWindow());
         
         if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 }) {
             OnLogin();
@@ -74,7 +74,7 @@ public class SortaKindaController : IDisposable {
     }
 
     private void OnLogin() {
-        if (!Service.ClientState.IsLoggedInNotPvP()) return;
+        if (Service.ClientState is { IsPvP: true }) return;
 
         SystemConfig = new SystemConfig();
         SystemConfig = LoadConfig();
@@ -93,8 +93,7 @@ public class SortaKindaController : IDisposable {
     }
 
     private void OnUpdate(IFramework framework) {
-        if (!Service.ClientState.IsLoggedIn) return;
-        if (Service.ClientState.IsPvP) return;
+        if (Service.ClientState is { IsLoggedIn: false } or { IsPvP: true }) return;
         if (Service.ClientState is not { LocalPlayer.ClassJob.Id: var classJobId }) return;
         
         // Don't update modules if the Retainer transfer window is open
@@ -114,13 +113,13 @@ public class SortaKindaController : IDisposable {
     }
 
     private void OnZoneChange(ushort e) {
-        if (!Service.ClientState.IsLoggedIn) return;
-        if (Service.ClientState.IsPvP) return;
+        if (Service.ClientState is { IsLoggedIn: false } or { IsPvP: true }) return;
 
         if (SystemConfig.SortOnZoneChange) ModuleController.Sort();
     }
 
-    private void OnInventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) => ModuleController.InventoryChanged(events);
+    private void OnInventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) 
+        => ModuleController.InventoryChanged(events);
 
     private void SortCommand(params string[] args) {
         var timeSinceLastSort = DateTime.UtcNow - lastSortCommand;

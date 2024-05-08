@@ -13,18 +13,14 @@ public class RangeFilter(string label, int minValue, int maxValue) {
         ImGui.TextUnformatted(Label);
 
         ImGui.Checkbox($"##Enable{Label}", ref Enable);
-        ImGui.SameLine();
+        ImGui.SameLine(0, ImGui.GetStyle().ItemInnerSpacing.X * 2.0f);
         
-        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, ImGui.GetStyle().ItemInnerSpacing);
-
         ImGui.PushItemWidth(ImGui.GetContentRegionMax().X / 3.0f);
         ImGui.InputInt($"##Minimum{Label}", ref MinValue, 0, 0);
 
-        ImGui.SameLine();
+        ImGui.SameLine(0, ImGui.GetStyle().ItemInnerSpacing.X);
         ImGui.PushItemWidth(ImGui.GetContentRegionMax().X / 3.0f);
         ImGui.InputInt($"##Maximum{Label}", ref MaxValue, 0, 0);
-
-        ImGui.PopStyleVar();
 
         ImGuiHelpers.ScaledDummy(8.0f);
     }

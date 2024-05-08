@@ -1,5 +1,6 @@
 ﻿using System;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using KamiLib.Classes;
 using Lumina.Excel.GeneratedSheets;
@@ -20,14 +21,13 @@ public class ToggleFilter(PropertyFilter filter, ToggleFilterState state = Toggl
         
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.PushItemWidth(ImGui.GetContentRegionMax().X / 2.0f);
-        if (ImGui.BeginCombo($"##{Filter.ToString()}Combo", State.GetDescription())) {
-            foreach(var value in Enum.GetValues<ToggleFilterState>()) {
-                if (ImGui.Selectable(value.GetDescription(), value == State)) {
-                    State = value;
-                }
+        using var combo = ImRaii.Combo($"##{Filter.ToString()}Combo", State.GetDescription());
+        if (!combo) return;
+        
+        foreach(var value in Enum.GetValues<ToggleFilterState>()) {
+            if (ImGui.Selectable(value.GetDescription(), value == State)) {
+                State = value;
             }
-            
-            ImGui.EndCombo();
         }
     }
 

@@ -103,6 +103,7 @@ public unsafe class InventorySorter {
                 .Where(slot => slot.Rule.Equals(rule))
                 .ToList();
 
+            // Yup, that's a bubble sort. And not even the efficient kind of bubble sort.
             foreach (var _ in targetSlotsForRule) {
                 foreach (var index in Enumerable.Range(0, targetSlotsForRule.Count - 1)) {
                     if (rule.CompareSlots(targetSlotsForRule[index], targetSlotsForRule[index + 1])) {

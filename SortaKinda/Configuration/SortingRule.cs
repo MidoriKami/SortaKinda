@@ -74,10 +74,9 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     public string Id { get; set; } = SortController.DefaultId;
     public string Name { get; set; } = "New Rule";
     public int Index { get; set; }
-    public HashSet<string> AllowedItemNames { get; set; } = new();
-    public HashSet<UserRegex> AllowedNameRegexes { get; set; } = new();
-    public HashSet<uint> AllowedItemTypes { get; set; } = new();
-    public HashSet<ItemRarity> AllowedItemRarities { get; set; } = new();
+    public HashSet<UserRegex> AllowedNameRegexes { get; set; } = [];
+    public HashSet<uint> AllowedItemTypes { get; set; } = [];
+    public HashSet<ItemRarity> AllowedItemRarities { get; set; } = [];
     public RangeFilter ItemLevelFilter { get; set; } = new("Item Level Filter", 0, 1000);
     public RangeFilter VendorPriceFilter { get; set; } = new("Vendor Price Filter", 0, 1_000_000);
     public ToggleFilter UntradableFilter { get; set; } = new(PropertyFilter.Untradable);

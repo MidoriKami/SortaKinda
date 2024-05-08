@@ -2,7 +2,6 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Style;
 using ImGuiNET;
-using KamiLib.Classes;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
 using KamiLib.TabBar;
@@ -24,6 +23,8 @@ public class ConfigurationWindow : Window {
     public ConfigurationWindow() : base("SortaKinda - Configuration Window", new Vector2(840.0f, 636.0f), true) {
         Flags |= ImGuiWindowFlags.NoScrollbar;
         Flags |= ImGuiWindowFlags.NoScrollWithMouse;
+
+        WindowFlags = WindowFlags.IsConfigWindow;
         
         TitleBarButtons.Add(new TitleBarButton {
             Icon = FontAwesomeIcon.Cog,
@@ -38,19 +39,13 @@ public class ConfigurationWindow : Window {
         });
     }
 
-    public override bool IsOpenAllowed() 
-        => Service.ClientState.IsLoggedInNotPvP();
-
-    public override void PrintOpenNotAllowed() 
-        => Service.ChatGui.PrintError("The configuration menu cannot be opened while in a PvP area");
-
     public override bool DrawConditions()
-        => Service.ClientState.IsLoggedInNotPvP();
+        => Service.ClientState is { IsLoggedIn: true } and { IsPvP: false };
 
     public override void PreDraw() 
         => StyleModelV1.DalamudStandard.Push();
 
-    public override void Draw() {
+    protected override void DrawContents() {
         tabBar.Draw();
         areaPaintController.Draw();
     }
@@ -58,6 +53,18 @@ public class ConfigurationWindow : Window {
     public override void PostDraw() 
         => StyleModelV1.DalamudStandard.Pop();
 
-    private void OpenConfigWindow(params string[] args) 
-        => Toggle();
+    private void OpenConfigWindow(params string[] args) {
+        switch (Service.ClientState) {
+            case { IsLoggedIn: false }:
+                return;
+
+            case { IsPvP: true }:
+                Service.ChatGui.PrintError("The configuration menu cannot be opened while in a PvP area", "SortaKinda", 45);
+                return;
+
+            default:
+                UnCollapseOrToggle();
+                break;
+        }
+    }
 }

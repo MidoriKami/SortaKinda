@@ -3,7 +3,10 @@ using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
+using Dalamud.Utility;
 using ImGuiNET;
+using KamiLib.TabBar;
 using SortaKinda.Interfaces;
 using SortaKinda.Models;
 
@@ -27,34 +30,21 @@ public class ItemNameFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
     }
 
     private void DrawFilteredNames() {
-        string? removalString = null;
         UserRegex? removalRegex = null;
 
-        if (ImGui.BeginChild("##NameFilterChild", new Vector2(0.0f, -50.0f))) {
-            if (SortingRule.AllowedItemNames.Count is 0 && SortingRule.AllowedNameRegexes.Count is 0) {
-                ImGui.TextColored(KnownColor.Orange.Vector(), "Nothing Filtered");
-            }
-
-            foreach (var name in SortingRule.AllowedItemNames) {
-                if (ImGuiComponents.IconButton($"##RemoveName{name}", FontAwesomeIcon.Trash)) {
-                    removalString = name;
-                }
-                ImGui.SameLine();
-                ImGui.TextUnformatted(name);
-            }
-
-            foreach (var userRegex in SortingRule.AllowedNameRegexes) {
-                if (ImGuiComponents.IconButton($"##RemoveNameRegex{userRegex.Text}", FontAwesomeIcon.Trash)) {
-                    removalRegex = userRegex;
-                }
-                ImGui.SameLine();
-                ImGui.TextUnformatted(userRegex.Text);
-            }
+        using var child = ImRaii.Child("##NameFilterChild", ImGuiHelpers.ScaledVector2(0.0f, -50.0f));
+        if (!child) return;
+        
+        if (SortingRule.AllowedNameRegexes.Count is 0) {
+            ImGui.TextColored(KnownColor.Orange.Vector(), "Nothing Filtered");
         }
-        ImGui.EndChild();
 
-        if (removalString is { } toRemove) {
-            SortingRule.AllowedItemNames.Remove(toRemove);
+        foreach (var userRegex in SortingRule.AllowedNameRegexes) {
+            if (ImGuiComponents.IconButton($"##RemoveNameRegex{userRegex.Text}", FontAwesomeIcon.Trash)) {
+                removalRegex = userRegex;
+            }
+            ImGui.SameLine();
+            ImGui.TextUnformatted(userRegex.Text);
         }
 
         if (removalRegex is { } toRemoveRegex) {
@@ -82,17 +72,12 @@ public class ItemNameFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
 
         ImGui.SameLine();
 
-        ImGui.PushFont(UiBuilder.IconFont);
-        if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNameButton", buttonSize)) {
+        using var disabled = ImRaii.Disabled(newRegex.Regex is null || newRegex.Text.IsNullOrEmpty());
+        if (ImGuiTweaks.IconButtonWithSize(FontAwesomeIcon.Plus, "AddNameButton", buttonSize, "Add Name")) {
             if (newRegex.Regex is not null) {
                 SortingRule.AllowedNameRegexes.Add(newRegex);
                 newRegex = new UserRegex();
             }
-        }
-        ImGui.PopFont();
-
-        if (ImGui.IsItemHovered()) {
-            ImGui.SetTooltip("Add Name");
         }
     }
 }

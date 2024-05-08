@@ -62,7 +62,7 @@ public class ModuleController : IDisposable {
                 inventoryTypes.RemoveWhere(type => !module.InventoryTypes.Contains(type));
             }
 
-            if (inventoryTypes.Any()) {
+            if (inventoryTypes.Count != 0) {
                 module.InventoryChanged(inventoryTypes.ToArray());
             }
         }

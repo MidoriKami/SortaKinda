@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
 using ImGuiNET;
 using KamiLib.TabBar;
+using KamiLib.Window;
 using SortaKinda.System;
 using SortaKinda.Views.Tabs;
-using Window = KamiLib.Window.Window;
 
 namespace SortaKinda.Views.Windows;
 
@@ -23,7 +23,7 @@ public class TutorialWindow : Window {
         ]);
     }
 
-    public override void Draw() 
+    protected override void DrawContents() 
         => tabBar.Draw();
 
     public override void OnClose() 

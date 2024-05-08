@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Numerics;
 using Dalamud.Interface;
-using Dalamud.Interface.Components;
 using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using SortaKinda.Models;
 using SortaKinda.System;
@@ -24,6 +24,13 @@ public class RuleConfigWindow : Window {
         rule = sortingRule;
         ruleList = sortingRules;
         view = new SortingRuleView(sortingRule);
+        
+        TitleBarButtons.Add(new TitleBarButton {
+            Icon = FontAwesomeIcon.Cog,
+            ShowTooltip = () => ImGui.SetTooltip("Additional Settings"),
+            IconOffset = new Vector2(2.0f, 2.0f),
+            Click = _ => ImGui.OpenPopup("Advanced Options")
+        });
 
         Position = ImGui.GetMainViewport().Size / 2.0f - new Vector2(500.0f, 400.0f) / 2.0f;
         PositionCondition = ImGuiCond.Appearing;
@@ -34,36 +41,43 @@ public class RuleConfigWindow : Window {
     public override void PreDraw() 
         => StyleModelV1.DalamudStandard.Push();
 
-    public override void Draw() {
+    protected override void DrawContents() {
         DrawHeader();
-        
-        if (ImGui.BeginChild("##RuleConfigurationTabChild", ImGui.GetContentRegionAvail() - FooterSize - ImGui.GetStyle().FramePadding)) {
-            view.Draw();
+
+        using (var child = ImRaii.Child("RuleConfigurationTabChild", ImGui.GetContentRegionAvail() - FooterSize - ImGui.GetStyle().FramePadding)) {
+            if (child) {
+                view.Draw();
+            }
         }
-        ImGui.EndChild();
         
-        if (ImGui.BeginChild("##RuleConfigurationTabFooter", FooterSize - ImGui.GetStyle().FramePadding)) {
-            DrawFooter();
-        }
-        ImGui.EndChild();
-        DrawPopupWindow();
+        DrawFooter();
+
+        DrawPopup();
     }
     
+    private void DrawPopup() {
+        using var popup = ImRaii.Popup("Advanced Options");
+        if (!popup) return;
+                
+        if (ImGui.Checkbox("Use Inclusive Logic", ref rule.InclusiveAnd)) {
+            SortaKindaController.SortController.SaveConfig();
+        }
+    }
+
     public override void PostDraw() 
         => StyleModelV1.DalamudStandard.Pop();
 
     private void DrawHeader() {
         DrawColorEdit();
+        ImGui.SameLine();
         DrawNameEdit();
+        ImGui.SameLine();
         DrawDeleteButton();
-        DrawAdvancedOptionsButton();
         ImGuiHelpers.ScaledDummy(5.0f);
     }
 
     private void DrawColorEdit() {
-        var region = ImGui.GetContentRegionAvail();
-
-        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = region.X / 4.0f - ImGuiHelpers.GlobalScale * 50.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f });
+        ImGui.SetCursorPos(ImGui.GetCursorPos() with { X = ImGui.GetContentRegionMax().X / 4.0f - ImGuiHelpers.GlobalScale * 70.0f + ImGui.GetStyle().ItemSpacing.X / 2.0f });
         var imGuiColor = rule.Color;
         if (ImGui.ColorEdit4("##ColorConfig", ref imGuiColor, ImGuiColorEditFlags.NoInputs)) {
             rule.Color = imGuiColor;
@@ -71,10 +85,7 @@ public class RuleConfigWindow : Window {
     }
 
     private void DrawNameEdit() {
-        var region = ImGui.GetContentRegionAvail();
-
-        ImGui.SameLine();
-        ImGui.SetNextItemWidth(region.X / 2.0f - ImGui.GetItemRectSize().X - ImGui.GetStyle().ItemSpacing.X);
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionMax().X / 2.0f);
         var imGuiName = rule.Name;
         if (ImGui.InputText("##NameEdit", ref imGuiName, 1024, ImGuiInputTextFlags.AutoSelectAll)) {
             rule.Name = imGuiName;
@@ -83,45 +94,23 @@ public class RuleConfigWindow : Window {
     }
 
     private void DrawDeleteButton() {
-        var hotkeyHeld = ImGui.GetIO().KeyShift && ImGui.GetIO().KeyCtrl;
-        if (!hotkeyHeld) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
-        ImGui.SameLine();
-        if (ImGui.Button("Delete", ImGuiHelpers.ScaledVector2(100.0f, 23.0f)) && hotkeyHeld) {
+        using var disabled = ImRaii.Disabled(!(ImGui.GetIO().KeyShift && ImGui.GetIO().KeyCtrl));
+        
+        if (ImGui.Button("Delete", ImGuiHelpers.ScaledVector2(100.0f, 23.0f))) {
             ruleList.Remove(rule);
             IsOpen = false;
         }
-        if (!hotkeyHeld) ImGui.PopStyleVar();
-        if (ImGui.IsItemHovered() && !hotkeyHeld) {
+        
+        if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) {
             ImGui.SetTooltip("Hold Shift + Control while clicking to delete this rule");
         }
     }
 
-    private void DrawAdvancedOptionsButton() {
-        ImGui.SameLine();
-        ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - ImGui.GetFrameHeight());
-        if (ImGuiComponents.IconButton("AdvancedOptions", FontAwesomeIcon.Cog)) {
-            ImGui.OpenPopup("Advanced Options");
-        }
-    }
-
-    private void DrawPopupWindow() {
-        ImGui.SetNextWindowSize(new Vector2(200.0f, 200.0f), ImGuiCond.Always);
-        if (ImGui.BeginPopup("Advanced Options")) {
-            if (ImGui.Checkbox("Use Inclusive Logic", ref rule.InclusiveAnd)) {
-                SortaKindaController.SortController.SaveConfig();
-            }
-            
-            ImGui.EndPopup();
-        }
-    }
-
-    public override void OnClose() {
-        SortaKindaController.SortController.SaveConfig();
-        SortaKindaController.WindowManager.RemoveWindow(this);
-    }
-    
     private void DrawFooter() {
         var buttonSize = ImGuiHelpers.ScaledVector2(100.0f, 23.0f);
+
+        using var child = ImRaii.Child("##RuleConfigurationTabFooter", FooterSize - ImGui.GetStyle().FramePadding);
+        if (!child) return;
 
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3.0f * ImGuiHelpers.GlobalScale);
         ImGui.TextColored(KnownColor.Gray.Vector(), rule.Id);
@@ -140,5 +129,10 @@ public class RuleConfigWindow : Window {
             SortaKindaController.SortController.SaveConfig();
             Close();
         }
+    }
+    
+    public override void OnClose() {
+        SortaKindaController.SortController.SaveConfig();
+        SortaKindaController.WindowManager.RemoveWindow(this);
     }
 }
