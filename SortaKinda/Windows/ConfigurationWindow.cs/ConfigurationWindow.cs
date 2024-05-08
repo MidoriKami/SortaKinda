@@ -6,10 +6,9 @@ using KamiLib.CommandManager;
 using KamiLib.Configuration;
 using KamiLib.TabBar;
 using KamiLib.Window;
-using SortaKinda.System;
-using SortaKinda.Views.Tabs;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Views.Windows;
+namespace SortaKinda.Windows.ConfigurationWindow.cs;
 
 public class ConfigurationWindow : Window {
     private readonly AreaPaintController areaPaintController = new();

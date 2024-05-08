@@ -1,7 +1,6 @@
 ﻿using System;
-using SortaKinda.Models.Inventory;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Data;
 
 public class SortingFilter {
     public required Func<bool> Active { get; init; }

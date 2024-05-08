@@ -1,8 +1,7 @@
 ﻿using KamiLib.TabBar;
-using SortaKinda.Models;
-using SortaKinda.Views.Tabs;
+using SortaKinda.Configuration;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.SortingRuleWindow.Components;
 
 public class SortingRuleView(SortingRule rule) {
     private readonly TabBar tabBar = new("SortingRuleTabBar", [

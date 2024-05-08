@@ -6,10 +6,10 @@ using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.Classes;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Models;
-using SortaKinda.System;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public class SortingRuleTooltipView(SortingRule sortingRule) {
     public void Draw() {

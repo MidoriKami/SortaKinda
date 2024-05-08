@@ -6,11 +6,10 @@ using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.TabBar;
-using SortaKinda.Models;
-using SortaKinda.System;
-using SortaKinda.Views.Windows;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public class SortControllerView(SortController sortingController) {
     private readonly SortingRuleListView listView = new(sortingController, sortingController.Rules);
@@ -30,7 +29,7 @@ public class SortControllerView(SortController sortingController) {
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - importExportButtonSize.X * 3.0f - sortButtonSize.X - ImGui.GetStyle().ItemSpacing.X * 3.0f);
 
         if (ImGuiTweaks.IconButtonWithSize(FontAwesomeIcon.Question, "HelpButton", importExportButtonSize, "Open Help Window")) {
-            SortaKindaController.WindowManager.AddWindow(new TutorialWindow());
+            SortaKindaController.WindowManager.AddWindow(new TutorialWindow.TutorialWindow());
         }
 
         ImGui.SameLine();

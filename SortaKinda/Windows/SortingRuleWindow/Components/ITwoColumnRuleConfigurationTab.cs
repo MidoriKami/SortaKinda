@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 
-namespace SortaKinda.Interfaces;
+namespace SortaKinda.Windows.SortingRuleWindow.Components;
 
 public interface ITwoColumnRuleConfigurationTab : IRuleConfigurationTab {
     string FirstLabel { get; }

@@ -2,10 +2,9 @@
 using ImGuiNET;
 using KamiLib.TabBar;
 using KamiLib.Window;
-using SortaKinda.System;
-using SortaKinda.Views.Tabs;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Views.Windows;
+namespace SortaKinda.Windows.TutorialWindow;
 
 public class TutorialWindow : Window {
     private readonly TabBar tabBar;

@@ -4,10 +4,11 @@ using System.Linq;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Classes;
-using SortaKinda.Models.Configuration;
-using SortaKinda.Models.Enums;
+using SortaKinda.Configuration;
+using SortaKinda.Data;
+using SortaKinda.Data.Enums;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Modules;
 
 public interface IModule : IDisposable {
     ModuleName ModuleName { get; }

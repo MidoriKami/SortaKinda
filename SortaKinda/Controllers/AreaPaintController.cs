@@ -3,9 +3,9 @@ using System.Drawing;
 using System.Numerics;
 using ImGuiNET;
 using KamiLib.Classes;
-using SortaKinda.Views.Windows;
+using SortaKinda.Windows.ConfigurationWindow.cs;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Controllers;
 
 public class AreaPaintController {
     private static bool _dragStarted;

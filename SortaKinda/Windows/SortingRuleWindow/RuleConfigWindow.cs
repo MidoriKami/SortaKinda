@@ -6,12 +6,12 @@ using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
-using SortaKinda.Models;
-using SortaKinda.System;
-using SortaKinda.Views.SortControllerViews;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
+using SortaKinda.Windows.SortingRuleWindow.Components;
 using Window = KamiLib.Window.Window;
 
-namespace SortaKinda.Views.Windows;
+namespace SortaKinda.Windows.SortingRuleWindow;
 
 public class RuleConfigWindow : Window {
     private readonly List<SortingRule> ruleList;

@@ -2,10 +2,10 @@
 using System.Numerics;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
-using SortaKinda.Models.Inventory;
-using SortaKinda.System;
+using SortaKinda.Controllers;
+using SortaKinda.Data;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public class InventorySlotView(InventorySlot slot, Vector2 position) {
     public static Vector2 ItemSize 

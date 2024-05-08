@@ -7,9 +7,9 @@ using Dalamud.Interface.Internal;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
-using SortaKinda.System;
+using SortaKinda.Data;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public class ArmoryInventoryGridView : IDisposable {
     private readonly UldWrapper armouryBoard;

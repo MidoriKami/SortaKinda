@@ -8,11 +8,11 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using KamiLib.TabBar;
-using SortaKinda.Models;
-using SortaKinda.System;
-using SortaKinda.Views.Windows;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
+using SortaKinda.Windows.SortingRuleWindow;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public class SortingRuleListView(SortController sortController, List<SortingRule> rules) {
     private int? deletionRuleId;

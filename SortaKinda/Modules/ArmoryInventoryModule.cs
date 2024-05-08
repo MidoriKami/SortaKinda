@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Models.Configuration;
-using SortaKinda.Models.Enums;
-using SortaKinda.Views.SortControllerViews;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
+using SortaKinda.Data;
+using SortaKinda.Data.Enums;
+using SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
-namespace SortaKinda.System.Modules;
+namespace SortaKinda.Modules;
 
 public class ArmoryConfig : IModuleConfig {
     public List<InventoryConfig> InventoryConfigs { get; set; } = [

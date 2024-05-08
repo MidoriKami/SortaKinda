@@ -7,11 +7,11 @@ using ImGuiNET;
 using KamiLib.TabBar;
 using KamiLib.Window;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Interfaces;
-using SortaKinda.Models;
-using SortaKinda.System;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
+using SortaKinda.Windows.SortingRuleWindow.Components;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.SortingRuleWindow;
 
 public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTab {
     public string Name => "Item Type Filter";

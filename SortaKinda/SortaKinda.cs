@@ -1,5 +1,5 @@
 ﻿using Dalamud.Plugin;
-using SortaKinda.System;
+using SortaKinda.Controllers;
 
 namespace SortaKinda;
 

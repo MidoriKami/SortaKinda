@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.System;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Models.Configuration;
+namespace SortaKinda.Configuration;
 
 public class InventoryConfig {
     public InventoryConfig(InventoryType type) {

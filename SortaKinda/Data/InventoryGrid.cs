@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Models.Configuration;
-using SortaKinda.Models.Inventory;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Data;
 
 public class InventoryGrid {
     public InventoryGrid(InventoryType type, InventoryConfig config) {

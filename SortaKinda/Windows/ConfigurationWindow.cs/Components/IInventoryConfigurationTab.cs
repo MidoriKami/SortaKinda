@@ -1,9 +1,9 @@
 ﻿using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using KamiLib.TabBar;
-using SortaKinda.System;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Interfaces;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public interface IInventoryConfigurationTab : ITabItem {
     void ITabItem.Draw() {

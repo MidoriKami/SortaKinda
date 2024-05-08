@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using SortaKinda.System;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Models.Configuration;
+namespace SortaKinda.Configuration;
 
 public class SlotConfig {
     [JsonIgnore] public bool Dirty;

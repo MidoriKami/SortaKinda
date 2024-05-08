@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Classes;
-using SortaKinda.Models;
-using SortaKinda.Models.Inventory;
+using SortaKinda.Configuration;
+using SortaKinda.Data;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Controllers;
 
 public unsafe class InventorySorter {
     private static void SwapItems(IReadOnlyList<InventorySlot> targetSlots, IReadOnlyList<InventorySlot> sourceSlots) {

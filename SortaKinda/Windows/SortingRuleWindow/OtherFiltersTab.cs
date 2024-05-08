@@ -2,11 +2,11 @@
 using Dalamud.Interface.Components;
 using ImGuiNET;
 using KamiLib.Classes;
-using SortaKinda.Interfaces;
-using SortaKinda.Models;
-using SortaKinda.Models.Enums;
+using SortaKinda.Configuration;
+using SortaKinda.Data.Enums;
+using SortaKinda.Windows.SortingRuleWindow.Components;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.SortingRuleWindow;
 
 public class OtherFiltersTab(SortingRule rule) : ITwoColumnRuleConfigurationTab {
     public string Name => "Other Filters";

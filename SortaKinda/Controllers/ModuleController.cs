@@ -4,11 +4,10 @@ using System.Linq;
 using Dalamud.Game.Inventory;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Interfaces;
-using SortaKinda.Models.Enums;
-using SortaKinda.System.Modules;
+using SortaKinda.Data.Enums;
+using SortaKinda.Modules;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Controllers;
 
 public class ModuleController : IDisposable {
     private readonly IEnumerable<IModule> modules = new List<IModule> {

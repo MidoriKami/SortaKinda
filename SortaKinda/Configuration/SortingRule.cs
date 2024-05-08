@@ -4,13 +4,13 @@ using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Models.Enums;
-using SortaKinda.Models.General;
-using SortaKinda.Models.Inventory;
-using SortaKinda.System;
-using SortaKinda.Views.SortControllerViews;
+using SortaKinda.Controllers;
+using SortaKinda.Data;
+using SortaKinda.Data.Enums;
+using SortaKinda.Models;
+using SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Configuration;
 
 public unsafe class SortingRule : IComparer<InventorySlot>{
     private readonly SortingRuleTooltipView view;

@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface.Utility;
 using ImGuiNET;
 
-namespace SortaKinda.Models;
+namespace SortaKinda.Data;
 
 public class RangeFilter(string label, int minValue, int maxValue) {
     public bool Enable;

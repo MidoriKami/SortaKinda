@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
@@ -7,10 +6,11 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.TabBar;
-using SortaKinda.Interfaces;
+using SortaKinda.Configuration;
 using SortaKinda.Models;
+using SortaKinda.Windows.SortingRuleWindow.Components;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.SortingRuleWindow;
 
 public class ItemNameFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTab {
     private UserRegex newRegex = new();

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Interface.Utility;
-using SortaKinda.System;
+using SortaKinda.Data;
 
-namespace SortaKinda.Views.SortControllerViews;
+namespace SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
 public class InventoryGridView {
     private const int ItemsPerRow = 5;

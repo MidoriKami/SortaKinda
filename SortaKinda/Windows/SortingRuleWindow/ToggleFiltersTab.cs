@@ -1,7 +1,7 @@
-﻿using SortaKinda.Interfaces;
-using SortaKinda.Models;
+﻿using SortaKinda.Configuration;
+using SortaKinda.Windows.SortingRuleWindow.Components;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.SortingRuleWindow;
 
 public class ToggleFiltersTab(SortingRule rule) : IOneColumnRuleConfigurationTab {
     public string Name => "Property Filters";

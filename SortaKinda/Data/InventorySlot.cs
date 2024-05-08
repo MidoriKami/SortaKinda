@@ -2,10 +2,10 @@
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Models.Configuration;
-using SortaKinda.System;
+using SortaKinda.Configuration;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Models.Inventory;
+namespace SortaKinda.Data;
 
 public unsafe class InventorySlot(InventoryType type, SlotConfig config, int index) {
 

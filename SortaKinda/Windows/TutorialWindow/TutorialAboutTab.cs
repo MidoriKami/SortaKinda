@@ -3,7 +3,7 @@ using Dalamud.Interface.Utility;
 using ImGuiNET;
 using KamiLib.TabBar;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.TutorialWindow;
 
 public class TutorialAboutTab : ITabItem {
     public string Name => "About";

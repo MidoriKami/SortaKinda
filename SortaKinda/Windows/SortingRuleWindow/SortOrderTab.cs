@@ -3,10 +3,10 @@ using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 using KamiLib.Classes;
-using SortaKinda.Interfaces;
-using SortaKinda.Models;
+using SortaKinda.Configuration;
+using SortaKinda.Windows.SortingRuleWindow.Components;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.SortingRuleWindow;
 
 public class SortOrderTab(SortingRule rule) : ITwoColumnRuleConfigurationTab {
     public string Name => "Sort Order";

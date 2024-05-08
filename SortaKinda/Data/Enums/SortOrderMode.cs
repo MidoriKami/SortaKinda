@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SortaKinda.Models.Enums;
+namespace SortaKinda.Data.Enums;
 
 public enum SortOrderMode {
     [Description("Alphabetical")] 

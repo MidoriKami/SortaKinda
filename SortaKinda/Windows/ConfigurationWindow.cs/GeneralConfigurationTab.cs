@@ -1,7 +1,7 @@
 ﻿using KamiLib.TabBar;
-using SortaKinda.System;
+using SortaKinda.Controllers;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.ConfigurationWindow.cs;
 
 public class GeneralConfigurationTab : ITabItem {
     public string Name => "General Settings";

@@ -1,8 +1,8 @@
-﻿using SortaKinda.Interfaces;
-using SortaKinda.Models.Enums;
-using SortaKinda.System;
+﻿using SortaKinda.Controllers;
+using SortaKinda.Data.Enums;
+using SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
-namespace SortaKinda.Views.Tabs;
+namespace SortaKinda.Windows.ConfigurationWindow.cs;
 
 public class MainInventoryTab : IInventoryConfigurationTab {
     public string Name => "Main Inventory";

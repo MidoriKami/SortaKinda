@@ -3,10 +3,10 @@ using System.Drawing;
 using System.Linq;
 using Dalamud.Interface;
 using KamiLib.Classes;
-using SortaKinda.Models;
-using SortaKinda.Views.SortControllerViews;
+using SortaKinda.Configuration;
+using SortaKinda.Windows.ConfigurationWindow.cs.Components;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Controllers;
 
 public class SortingRuleConfig {
     public List<SortingRule> Rules { get; set; } = [

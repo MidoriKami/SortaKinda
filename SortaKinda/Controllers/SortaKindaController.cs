@@ -7,9 +7,9 @@ using KamiLib.Classes;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
 using KamiLib.Window;
-using SortaKinda.Views.Windows;
+using SortaKinda.Windows.ConfigurationWindow.cs;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Controllers;
 
 public class SystemConfig : CharacterConfiguration {
     public bool SortOnItemAdded = true;

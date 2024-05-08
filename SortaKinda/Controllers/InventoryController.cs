@@ -2,7 +2,7 @@
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
-namespace SortaKinda.System;
+namespace SortaKinda.Controllers;
 
 public unsafe partial class InventoryController {
     public static int GetInventoryPageSize(InventoryType type)

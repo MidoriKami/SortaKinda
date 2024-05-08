@@ -4,10 +4,9 @@ using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using KamiLib.Classes;
 using Lumina.Excel.GeneratedSheets;
-using SortaKinda.Models.Enums;
-using SortaKinda.Models.Inventory;
+using SortaKinda.Data.Enums;
 
-namespace SortaKinda.Models.General;
+namespace SortaKinda.Data;
 
 public class ToggleFilter(PropertyFilter filter, ToggleFilterState state = ToggleFilterState.Ignored) {
     public ToggleFilterState State = state;
