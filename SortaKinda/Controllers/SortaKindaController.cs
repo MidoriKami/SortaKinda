@@ -74,9 +74,6 @@ public class SortaKindaController : IDisposable {
     }
 
     private void OnLogin() {
-        if (Service.ClientState is { IsPvP: true }) return;
-
-        SystemConfig = new SystemConfig();
         SystemConfig = LoadConfig();
         SystemConfig.UpdateCharacterData(Service.ClientState);
         SaveConfig();
