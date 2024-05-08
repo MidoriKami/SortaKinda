@@ -28,7 +28,7 @@ public class ConfigurationWindow : Window {
         TitleBarButtons.Add(new TitleBarButton {
             Icon = FontAwesomeIcon.Cog,
             ShowTooltip = () => ImGui.SetTooltip("Open Configuration Manager"),
-            Click = _ => SortaKindaController.WindowManager.AddWindow(new ConfigurationManagerWindow()),
+            Click = _ => SortaKindaController.WindowManager.AddWindow(new ConfigurationManagerWindow(), WindowFlags.OpenImmediately),
             IconOffset = new Vector2(2.0f, 2.0f),
         });
 
