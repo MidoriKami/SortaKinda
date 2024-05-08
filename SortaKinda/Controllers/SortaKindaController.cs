@@ -48,7 +48,7 @@ public class SortaKindaController : IDisposable {
             ActivationPath = "/sort",
         });
         
-        WindowManager.AddWindow(new ConfigurationWindow());
+        WindowManager.AddWindow(new ConfigurationWindow(), WindowFlags.IsConfigWindow);
         
         if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 }) {
             OnLogin();
