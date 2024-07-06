@@ -27,7 +27,7 @@ public class TutorialWindow : Window {
         => tabBar.Draw();
 
     public override void OnClose() 
-        => SortaKindaController.WindowManager.RemoveWindow(this);
+        => System.WindowManager.RemoveWindow(this);
 }
 
 public class TutorialAboutTab : ITabItem {

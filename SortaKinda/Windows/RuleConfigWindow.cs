@@ -59,7 +59,7 @@ public class RuleConfigWindow : Window {
         if (!popup) return;
                 
         if (ImGui.Checkbox("Use Inclusive Logic", ref rule.InclusiveAnd)) {
-            SortaKindaController.SortController.SaveConfig();
+            System.SortController.SaveConfig();
         }
     }
 
@@ -117,21 +117,21 @@ public class RuleConfigWindow : Window {
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X * 2.0f - ImGui.GetStyle().ItemSpacing.X);
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.Button("Save", buttonSize)) {
-            SortaKindaController.ModuleController.Sort();
-            SortaKindaController.SortController.SaveConfig();
+            System.ModuleController.Sort();
+            System.SortController.SaveConfig();
         }
 
         ImGui.SameLine();
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 3.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.Button("Save & Close", buttonSize)) {
-            SortaKindaController.ModuleController.Sort();
-            SortaKindaController.SortController.SaveConfig();
+            System.ModuleController.Sort();
+            System.SortController.SaveConfig();
             Close();
         }
     }
     
     public override void OnClose() {
-        SortaKindaController.SortController.SaveConfig();
-        SortaKindaController.WindowManager.RemoveWindow(this);
+        System.SortController.SaveConfig();
+        System.WindowManager.RemoveWindow(this);
     }
 }

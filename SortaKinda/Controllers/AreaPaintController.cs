@@ -41,7 +41,7 @@ public class AreaPaintController {
         if (ImGui.IsMouseDragging(ImGuiMouseButton.Left) && dragStarted) {
             dragStopPosition = ImGui.GetMousePos();
 
-            if (SortaKindaController.SortController.SelectedRule is not { Color: var ruleColor }) return;
+            if (System.SortController.SelectedRule is not { Color: var ruleColor }) return;
             ImGui.GetWindowDrawList().AddRect(dragStartPosition, dragStopPosition, ImGui.GetColorU32(ruleColor), 0.0f, ImDrawFlags.None, 3.0f);
             ImGui.GetWindowDrawList().AddRectFilled(dragStartPosition, dragStopPosition, ImGui.GetColorU32(ruleColor with { W = 0.33f }));
         }
@@ -51,7 +51,7 @@ public class AreaPaintController {
     }
 
     private bool ShouldDraw() {
-        if (SortaKindaController.WindowManager.GetWindow<ConfigurationWindow>() is not { IsFocused: true }) return false;
+        if (System.WindowManager.GetWindow<ConfigurationWindow>() is not { IsFocused: true }) return false;
         if (!WindowBounds.IsCursorInWindow() || WindowBounds.IsCursorInWindowHeader()) return false;
         if (IsWindowMoving()) return false;
 

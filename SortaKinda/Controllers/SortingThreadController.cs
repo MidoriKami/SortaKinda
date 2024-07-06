@@ -30,7 +30,7 @@ public unsafe class SortingThreadController : IDisposable {
 
     public void Update() {
         if (SortPending) {
-            Service.Log.Verbose($"Launching sorting tasks. {sortingTasks.Where(task => task.Status is TaskStatus.Created).Count()} Tasks Pending.");
+            Service.Log.Verbose($"Launching sorting tasks. {sortingTasks.Count(task => task.Status is TaskStatus.Created)} Tasks Pending.");
             
             foreach (var task in sortingTasks.Where(task => task.Status is TaskStatus.Created)) {
                 Service.Log.Verbose("Starting Task");

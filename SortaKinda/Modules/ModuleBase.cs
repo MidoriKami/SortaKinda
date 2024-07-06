@@ -130,5 +130,5 @@ public enum ModuleName {
     MainInventory,
 
     [Description("ArmoryInventory")] 
-    ArmoryInventory
+    ArmoryInventory,
 }

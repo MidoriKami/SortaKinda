@@ -20,7 +20,7 @@ public class ArmoryConfig : IModuleConfig {
         new InventoryConfig(InventoryType.ArmoryNeck),
         new InventoryConfig(InventoryType.ArmoryWrist),
         new InventoryConfig(InventoryType.ArmoryRings),
-        new InventoryConfig(InventoryType.ArmorySoulCrystal)
+        new InventoryConfig(InventoryType.ArmorySoulCrystal),
     ];
 }
 
@@ -55,7 +55,7 @@ public class ArmoryInventoryModule : ModuleBase<ArmoryConfig> {
         foreach (var type in inventoryTypes) {
             if (Inventories.FirstOrDefault(inventory => inventory.Type == type) is { } targetInventory) {
                 if (targetInventory.Inventory.Any(slot => slot.Rule.Id is not SortController.DefaultId)) {
-                    SortaKindaController.SortingThreadController.AddSortingTask(targetInventory.Type, targetInventory);
+                    System.SortingThreadController.AddSortingTask(targetInventory.Type, targetInventory);
                 }
             }
         }

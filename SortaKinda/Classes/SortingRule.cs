@@ -192,7 +192,7 @@ public enum FillMode {
     Top,
 
     [Description("Bottom")] 
-    Bottom
+    Bottom,
 }
 
 public enum ItemRarity {
@@ -209,7 +209,7 @@ public enum ItemRarity {
     Purple = 4,
 
     [Description("Pink")] 
-    Pink = 7
+    Pink = 7,
 }
 
 public enum SortOrderDirection {
@@ -217,7 +217,7 @@ public enum SortOrderDirection {
     Ascending,
 
     [Description("Descending")] 
-    Descending
+    Descending,
 }
 
 public enum SortOrderMode {

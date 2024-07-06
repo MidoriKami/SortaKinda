@@ -41,7 +41,7 @@ public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
         DrawSelectedTypes();
         
         if (ImGuiTweaks.IconButtonWithSize(Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle, FontAwesomeIcon.Plus, "openItemTypeSelect", ImGui.GetContentRegionAvail())) {
-            SortaKindaController.WindowManager.AddWindow(new ItemUiCategorySelectionWindow(Service.PluginInterface) {
+            System.WindowManager.AddWindow(new ItemUiCategorySelectionWindow(Service.PluginInterface) {
                 MultiSelectionCallback = selections => {
                     foreach (var selected in selections) {
                         SortingRule.AllowedItemTypes.Add(selected.RowId);

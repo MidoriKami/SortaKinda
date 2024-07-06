@@ -30,7 +30,7 @@ public unsafe class InventorySlot(InventoryType type, SlotConfig config, int ind
 
     public SortingRule Rule {
         get {
-            var sortControllerRule = SortaKindaController.SortController.GetRule(Config.RuleId);
+            var sortControllerRule = System.SortController.GetRule(Config.RuleId);
 
             if (sortControllerRule.Id != Config.RuleId) {
                 TryApplyRule(sortControllerRule.Id);
@@ -41,11 +41,11 @@ public unsafe class InventorySlot(InventoryType type, SlotConfig config, int ind
 
     public int Slot { get; init; } = index;
 
-    public void OnLeftClick() => TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
+    public void OnLeftClick() => TryApplyRule(System.SortController.SelectedRule.Id);
 
     public void OnRightClick() => TryApplyRule(SortController.DefaultId);
 
-    public void OnDragCollision() => TryApplyRule(SortaKindaController.SortController.SelectedRule.Id);
+    public void OnDragCollision() => TryApplyRule(System.SortController.SelectedRule.Id);
 
     public void OnHover() => Rule.ShowTooltip();
 

@@ -30,7 +30,7 @@ public class SortControllerView(SortController sortingController) {
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - importExportButtonSize.X * 3.0f - sortButtonSize.X - ImGui.GetStyle().ItemSpacing.X * 3.0f);
 
         if (ImGuiTweaks.IconButtonWithSize(Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle, FontAwesomeIcon.Question, "HelpButton", importExportButtonSize, "Open Help Window")) {
-            SortaKindaController.WindowManager.AddWindow(new TutorialWindow());
+            System.WindowManager.AddWindow(new TutorialWindow());
         }
 
         ImGui.SameLine();
@@ -69,7 +69,7 @@ public class SortControllerView(SortController sortingController) {
 
                 var addedCount = 0;
                 foreach (var rule in rules) {
-                    if (!sortingController.Rules.Any(existingRule => existingRule.Id == rule.Id)) {
+                    if (sortingController.Rules.All(existingRule => existingRule.Id != rule.Id)) {
                         rule.Index = sortingController.Rules.Count;
                         sortingController.Rules.Add(rule);
                         addedCount++;

@@ -27,8 +27,8 @@ public class RangeFilter(string label, int minValue, int maxValue) {
 
     public bool IsItemSlotAllowed(uint? itemSlotValue) 
         => IsItemSlotAllowed((int?) itemSlotValue);
-    
-    public bool IsItemSlotAllowed(int? itemSlotValue) {
+
+    private bool IsItemSlotAllowed(int? itemSlotValue) {
         if (itemSlotValue is null) return false;
         if (itemSlotValue < MinValue) return false;
         if (itemSlotValue > MaxValue) return false;

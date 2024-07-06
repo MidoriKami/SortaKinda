@@ -40,7 +40,7 @@ public class SortingRuleListView(SortController sortController, List<SortingRule
 
         if (deletionRuleId is { } ruleToDelete) {
             if (ruleToDelete == rules.Count) {
-                SortaKindaController.SortController.SelectedRuleIndex = rules.Count - 1;
+                System.SortController.SelectedRuleIndex = rules.Count - 1;
             }
             rules.RemoveAt(ruleToDelete);
             sortController.SaveConfig();
@@ -59,7 +59,7 @@ public class SortingRuleListView(SortController sortController, List<SortingRule
             rules.Add(newRule);
             sortController.SaveConfig();
 
-            SortaKindaController.WindowManager.AddWindow(new RuleConfigWindow(newRule, rules));
+            System.WindowManager.AddWindow(new RuleConfigWindow(newRule, rules));
         }
     }
 
@@ -97,7 +97,7 @@ public class SortingRuleListView(SortController sortController, List<SortingRule
 
     private static void DrawRadioButton(int index) {
         ImGui.SameLine();
-        ImGui.RadioButton($"##Selected{index}", ref SortaKindaController.SortController.SelectedRuleIndex, index);
+        ImGui.RadioButton($"##Selected{index}", ref System.SortController.SelectedRuleIndex, index);
     }
 
     private void DrawRuleEntry(SortingRule rule, int index) {
@@ -139,7 +139,7 @@ public class SortingRuleListView(SortController sortController, List<SortingRule
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X);
 
         if (ImGuiTweaks.IconButtonWithSize(Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle, FontAwesomeIcon.Cog, rule.Id, buttonSize)) {
-            SortaKindaController.WindowManager.AddWindow(new RuleConfigWindow(rule, rules));
+            System.WindowManager.AddWindow(new RuleConfigWindow(rule, rules));
         }
     }
 

@@ -12,7 +12,7 @@ public interface IInventoryConfigurationTab : ITabItem {
 
         ImGui.TableNextColumn();
         using (var configChild = ImRaii.Child("##ConfigChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding)) {
-            if (configChild) SortaKindaController.SortController.Draw();
+            if (configChild) System.SortController.Draw();
         }
         
         ImGui.TableNextColumn();
