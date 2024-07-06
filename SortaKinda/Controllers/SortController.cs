@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using Dalamud.Interface;
-using KamiLib.Classes;
-using SortaKinda.Configuration;
-using SortaKinda.Windows.ConfigurationWindow.cs.Components;
+using KamiLib.Configuration;
+using SortaKinda.Classes;
+using SortaKinda.ViewComponents;
 
 namespace SortaKinda.Controllers;
 

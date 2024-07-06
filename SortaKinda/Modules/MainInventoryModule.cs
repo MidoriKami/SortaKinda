@@ -2,11 +2,9 @@
 using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Configuration;
+using SortaKinda.Classes;
 using SortaKinda.Controllers;
-using SortaKinda.Data;
-using SortaKinda.Data.Enums;
-using SortaKinda.Windows.ConfigurationWindow.cs.Components;
+using SortaKinda.ViewComponents;
 
 namespace SortaKinda.Modules;
 

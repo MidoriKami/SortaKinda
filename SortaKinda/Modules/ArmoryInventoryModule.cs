@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Configuration;
+using SortaKinda.Classes;
 using SortaKinda.Controllers;
-using SortaKinda.Data;
-using SortaKinda.Data.Enums;
-using SortaKinda.Windows.ConfigurationWindow.cs.Components;
+using SortaKinda.ViewComponents;
 
 namespace SortaKinda.Modules;
 

@@ -4,7 +4,6 @@ using System.Linq;
 using Dalamud.Game.Inventory;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Data.Enums;
 using SortaKinda.Modules;
 
 namespace SortaKinda.Controllers;
@@ -12,7 +11,7 @@ namespace SortaKinda.Controllers;
 public class ModuleController : IDisposable {
     private readonly IEnumerable<IModule> modules = new List<IModule> {
         new MainInventoryModule(),
-        new ArmoryInventoryModule()
+        new ArmoryInventoryModule(),
     };
 
     public void Dispose() {

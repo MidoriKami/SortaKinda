@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using SortaKinda.Data;
+using SortaKinda.Classes;
 
 namespace SortaKinda.Controllers;
 

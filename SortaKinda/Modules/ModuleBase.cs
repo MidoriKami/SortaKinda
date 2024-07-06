@@ -1,14 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using KamiLib.Classes;
-using SortaKinda.Configuration;
-using SortaKinda.Data;
-using SortaKinda.Data.Enums;
+using KamiLib.Configuration;
+using SortaKinda.Classes;
+using SortaKinda.Controllers;
 
 namespace SortaKinda.Modules;
+
+public class InventoryConfig {
+    public InventoryConfig(InventoryType type) {
+        Type = type;
+        SlotConfigs = [];
+        foreach (var _ in Enumerable.Range(0, InventoryController.GetInventoryPageSize(type))) {
+            SlotConfigs.Add(new SlotConfig {
+                RuleId = SortController.DefaultId,
+            });
+        }
+    }
+
+    public List<SlotConfig> SlotConfigs { get; set; }
+    
+    public InventoryType Type { get; set; }
+}
 
 public interface IModule : IDisposable {
     ModuleName ModuleName { get; }
@@ -107,4 +123,12 @@ public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
 
     private void SaveConfig() 
         => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, $"{ModuleName}.config.json", ModuleConfig);
+}
+
+public enum ModuleName {
+    [Description("MainInventory")] 
+    MainInventory,
+
+    [Description("ArmoryInventory")] 
+    ArmoryInventory
 }

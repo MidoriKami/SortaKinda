@@ -6,7 +6,7 @@ namespace SortaKinda;
 public sealed class SortaKindaPlugin : IDalamudPlugin {
     public static SortaKindaController Controller = null!;
 
-    public SortaKindaPlugin(DalamudPluginInterface pluginInterface) {
+    public SortaKindaPlugin(IDalamudPluginInterface pluginInterface) {
         pluginInterface.Create<Service>();
         
         Controller = new SortaKindaController();

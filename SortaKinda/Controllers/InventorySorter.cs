@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Classes;
-using SortaKinda.Configuration;
-using SortaKinda.Data;
+using SortaKinda.Classes;
 
 namespace SortaKinda.Controllers;
 

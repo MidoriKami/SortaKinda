@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using KamiLib.Classes;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
 using KamiLib.Window;
-using SortaKinda.Windows.ConfigurationWindow.cs;
+using SortaKinda.Windows;
 
 namespace SortaKinda.Controllers;
 
