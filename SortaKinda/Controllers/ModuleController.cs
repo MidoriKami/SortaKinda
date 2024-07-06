@@ -108,12 +108,12 @@ public class ModuleController : IDisposable {
     }
 
     private static bool IsEventAllowed(InventoryEventArgs argument) => argument.Type switch {
-        GameInventoryEvent.Added when SortaKindaController.SystemConfig.SortOnItemAdded => true,
-        GameInventoryEvent.Removed when SortaKindaController.SystemConfig.SortOnItemRemoved => true,
-        GameInventoryEvent.Changed when SortaKindaController.SystemConfig.SortOnItemChanged => true,
-        GameInventoryEvent.Moved when SortaKindaController.SystemConfig.SortOnItemMoved => true,
-        GameInventoryEvent.Split when SortaKindaController.SystemConfig.SortOnItemSplit => true,
-        GameInventoryEvent.Merged when SortaKindaController.SystemConfig.SortOnItemMerged => true,
-        _ => false
+        GameInventoryEvent.Added when System.SystemConfig.SortOnItemAdded => true,
+        GameInventoryEvent.Removed when System.SystemConfig.SortOnItemRemoved => true,
+        GameInventoryEvent.Changed when System.SystemConfig.SortOnItemChanged => true,
+        GameInventoryEvent.Moved when System.SystemConfig.SortOnItemMoved => true,
+        GameInventoryEvent.Split when System.SystemConfig.SortOnItemSplit => true,
+        GameInventoryEvent.Merged when System.SystemConfig.SortOnItemMerged => true,
+        _ => false,
     };
 }

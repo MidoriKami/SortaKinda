@@ -30,11 +30,11 @@ public class ConfigurationWindow : Window {
         TitleBarButtons.Add(new TitleBarButton {
             Icon = FontAwesomeIcon.Cog,
             ShowTooltip = () => ImGui.SetTooltip("Open Configuration Manager"),
-            Click = _ => SortaKindaController.WindowManager.AddWindow(new ConfigurationManagerWindow(), WindowFlags.OpenImmediately),
+            Click = _ => System.WindowManager.AddWindow(new ConfigurationManagerWindow(), WindowFlags.OpenImmediately),
             IconOffset = new Vector2(2.0f, 2.0f),
         });
 
-        SortaKindaController.CommandManager.RegisterCommand(new CommandHandler {
+        System.CommandManager.RegisterCommand(new CommandHandler {
             Delegate = OpenConfigWindow,
             ActivationPath = "/",
         });
@@ -76,7 +76,7 @@ public class MainInventoryTab : IInventoryConfigurationTab {
     public bool Disabled => false;
     
     public void DrawInventory() 
-        => SortaKindaController.ModuleController.DrawModule(ModuleName.MainInventory);
+        => System.ModuleController.DrawModule(ModuleName.MainInventory);
 }
 
 public class ArmoryInventoryTab : IInventoryConfigurationTab {
@@ -85,7 +85,7 @@ public class ArmoryInventoryTab : IInventoryConfigurationTab {
     public bool Disabled => false;
     
     public void DrawInventory() 
-        => SortaKindaController.ModuleController.DrawModule(ModuleName.ArmoryInventory);
+        => System.ModuleController.DrawModule(ModuleName.ArmoryInventory);
 }
 
 public class GeneralConfigurationTab : ITabItem {
@@ -94,5 +94,5 @@ public class GeneralConfigurationTab : ITabItem {
     public bool Disabled => false;
     
     public void Draw() 
-        => SortaKindaController.DrawConfig();
+        => SortaKindaPlugin.DrawConfig();
 }

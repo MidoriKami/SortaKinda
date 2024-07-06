@@ -13,7 +13,7 @@ public class SortingRuleConfig {
         new SortingRule {
             Color = KnownColor.White.Vector(),
             Id = SortController.DefaultId,
-            Name = "Unsorted"
+            Name = "Unsorted",
         }
     ];
 }
@@ -41,10 +41,9 @@ public class SortController {
         => RuleConfig.Rules;
 
     public void SortAllInventories() 
-        => SortaKindaController.ModuleController.Sort();
+        => System.ModuleController.Sort();
 
     public void Load() {
-        // RuleConfig = new SortingRuleConfig();
         RuleConfig = LoadConfig();
 
         View = new SortControllerView(this);

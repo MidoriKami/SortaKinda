@@ -13,7 +13,7 @@ public class MainInventoryConfig : IModuleConfig {
         new InventoryConfig(InventoryType.Inventory1),
         new InventoryConfig(InventoryType.Inventory2),
         new InventoryConfig(InventoryType.Inventory3),
-        new InventoryConfig(InventoryType.Inventory4)
+        new InventoryConfig(InventoryType.Inventory4),
     ];
 }
 
@@ -41,7 +41,7 @@ public class MainInventoryModule : ModuleBase<MainInventoryConfig> {
 
     protected override void Sort(params InventoryType[] inventoryTypes) {
         if (Inventories.SelectMany(inventory => inventory.Inventory).Any(slot => slot.Rule.Id is not SortController.DefaultId)) {
-            SortaKindaController.SortingThreadController.AddSortingTask(InventoryType.Inventory1, Inventories.ToArray());
+            System.SortingThreadController.AddSortingTask(InventoryType.Inventory1, Inventories.ToArray());
         }
     }
 }

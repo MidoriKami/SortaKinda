@@ -4,7 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace SortaKinda.Controllers;
 
-public static unsafe partial class InventoryController {
+public static unsafe class InventoryController {
     public static int GetInventoryPageSize(InventoryType type)
         => GetInventorySorter(type)->ItemsPerPage;
 
