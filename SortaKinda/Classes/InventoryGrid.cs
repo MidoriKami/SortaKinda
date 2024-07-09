@@ -13,6 +13,15 @@ public class InventoryGrid {
         Inventory = [];
 
         foreach (var index in Enumerable.Range(0, InventoryController.GetInventoryPageSize(Type))) {
+            if (Config.SlotConfigs.Count <= index) {
+                config.SlotConfigs.Add(new SlotConfig {
+                    RuleId = SortController.DefaultId,
+                });
+                
+                Service.Log.Info($"Detected inventory inventory size larger than current config for {type}, updating.");
+                System.SortController.SaveConfig();
+            }
+            
             Inventory.Add(new InventorySlot(Type, config.SlotConfigs[index], index));
         }
     }

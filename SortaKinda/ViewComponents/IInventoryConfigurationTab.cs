@@ -1,7 +1,6 @@
 ﻿using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using KamiLib.Classes;
-using SortaKinda.Controllers;
 
 namespace SortaKinda.ViewComponents;
 
