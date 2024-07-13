@@ -7,7 +7,6 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using SortaKinda.Classes;
-using SortaKinda.Controllers;
 using SortaKinda.ViewComponents;
 using Window = KamiLib.Window.Window;
 
@@ -19,7 +18,7 @@ public class RuleConfigWindow : Window {
     private readonly SortingRule rule;
     private static Vector2 FooterSize => ImGuiHelpers.ScaledVector2(0.0f, 30.0f);
 
-    public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###RuleConfig{sortingRule.Id}", new Vector2(500.0f, 350.0f)) {
+    public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###RuleConfig{sortingRule.Id}", new Vector2(550.0f, 350.0f)) {
         rule = sortingRule;
         ruleList = sortingRules;
         view = new SortingRuleView(sortingRule);
@@ -28,7 +27,7 @@ public class RuleConfigWindow : Window {
             Icon = FontAwesomeIcon.Cog,
             ShowTooltip = () => ImGui.SetTooltip("Additional Settings"),
             IconOffset = new Vector2(2.0f, 2.0f),
-            Click = _ => ImGui.OpenPopup("Advanced Options")
+            Click = _ => ImGui.OpenPopup("Advanced Options"),
         });
 
         Position = ImGui.GetMainViewport().Size / 2.0f - new Vector2(500.0f, 400.0f) / 2.0f;
