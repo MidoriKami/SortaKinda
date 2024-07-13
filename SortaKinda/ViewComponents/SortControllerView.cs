@@ -61,7 +61,7 @@ public class SortControllerView(SortController sortingController) {
                 return;
             }
 
-            if (JsonSerializer.Deserialize<SortingRule[]>(uncompressed) is { } rules) {
+            if (JsonSerializer.Deserialize<SortingRule[]>(uncompressed, SerializerOptions) is { } rules) {
                 if (rules.Length is 0) {
                     Service.ChatGui.PrintError("Tried to import sorting rules, but got nothing, try copying the code again.");
                     return;
@@ -81,14 +81,19 @@ public class SortControllerView(SortController sortingController) {
                 sortingController.SaveConfig();
             }
         }
-        catch {
+        catch (Exception e) {
             Service.ChatGui.PrintError("Something went wrong trying to import rules, check you copied the code correctly.");
+            Service.Log.Error(e, "Handled exception while importing rules.");
         }
     }
 
+    private static readonly JsonSerializerOptions SerializerOptions = new() {
+        IncludeFields = true,
+    };
+    
     private void ExportRules() {
         var rules = sortingController.Rules.ToArray()[1..];
-        var jsonString = JsonSerializer.Serialize(rules);
+        var jsonString = JsonSerializer.Serialize(rules, SerializerOptions);
         
         var compressed = Util.CompressString(jsonString);
         ImGui.SetClipboardText(Convert.ToBase64String(compressed));
