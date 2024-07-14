@@ -6,6 +6,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.Classes;
+using KamiLib.Window;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
 using SortaKinda.Windows;
@@ -30,7 +31,7 @@ public class SortControllerView(SortController sortingController) {
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - importExportButtonSize.X * 3.0f - sortButtonSize.X - ImGui.GetStyle().ItemSpacing.X * 3.0f);
 
         if (ImGuiTweaks.IconButtonWithSize(Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle, FontAwesomeIcon.Question, "HelpButton", importExportButtonSize, "Open Help Window")) {
-            System.WindowManager.AddWindow(new TutorialWindow());
+            System.WindowManager.AddWindow(new TutorialWindow(), WindowFlags.OpenImmediately);
         }
 
         ImGui.SameLine();
