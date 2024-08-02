@@ -46,7 +46,7 @@ public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
                     foreach (var selected in selections) {
                         SortingRule.AllowedItemTypes.Add(selected.RowId);
                     }
-                }
+                },
             }, WindowFlags.OpenImmediately);
         }
     }
