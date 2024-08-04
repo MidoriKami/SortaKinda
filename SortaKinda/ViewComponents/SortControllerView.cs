@@ -9,6 +9,7 @@ using KamiLib.Classes;
 using KamiLib.Window;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
+using SortaKinda.Modules;
 using SortaKinda.Windows;
 
 namespace SortaKinda.ViewComponents;
@@ -52,6 +53,8 @@ public class SortControllerView(SortController sortingController) {
         ImGui.Separator();
     }
 
+    private record ClipboardRules(SortingRule[] Rules, MainInventoryConfig MainInventory, ArmoryConfig Armory);
+    
     private void ImportRules() {
         try {
             var decodedString = Convert.FromBase64String(ImGui.GetClipboardText());
@@ -62,14 +65,14 @@ public class SortControllerView(SortController sortingController) {
                 return;
             }
 
-            if (JsonSerializer.Deserialize<SortingRule[]>(uncompressed, SerializerOptions) is { } rules) {
-                if (rules.Length is 0) {
+            if (JsonSerializer.Deserialize<ClipboardRules>(uncompressed, SerializerOptions) is { } clipboardData) {
+                if (clipboardData.Rules.Length is 0) {
                     Service.ChatGui.PrintError("Tried to import sorting rules, but got nothing, try copying the code again.");
                     return;
                 }
 
                 var addedCount = 0;
-                foreach (var rule in rules) {
+                foreach (var rule in clipboardData.Rules) {
                     if (sortingController.Rules.All(existingRule => existingRule.Id != rule.Id)) {
                         rule.Index = sortingController.Rules.Count;
                         sortingController.Rules.Add(rule);
@@ -77,9 +80,19 @@ public class SortControllerView(SortController sortingController) {
                     }
                 }
 
-                Service.ChatGui.Print($"Received {rules.Length} sorting rules from clipboard. ", "Import");
+                Service.ChatGui.Print($"Received {clipboardData.Rules.Length} sorting rules from clipboard. ", "Import");
                 Service.ChatGui.Print($"Added {addedCount} new sorting rules.", "Import");
                 sortingController.SaveConfig();
+
+                var mainInventoryModule = System.ModuleController.GetModule<MainInventoryModule>();
+                mainInventoryModule.Config = clipboardData.MainInventory;
+                mainInventoryModule.Save();
+                mainInventoryModule.LoadModule();
+                
+                var armoryInventoryModule = System.ModuleController.GetModule<ArmoryInventoryModule>();
+                armoryInventoryModule.Config = clipboardData.Armory;
+                armoryInventoryModule.Save();
+                armoryInventoryModule.LoadModule();
             }
         }
         catch (Exception e) {
@@ -93,13 +106,17 @@ public class SortControllerView(SortController sortingController) {
     };
     
     private void ExportRules() {
-        var rules = sortingController.Rules.ToArray()[1..];
-        var jsonString = JsonSerializer.Serialize(rules, SerializerOptions);
+        var data = new ClipboardRules(
+            sortingController.Rules.ToArray()[1..],
+            (MainInventoryConfig) System.ModuleController.GetModule<MainInventoryModule>().Config,
+            (ArmoryConfig) System.ModuleController.GetModule<ArmoryInventoryModule>().Config);
+        
+        var jsonString = JsonSerializer.Serialize(data, SerializerOptions);
         
         var compressed = Util.CompressString(jsonString);
         ImGui.SetClipboardText(Convert.ToBase64String(compressed));
 
-        Service.ChatGui.Print($"Exported {rules.Length} rules to clipboard.", "Export");
+        Service.ChatGui.Print($"Exported {data.Rules.Length} rules to clipboard.", "Export");
     }
 
     private void DrawRules() 

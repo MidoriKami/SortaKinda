@@ -24,7 +24,7 @@ public class MainInventoryModule : ModuleBase<MainInventoryConfig> {
     
     protected override List<InventoryGrid> Inventories { get; set; } = null!;
     
-    protected override MainInventoryConfig ModuleConfig { get; set; } = new();
+    public override MainInventoryConfig ModuleConfig { get; set; } = new();
 
     public override void Draw() {
         view?.Draw();

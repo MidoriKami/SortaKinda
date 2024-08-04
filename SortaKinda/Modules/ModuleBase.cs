@@ -42,6 +42,10 @@ public interface IModule : IDisposable {
     void Draw();
     
     void InventoryChanged(params InventoryType[] changedInventories);
+
+    IModuleConfig Config { get; set; }
+    
+    void Save();
 }
 
 public interface IModuleConfig {
@@ -58,7 +62,15 @@ public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
     public IEnumerable<InventoryType> InventoryTypes 
         => Inventories.Select(inventory => inventory.Type);
 
-    protected abstract T ModuleConfig { get; set; }
+    public abstract T ModuleConfig { get; set; }
+
+    public IModuleConfig Config {
+        get => ModuleConfig;
+        set => ModuleConfig = (T) value;
+    }
+
+    public void Save()
+        => SaveConfig();
 
     public abstract ModuleName ModuleName { get; }
 
@@ -71,7 +83,6 @@ public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
     public void LoadModule() {
         Service.Log.Debug($"[{ModuleName}] Loading Module");
 
-        ModuleConfig = new T();
         ModuleConfig = LoadConfig();
         Load();
         LoadViews();
@@ -115,6 +126,7 @@ public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
 
     public void InventoryChanged(params InventoryType[] changedInventories)
         => Sort(changedInventories);
+
 
     protected abstract void Sort(params InventoryType[] inventories);
 

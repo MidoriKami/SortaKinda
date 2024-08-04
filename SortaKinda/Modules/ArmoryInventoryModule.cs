@@ -31,7 +31,7 @@ public class ArmoryInventoryModule : ModuleBase<ArmoryConfig> {
     
     public override ModuleName ModuleName => ModuleName.ArmoryInventory;
     
-    protected override ArmoryConfig ModuleConfig { get; set; } = new();
+    public override ArmoryConfig ModuleConfig { get; set; } = new();
 
     protected override void LoadViews() {
         Inventories = [];

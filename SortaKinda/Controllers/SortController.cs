@@ -14,7 +14,7 @@ public class SortingRuleConfig {
             Color = KnownColor.White.Vector(),
             Id = SortController.DefaultId,
             Name = "Unsorted",
-        }
+        },
     ];
 }
 

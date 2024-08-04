@@ -9,47 +9,50 @@ using SortaKinda.Modules;
 namespace SortaKinda.Controllers;
 
 public class ModuleController : IDisposable {
-    private readonly IEnumerable<IModule> modules = new List<IModule> {
+    private readonly List<IModule> Modules = [
         new MainInventoryModule(),
         new ArmoryInventoryModule(),
-    };
+    ];
 
     public void Dispose() {
         Unload();
 
-        foreach (var module in modules.OfType<IDisposable>()) {
+        foreach (var module in Modules.OfType<IDisposable>()) {
             module.Dispose();
         }
     }
 
     public void Load() {
-        foreach (var module in modules) {
+        foreach (var module in Modules) {
             module.LoadModule();
         }
     }
 
     public void Unload() {
-        foreach (var module in modules) {
+        foreach (var module in Modules) {
             module.UnloadModule();
         }
     }
 
     public void Update() {
-        foreach (var module in modules) {
+        foreach (var module in Modules) {
             module.UpdateModule();
         }
     }
 
     public void Sort() {
-        foreach (var module in modules) {
+        foreach (var module in Modules) {
             module.SortModule();
         }
     }
 
+    public IModule GetModule<T>() where T : IModule
+        => Modules.OfType<T>().First();
+
     public void InventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) {
         if (!Service.ClientState.IsLoggedIn) return;
         
-        foreach (var module in modules) {
+        foreach (var module in Modules) {
             var inventoryTypes = new HashSet<InventoryType>();
 
             foreach (var itemEvent in events) {
@@ -104,7 +107,7 @@ public class ModuleController : IDisposable {
     }
 
     public void DrawModule(ModuleName module) {
-        modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
+        Modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
     }
 
     private static bool IsEventAllowed(InventoryEventArgs argument) => argument.Type switch {
