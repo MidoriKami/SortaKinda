@@ -87,7 +87,7 @@ public class RuleConfigWindow : Window {
         var imGuiName = rule.Name;
         if (ImGui.InputText("##NameEdit", ref imGuiName, 1024, ImGuiInputTextFlags.AutoSelectAll)) {
             rule.Name = imGuiName;
-            WindowName = $"SortaKinda Rule Configuration - {rule.Name}###RuleConfig{rule.Id}";
+            WindowName = $"SortaKinda Rule Configuration - {rule.Name}###RuleConfig{rule.Id}##SortaKinda";
         }
     }
 
