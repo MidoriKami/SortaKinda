@@ -34,8 +34,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         
         System.WindowManager.AddWindow(new ConfigurationWindow(), WindowFlags.IsConfigWindow);
         
-        if (Service.ClientState is { IsLoggedIn: true, LocalPlayer: not null, LocalContentId: not 0 }) {
-            OnLogin();
+        if (Service.ClientState is { IsLoggedIn: true }) {
+            Service.Framework.RunOnFrameworkThread(OnLogin);
         }
         
         Service.ClientState.Login += OnLogin;
