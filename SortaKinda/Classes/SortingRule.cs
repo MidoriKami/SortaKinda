@@ -39,6 +39,10 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
                 IsSlotAllowed = slot => AllowedItemRarities.Any(allowed => slot.ExdItem?.Rarity == (byte) allowed),
             },
             new() {
+                Active = () => LevelFilter.Enable,
+                IsSlotAllowed = slot => LevelFilter.IsItemSlotAllowed(slot.ExdItem?.LevelEquip),
+            },
+            new() {
                 Active = () => ItemLevelFilter.Enable,
                 IsSlotAllowed = slot => ItemLevelFilter.IsItemSlotAllowed(slot.ExdItem?.LevelItem.Row),
             },
@@ -76,6 +80,7 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     public HashSet<UserRegex> AllowedNameRegexes { get; set; } = [];
     public HashSet<uint> AllowedItemTypes { get; set; } = [];
     public HashSet<ItemRarity> AllowedItemRarities { get; set; } = [];
+    public RangeFilter LevelFilter { get; set; } = new RangeFilter("Level Filter", 0, 200);
     public RangeFilter ItemLevelFilter { get; set; } = new("Item Level Filter", 0, 1000);
     public RangeFilter VendorPriceFilter { get; set; } = new("Vendor Price Filter", 0, 1_000_000);
     public ToggleFilter UntradableFilter { get; set; } = new(PropertyFilter.Untradable);
@@ -158,7 +163,8 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
         SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
         SortOrderMode.ItemType => firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row,
-        _ => false
+        SortOrderMode.Level => firstItem.LevelEquip == secondItem.LevelEquip,
+        _ => false,
     };
 
     private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch {
@@ -168,7 +174,8 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
         SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
         SortOrderMode.ItemType => ShouldSwapItemUiCategory(firstItem, secondItem),
-        _ => false
+        SortOrderMode.Level => firstItem.LevelEquip > secondItem.LevelEquip,
+        _ => false,
     };
 
     private static bool ShouldSwapItemUiCategory(Item firstItem, Item secondItem) {
@@ -224,20 +231,23 @@ public enum SortOrderMode {
     [Description("Alphabetical")] 
     Alphabetically,
     
-    [Description("ItemLevel")] 
+    [Description("Item Level")] 
     ItemLevel,
 
     [Description("Rarity")] 
     Rarity,
 
-    [Description("SellPrice")] 
+    [Description("Sell Price")] 
     SellPrice,
 
-    [Description("ItemId")] 
+    [Description("Item Id")] 
     ItemId,
     
-    [Description("ItemType")]
+    [Description("Item Type")]
     ItemType,
+    
+    [Description("Level")]
+    Level,
 }
 
 public class SortingFilter {

@@ -39,7 +39,8 @@ public class SortingRuleTooltipView(SortingRule sortingRule) {
             sortingRule.AllowedNameRegexes.Count > 0 ? string.Join(", ", sortingRule.AllowedNameRegexes.Select(regex => @$"""{regex.Text}""")) : string.Empty,
             sortingRule.AllowedItemRarities.Count > 0 ? string.Join(", ", sortingRule.AllowedItemRarities.Select(rarity => rarity.GetDescription())) : string.Empty,
             sortingRule.ItemLevelFilter.Enable ? $"{sortingRule.ItemLevelFilter.MinValue} ilvl → {sortingRule.ItemLevelFilter.MaxValue} ilvl" : string.Empty,
-            sortingRule.VendorPriceFilter.Enable ? $"{sortingRule.VendorPriceFilter.MinValue} gil → {sortingRule.VendorPriceFilter.MaxValue} gil" : string.Empty
+            sortingRule.VendorPriceFilter.Enable ? $"{sortingRule.VendorPriceFilter.MinValue} gil → {sortingRule.VendorPriceFilter.MaxValue} gil" : string.Empty,
+            sortingRule.LevelFilter.Enable ? $"{sortingRule.LevelFilter.MinValue} lvl → {sortingRule.LevelFilter.MaxValue} lvl" : string.Empty,
         };
 
         return string.Join("\n", strings

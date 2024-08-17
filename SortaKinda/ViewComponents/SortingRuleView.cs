@@ -165,6 +165,7 @@ public class OtherFiltersTab(SortingRule rule) : ITwoColumnRuleConfigurationTab 
     public string SecondLabel => "Item Rarity Filter";
 
     public void DrawLeftSideContents() {
+        SortingRule.LevelFilter.DrawConfig();
         SortingRule.ItemLevelFilter.DrawConfig();
         SortingRule.VendorPriceFilter.DrawConfig();
     }

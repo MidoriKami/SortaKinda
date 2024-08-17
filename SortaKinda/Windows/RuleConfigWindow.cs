@@ -18,7 +18,7 @@ public class RuleConfigWindow : Window {
     private readonly SortingRule rule;
     private static Vector2 FooterSize => ImGuiHelpers.ScaledVector2(0.0f, 30.0f);
 
-    public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###RuleConfig{sortingRule.Id}", new Vector2(550.0f, 350.0f)) {
+    public RuleConfigWindow(SortingRule sortingRule, List<SortingRule> sortingRules) : base($"SortaKinda Rule Configuration - {sortingRule.Name}###RuleConfig{sortingRule.Id}", new Vector2(550.0f, 375.0f)) {
         rule = sortingRule;
         ruleList = sortingRules;
         view = new SortingRuleView(sortingRule);
