@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using KamiLib.Classes;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SortaKinda.Controllers;
 using SortaKinda.ViewComponents;
 
@@ -22,8 +22,8 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
                 Active = () => AllowedNameRegexes.Count != 0,
                 IsSlotAllowed = slot => {
                     foreach (var allowedRegex in AllowedNameRegexes) {
-                        if (slot is { ExdItem: { Name.RawString: var itemName, RowId: not 0 } }) {
-                            if (allowedRegex.Match(itemName)) return true;
+                        if (slot is { ExdItem: { Name: var itemName, RowId: not 0 } }) {
+                            if (allowedRegex.Match(itemName.ExtractText())) return true;
                         }
                     }
 
@@ -32,23 +32,23 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
             },
             new() {
                 Active = () => AllowedItemTypes.Count != 0,
-                IsSlotAllowed = slot => AllowedItemTypes.Any(allowed => slot.ExdItem?.ItemUICategory.Row == allowed),
+                IsSlotAllowed = slot => AllowedItemTypes.Any(allowed => slot.ExdItem.ItemUICategory.RowId == allowed),
             },
             new() {
                 Active = () => AllowedItemRarities.Count != 0,
-                IsSlotAllowed = slot => AllowedItemRarities.Any(allowed => slot.ExdItem?.Rarity == (byte) allowed),
+                IsSlotAllowed = slot => AllowedItemRarities.Any(allowed => slot.ExdItem.Rarity == (byte) allowed),
             },
             new() {
                 Active = () => LevelFilter.Enable,
-                IsSlotAllowed = slot => LevelFilter.IsItemSlotAllowed(slot.ExdItem?.LevelEquip),
+                IsSlotAllowed = slot => LevelFilter.IsItemSlotAllowed(slot.ExdItem.LevelEquip),
             },
             new() {
                 Active = () => ItemLevelFilter.Enable,
-                IsSlotAllowed = slot => ItemLevelFilter.IsItemSlotAllowed(slot.ExdItem?.LevelItem.Row),
+                IsSlotAllowed = slot => ItemLevelFilter.IsItemSlotAllowed(slot.ExdItem.LevelItem.RowId),
             },
             new() {
                 Active = () => VendorPriceFilter.Enable,
-                IsSlotAllowed = slot => VendorPriceFilter.IsItemSlotAllowed(slot.ExdItem?.PriceLow),
+                IsSlotAllowed = slot => VendorPriceFilter.IsItemSlotAllowed(slot.ExdItem.PriceLow),
             },
             new() {
                 Active = () => UntradableFilter.State is not ToggleFilterState.Ignored,
@@ -100,8 +100,8 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     public int Compare(InventorySlot? x, InventorySlot? y) {
         if (x is null) return 0;
         if (y is null) return 0;
-        if (x.ExdItem is null) return 0;
-        if (y.ExdItem is null) return 0;
+        if (x.ExdItem.RowId is 0) return 0;
+        if (y.ExdItem.RowId is 0) return 0;
         if (IsFilterMatch(x.ExdItem, y.ExdItem)) return 0;
         if (CompareSlots(x, y)) return 1;
         return -1;
@@ -125,7 +125,7 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
             // first slot full, second slot empty, if Ascending we want to leave justify, and we have that already, if Descending right justify, move the item right
             case (true, false): return FillMode is FillMode.Bottom;
 
-            case (true, true) when firstItem is not null && secondItem is not null:
+            case (true, true) when firstItem.RowId is not 0 && secondItem.RowId is not 0:
                 
                 var shouldSwap = false;
                 
@@ -158,19 +158,19 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     
     private bool IsFilterMatch(Item firstItem, Item secondItem) => SortMode switch {
         SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
-        SortOrderMode.ItemLevel => firstItem.LevelItem.Row == secondItem.LevelItem.Row,
-        SortOrderMode.Alphabetically => string.Equals(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase),
+        SortOrderMode.ItemLevel => firstItem.LevelItem.RowId == secondItem.LevelItem.RowId,
+        SortOrderMode.Alphabetically => string.Equals(firstItem.Name.ExtractText(), secondItem.Name.ExtractText(), StringComparison.OrdinalIgnoreCase),
         SortOrderMode.SellPrice => firstItem.PriceLow == secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity == secondItem.Rarity,
-        SortOrderMode.ItemType => firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row,
+        SortOrderMode.ItemType => firstItem.ItemUICategory.RowId == secondItem.ItemUICategory.RowId,
         SortOrderMode.Level => firstItem.LevelEquip == secondItem.LevelEquip,
         _ => false,
     };
 
     private static bool ShouldSwap(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch {
         SortOrderMode.ItemId => firstItem.RowId > secondItem.RowId,
-        SortOrderMode.ItemLevel => firstItem.LevelItem.Row > secondItem.LevelItem.Row,
-        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.RawString, secondItem.Name.RawString, StringComparison.OrdinalIgnoreCase) > 0,
+        SortOrderMode.ItemLevel => firstItem.LevelItem.RowId > secondItem.LevelItem.RowId,
+        SortOrderMode.Alphabetically => string.Compare(firstItem.Name.ExtractText(), secondItem.Name.ExtractText(), StringComparison.OrdinalIgnoreCase) > 0,
         SortOrderMode.SellPrice => firstItem.PriceLow > secondItem.PriceLow,
         SortOrderMode.Rarity => firstItem.Rarity > secondItem.Rarity,
         SortOrderMode.ItemType => ShouldSwapItemUiCategory(firstItem, secondItem),
@@ -180,9 +180,9 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
 
     private static bool ShouldSwapItemUiCategory(Item firstItem, Item secondItem) {
         // If same category, don't swap, other system handles fallback to alphabetical in this case
-        if (firstItem.ItemUICategory.Row == secondItem.ItemUICategory.Row) return false;
+        if (firstItem.ItemUICategory.RowId == secondItem.ItemUICategory.RowId) return false;
 
-        if (firstItem is { ItemUICategory.Value: { } first } && secondItem is { ItemUICategory.Value: { } second }) {
+        if (firstItem is { RowId: not 0, ItemUICategory.Value: var first } && secondItem is { RowId: not 0, ItemUICategory.Value: var second }) {
             if (first.OrderMajor == second.OrderMajor) {
                 return first.OrderMinor > second.OrderMinor;
             }

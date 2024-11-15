@@ -10,9 +10,8 @@ using KamiLib.Classes;
 using KamiLib.Extensions;
 using KamiLib.Window;
 using KamiLib.Window.SelectionWindows;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SortaKinda.Classes;
-using SortaKinda.Controllers;
 
 namespace SortaKinda.ViewComponents;
 
@@ -132,7 +131,7 @@ public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
         }
         
         foreach (var category in SortingRule.AllowedItemTypes) {
-            if (Service.DataManager.GetExcelSheet<ItemUICategory>()!.GetRow(category) is not { Icon: var iconCategory, Name.RawString: var entryName }) continue;
+            if (Service.DataManager.GetExcelSheet<ItemUICategory>().GetRow(category) is not { RowId: 0, Icon: var iconCategory, Name: var entryName }) continue;
             if (Service.TextureProvider.GetFromGameIcon((uint) iconCategory) is not { } iconTexture) continue;
 
             if (ImGuiComponents.IconButton($"##RemoveButton{category}", FontAwesomeIcon.Trash)) {
@@ -144,7 +143,7 @@ public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
             ImGui.Image(iconTexture.GetWrapOrEmpty().ImGuiHandle, ImGuiHelpers.ScaledVector2(20.0f, 20.0f));
 
             ImGui.SameLine();
-            ImGui.TextUnformatted(entryName);
+            ImGui.TextUnformatted(entryName.ExtractText());
         }
         
         if (removalEntry is { } toRemove) {

@@ -60,7 +60,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     
     private void OnLogin() {
         System.SystemConfig = LoadConfig();
-        System.SystemConfig.UpdateCharacterData(Service.ClientState);
+        System.SystemConfig.UpdateCharacterData();
         SaveConfig();
 
         System.SortController.Load();
@@ -69,14 +69,14 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         if (System.SystemConfig.SortOnLogin) System.ModuleController.Sort();
     }
 
-    private void OnLogout() {
+    private void OnLogout(int type, int code) {
         System.ModuleController.Unload();
         lastJob = uint.MaxValue;
     }
 
     private void OnUpdate(IFramework framework) {
         if (Service.ClientState is { IsLoggedIn: false } or { IsPvP: true }) return;
-        if (Service.ClientState is not { LocalPlayer.ClassJob.Id: var classJobId }) return;
+        if (Service.ClientState is not { LocalPlayer.ClassJob.RowId: var classJobId }) return;
         
         // Don't update modules if the Retainer transfer window is open
         if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;

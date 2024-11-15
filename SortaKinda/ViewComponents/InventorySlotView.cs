@@ -24,7 +24,7 @@ public class InventorySlotView(InventorySlot slot, Vector2 position) {
 
     private void DrawItem() {
         ImGui.SetCursorPos(position);
-        ImGui.Image(Service.TextureProvider.GetFromGameIcon(slot.ExdItem?.Icon ?? 0u).GetWrapOrEmpty().ImGuiHandle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
+        ImGui.Image(Service.TextureProvider.GetFromGameIcon((uint) slot.ExdItem.Icon).GetWrapOrEmpty().ImGuiHandle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
     }
 
     private void DrawFrame() {

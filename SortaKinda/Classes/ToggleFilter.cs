@@ -4,7 +4,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using KamiLib.Extensions;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace SortaKinda.Classes;
 
@@ -37,12 +37,12 @@ public class ToggleFilter(PropertyFilter filter, ToggleFilterState state = Toggl
         _ => true,
     };
 
-    private bool ItemHasProperty(Item? item) =>  Filter switch {
-        PropertyFilter.Collectable when item?.IsCollectable is true => true,
-        PropertyFilter.Dyeable when item?.DyeCount > 0 => true,
-        PropertyFilter.Unique when item?.IsUnique is true => true,
-        PropertyFilter.Untradable when item?.IsUntradable is true => true,
-        PropertyFilter.Repairable when item?.ItemRepair.Row is not 0 => true,
+    private bool ItemHasProperty(Item item) =>  Filter switch {
+        PropertyFilter.Collectable when item.IsCollectable => true,
+        PropertyFilter.Dyeable when item.DyeCount > 0 => true,
+        PropertyFilter.Unique when item.IsUnique => true,
+        PropertyFilter.Untradable when item.IsUntradable => true,
+        PropertyFilter.Repairable when item.ItemRepair.RowId is not 0 => true,
         _ => false,
     };
 }

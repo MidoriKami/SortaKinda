@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SortaKinda.Controllers;
 
 namespace SortaKinda.Classes;
@@ -22,7 +22,7 @@ public unsafe class InventorySlot(InventoryType type, SlotConfig config, int ind
     [MemberNotNullWhen(true, "ExdItem")] 
     public bool HasItem => InventoryItem->ItemId is not 0;
     
-    public Item? ExdItem => Service.DataManager.GetExcelSheet<Item>()!.GetRow(InventoryItem->ItemId);
+    public Item ExdItem => Service.DataManager.GetExcelSheet<Item>().GetRow(InventoryItem->ItemId);
     
     public InventoryItem* InventoryItem => InventoryController.GetItemForSlot(Type, Slot);
     

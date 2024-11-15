@@ -5,7 +5,7 @@ using Dalamud.Interface;
 using Dalamud.Utility;
 using ImGuiNET;
 using KamiLib.Extensions;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
 
@@ -35,7 +35,7 @@ public class SortingRuleTooltipView(SortingRule sortingRule) {
 
     private string GetAllowedItemsString() {
         var strings = new[] {
-            sortingRule.AllowedItemTypes.Count > 0 ? string.Join(", ", sortingRule.AllowedItemTypes.Select(type => Service.DataManager.GetExcelSheet<ItemUICategory>()!.GetRow(type)?.Name.RawString)) : string.Empty,
+            sortingRule.AllowedItemTypes.Count > 0 ? string.Join(", ", sortingRule.AllowedItemTypes.Select(type => Service.DataManager.GetExcelSheet<ItemUICategory>().GetRow(type).Name.ExtractText())) : string.Empty,
             sortingRule.AllowedNameRegexes.Count > 0 ? string.Join(", ", sortingRule.AllowedNameRegexes.Select(regex => @$"""{regex.Text}""")) : string.Empty,
             sortingRule.AllowedItemRarities.Count > 0 ? string.Join(", ", sortingRule.AllowedItemRarities.Select(rarity => rarity.GetDescription())) : string.Empty,
             sortingRule.ItemLevelFilter.Enable ? $"{sortingRule.ItemLevelFilter.MinValue} ilvl → {sortingRule.ItemLevelFilter.MaxValue} ilvl" : string.Empty,
