@@ -9,7 +9,7 @@ using SortaKinda.Modules;
 namespace SortaKinda.Controllers;
 
 public class ModuleController : IDisposable {
-    private readonly List<IModule> Modules = [
+    private readonly List<IModule> modules = [
         new MainInventoryModule(),
         new ArmoryInventoryModule(),
     ];
@@ -17,42 +17,42 @@ public class ModuleController : IDisposable {
     public void Dispose() {
         Unload();
 
-        foreach (var module in Modules.OfType<IDisposable>()) {
+        foreach (var module in modules.OfType<IDisposable>()) {
             module.Dispose();
         }
     }
 
     public void Load() {
-        foreach (var module in Modules) {
+        foreach (var module in modules) {
             module.LoadModule();
         }
     }
 
     public void Unload() {
-        foreach (var module in Modules) {
+        foreach (var module in modules) {
             module.UnloadModule();
         }
     }
 
     public void Update() {
-        foreach (var module in Modules) {
+        foreach (var module in modules) {
             module.UpdateModule();
         }
     }
 
     public void Sort() {
-        foreach (var module in Modules) {
+        foreach (var module in modules) {
             module.SortModule();
         }
     }
 
     public IModule GetModule<T>() where T : IModule
-        => Modules.OfType<T>().First();
+        => modules.OfType<T>().First();
 
     public void InventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) {
         if (!Service.ClientState.IsLoggedIn) return;
         
-        foreach (var module in Modules) {
+        foreach (var module in modules) {
             var inventoryTypes = new HashSet<InventoryType>();
 
             foreach (var itemEvent in events) {
@@ -107,7 +107,7 @@ public class ModuleController : IDisposable {
     }
 
     public void DrawModule(ModuleName module) {
-        Modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
+        modules.FirstOrDefault(drawableModule => drawableModule.ModuleName == module)?.Draw();
     }
 
     private static bool IsEventAllowed(InventoryEventArgs argument) => argument.Type switch {
