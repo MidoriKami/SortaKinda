@@ -41,7 +41,7 @@ public class ConfigurationWindow : Window {
     }
 
     public override bool DrawConditions()
-        => Service.ClientState is { IsLoggedIn: true } and { IsPvP: false };
+        => Service.ClientState is { IsLoggedIn: true };
 
     public override void PreDraw() 
         => StyleModelV1.DalamudStandard.Push();
@@ -57,10 +57,6 @@ public class ConfigurationWindow : Window {
     private void OpenConfigWindow(params string[] args) {
         switch (Service.ClientState) {
             case { IsLoggedIn: false }:
-                return;
-
-            case { IsPvP: true }:
-                Service.ChatGui.PrintError("The configuration menu cannot be opened while in a PvP area", "SortaKinda", 45);
                 return;
 
             default:

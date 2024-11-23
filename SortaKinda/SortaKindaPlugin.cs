@@ -57,7 +57,6 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         System.CommandManager.Dispose();
     }
     
-    
     private void OnLogin() {
         System.SystemConfig = LoadConfig();
         System.SystemConfig.UpdateCharacterData();
@@ -75,7 +74,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     }
 
     private void OnUpdate(IFramework framework) {
-        if (Service.ClientState is { IsLoggedIn: false } or { IsPvP: true }) return;
+        if (Service.ClientState is { IsLoggedIn: false }) return;
         if (Service.ClientState is not { LocalPlayer.ClassJob.RowId: var classJobId }) return;
         
         // Don't update modules if the Retainer transfer window is open
@@ -95,7 +94,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     }
 
     private void OnZoneChange(ushort e) {
-        if (Service.ClientState is { IsLoggedIn: false } or { IsPvP: true }) return;
+        if (Service.ClientState is { IsLoggedIn: false }) return;
 
         if (System.SystemConfig.SortOnZoneChange) System.ModuleController.Sort();
     }
