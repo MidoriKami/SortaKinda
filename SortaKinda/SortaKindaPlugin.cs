@@ -52,6 +52,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         Service.ClientState.TerritoryChanged -= OnZoneChange;
         Service.GameInventory.InventoryChanged -= OnInventoryChanged;
 
+        System.WindowManager.Dispose();
         System.ModuleController.Dispose();
         System.SortingThreadController.Dispose();
         System.CommandManager.Dispose();
