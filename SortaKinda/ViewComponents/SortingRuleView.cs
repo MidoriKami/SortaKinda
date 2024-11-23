@@ -21,7 +21,7 @@ public class SortingRuleView(SortingRule rule) {
         new ItemTypeFilterTab(rule),
         new OtherFiltersTab(rule),
         new ToggleFiltersTab(rule),
-        new SortOrderTab(rule)
+        new SortOrderTab(rule),
     ], false);
 
     public void Draw() => tabBar.Draw();
@@ -131,7 +131,7 @@ public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
         }
         
         foreach (var category in SortingRule.AllowedItemTypes) {
-            if (Service.DataManager.GetExcelSheet<ItemUICategory>().GetRow(category) is not { RowId: 0, Icon: var iconCategory, Name: var entryName }) continue;
+            if (Service.DataManager.GetExcelSheet<ItemUICategory>().GetRow(category) is not { RowId: not 0, Icon: var iconCategory, Name: var entryName }) continue;
             if (Service.TextureProvider.GetFromGameIcon((uint) iconCategory) is not { } iconTexture) continue;
 
             if (ImGuiComponents.IconButton($"##RemoveButton{category}", FontAwesomeIcon.Trash)) {
