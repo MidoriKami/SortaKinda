@@ -2,7 +2,6 @@
     <PropertyGroup>
         <PackageProjectUrl>https://github.com/MidoriKami/SortaKinda.git</PackageProjectUrl>
         <Version>2.1.0.2</Version>
-        <TargetFramework>net9.0-windows7.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
