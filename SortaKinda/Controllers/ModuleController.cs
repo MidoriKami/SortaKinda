@@ -51,19 +51,25 @@ public class ModuleController : IDisposable {
 
     public void InventoryChanged(IReadOnlyCollection<InventoryEventArgs> events) {
         if (!Service.ClientState.IsLoggedIn) return;
-        
-        foreach (var module in modules) {
+
+        foreach (var module in modules)
+        {
             var inventoryTypes = new HashSet<InventoryType>();
 
-            foreach (var itemEvent in events) {
+            foreach (var itemEvent in events)
+            {
                 if (!IsEventAllowed(itemEvent)) continue;
 
                 AddChangedInventories(itemEvent, inventoryTypes);
 
-                inventoryTypes.RemoveWhere(type => !module.InventoryTypes.Contains(type));
+                if (module.InventoryTypes != null)
+                {
+                    inventoryTypes.RemoveWhere(type => !module.InventoryTypes.Contains(type));
+                }
             }
 
-            if (inventoryTypes.Count != 0) {
+            if (inventoryTypes.Count != 0)
+            {
                 module.InventoryChanged(inventoryTypes.ToArray());
             }
         }
