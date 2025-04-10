@@ -22,7 +22,7 @@ public class MainInventoryModule : ModuleBase<MainInventoryConfig> {
     
     public override ModuleName ModuleName => ModuleName.MainInventory;
     
-    protected override List<InventoryGrid> Inventories { get; set; } = null!;
+    protected override List<InventoryGrid> Inventories { get; set; } = [];
     
     public override MainInventoryConfig ModuleConfig { get; set; } = new();
 

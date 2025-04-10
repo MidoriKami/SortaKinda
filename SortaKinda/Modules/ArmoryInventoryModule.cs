@@ -25,7 +25,7 @@ public class ArmoryConfig : IModuleConfig {
 }
 
 public class ArmoryInventoryModule : ModuleBase<ArmoryConfig> {
-    protected override List<InventoryGrid> Inventories { get; set; } = null!;
+    protected override List<InventoryGrid> Inventories { get; set; } = [];
     
     private ArmoryInventoryGridView? view;
     
