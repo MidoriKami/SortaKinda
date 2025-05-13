@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortaKinda", "SortaKinda\So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KamiLib", "KamiLib\KamiLib.csproj", "{C9A1A350-DB07-409B-9C69-9ECAF63C0EF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KamiToolKit", "KamiToolKit\KamiToolKit.csproj", "{92A59F4D-9B70-41C2-83BB-1F22AFC1F329}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -29,6 +31,10 @@ Global
 		{C9A1A350-DB07-409B-9C69-9ECAF63C0EF7}.Debug|x64.Build.0 = Debug|x64
 		{C9A1A350-DB07-409B-9C69-9ECAF63C0EF7}.Release|x64.ActiveCfg = Release|x64
 		{C9A1A350-DB07-409B-9C69-9ECAF63C0EF7}.Release|x64.Build.0 = Release|x64
+		{92A59F4D-9B70-41C2-83BB-1F22AFC1F329}.Debug|x64.ActiveCfg = Debug|x64
+		{92A59F4D-9B70-41C2-83BB-1F22AFC1F329}.Debug|x64.Build.0 = Debug|x64
+		{92A59F4D-9B70-41C2-83BB-1F22AFC1F329}.Release|x64.ActiveCfg = Release|x64
+		{92A59F4D-9B70-41C2-83BB-1F22AFC1F329}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

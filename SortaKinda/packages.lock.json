@@ -47,6 +47,9 @@
         "dependencies": {
           "NetStone": "[1.1.1, )"
         }
+      },
+      "kamitoolkit": {
+        "type": "Project"
       }
     }
   }
