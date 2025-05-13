@@ -10,7 +10,7 @@ namespace SortaKinda.Controllers;
 
 public class SortingRuleConfig {
     public List<SortingRule> Rules { get; set; } = [
-        new SortingRule {
+        new() {
             Color = KnownColor.White.Vector(),
             Id = SortController.DefaultId,
             Name = "Unsorted",

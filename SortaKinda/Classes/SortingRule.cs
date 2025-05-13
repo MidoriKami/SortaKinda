@@ -80,7 +80,7 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     public HashSet<UserRegex> AllowedNameRegexes { get; set; } = [];
     public HashSet<uint> AllowedItemTypes { get; set; } = [];
     public HashSet<ItemRarity> AllowedItemRarities { get; set; } = [];
-    public RangeFilter LevelFilter { get; set; } = new RangeFilter("Level Filter", 0, 200);
+    public RangeFilter LevelFilter { get; set; } = new("Level Filter", 0, 200);
     public RangeFilter ItemLevelFilter { get; set; } = new("Item Level Filter", 0, 1000);
     public RangeFilter VendorPriceFilter { get; set; } = new("Vendor Price Filter", 0, 1_000_000);
     public ToggleFilter UntradableFilter { get; set; } = new(PropertyFilter.Untradable);

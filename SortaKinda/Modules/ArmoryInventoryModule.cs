@@ -9,18 +9,18 @@ namespace SortaKinda.Modules;
 
 public class ArmoryConfig : IModuleConfig {
     public List<InventoryConfig> InventoryConfigs { get; set; } = [
-        new InventoryConfig(InventoryType.ArmoryMainHand),
-        new InventoryConfig(InventoryType.ArmoryOffHand),
-        new InventoryConfig(InventoryType.ArmoryHead),
-        new InventoryConfig(InventoryType.ArmoryBody),
-        new InventoryConfig(InventoryType.ArmoryHands),
-        new InventoryConfig(InventoryType.ArmoryLegs),
-        new InventoryConfig(InventoryType.ArmoryFeets),
-        new InventoryConfig(InventoryType.ArmoryEar),
-        new InventoryConfig(InventoryType.ArmoryNeck),
-        new InventoryConfig(InventoryType.ArmoryWrist),
-        new InventoryConfig(InventoryType.ArmoryRings),
-        new InventoryConfig(InventoryType.ArmorySoulCrystal),
+        new(InventoryType.ArmoryMainHand),
+        new(InventoryType.ArmoryOffHand),
+        new(InventoryType.ArmoryHead),
+        new(InventoryType.ArmoryBody),
+        new(InventoryType.ArmoryHands),
+        new(InventoryType.ArmoryLegs),
+        new(InventoryType.ArmoryFeets),
+        new(InventoryType.ArmoryEar),
+        new(InventoryType.ArmoryNeck),
+        new(InventoryType.ArmoryWrist),
+        new(InventoryType.ArmoryRings),
+        new(InventoryType.ArmorySoulCrystal),
     ];
 }
 

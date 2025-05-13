@@ -10,10 +10,10 @@ namespace SortaKinda.Modules;
 
 public class MainInventoryConfig : IModuleConfig {
     public List<InventoryConfig> InventoryConfigs { get; set; } = [
-        new InventoryConfig(InventoryType.Inventory1),
-        new InventoryConfig(InventoryType.Inventory2),
-        new InventoryConfig(InventoryType.Inventory3),
-        new InventoryConfig(InventoryType.Inventory4),
+        new(InventoryType.Inventory1),
+        new(InventoryType.Inventory2),
+        new(InventoryType.Inventory3),
+        new(InventoryType.Inventory4),
     ];
 }
 
