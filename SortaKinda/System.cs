@@ -1,7 +1,10 @@
 ﻿using KamiLib.CommandManager;
 using KamiLib.Window;
+using KamiToolKit;
+using SortaKinda.Addons;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
+using SortaKinda.Windows;
 
 namespace SortaKinda;
 
@@ -13,4 +16,6 @@ public static class System {
 	public static SortingThreadController SortingThreadController { get; set; }
 	public static CommandManager CommandManager { get; set; }
 	public static WindowManager WindowManager { get; set; }
+	public static NativeController NativeController { get; set; }
+	public static AddonControllers AddonControllers { get; set; }
 }

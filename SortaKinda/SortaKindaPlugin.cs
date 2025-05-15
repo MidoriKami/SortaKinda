@@ -7,6 +7,8 @@ using ImGuiNET;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
 using KamiLib.Window;
+using KamiToolKit;
+using SortaKinda.Addons;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
 using SortaKinda.Windows;
@@ -19,7 +21,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     
     public SortaKindaPlugin(IDalamudPluginInterface pluginInterface) {
         pluginInterface.Create<Service>();
-        
+
+        System.NativeController = new NativeController(Service.PluginInterface);
         System.SystemConfig = new SystemConfig();
         System.SortingThreadController = new SortingThreadController();
         System.SortController = new SortController();
@@ -37,6 +40,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         if (Service.ClientState is { IsLoggedIn: true }) {
             Service.Framework.RunOnFrameworkThread(OnLogin);
         }
+        
+        System.AddonControllers = new AddonControllers();
         
         Service.ClientState.Login += OnLogin;
         Service.ClientState.Logout += OnLogout;
@@ -56,6 +61,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         System.ModuleController.Dispose();
         System.SortingThreadController.Dispose();
         System.CommandManager.Dispose();
+        System.NativeController.Dispose();
+        System.AddonControllers.Dispose();
     }
     
     private void OnLogin() {
