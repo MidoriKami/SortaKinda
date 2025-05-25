@@ -1,17 +1,32 @@
-﻿using System.Numerics;
-using Dalamud.Game.Addon.Events;
+﻿using System;
+using System.Numerics;
+using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiToolKit;
 using KamiToolKit.Classes;
-using KamiToolKit.Nodes;
+using KamiToolKit.Nodes.ComponentNodes;
 
 namespace SortaKinda.Addons;
 
-public unsafe class InventoryExpansionController() : AddonController<AddonInventoryExpansion>(Service.PluginInterface, "InventoryExpansion") {
+public unsafe class InventoryExpansionController : AddonController<AddonInventoryExpansion> {
 
 	private TextButton? sortButton;
-	
-	protected override void AttachNodes(AddonInventoryExpansion* addon) {
+
+	public InventoryExpansionController() : base(Service.PluginInterface, "InventoryExpansion") {
+		OnAttach += AttachNodes;
+		OnDetach += DetachNodes;
+	}
+
+	public override void Dispose() {
+		OnAttach -= AttachNodes;
+		OnDetach -= DetachNodes;
+		
+		sortButton?.Dispose();
+		
+		base.Dispose();
+	}
+
+	private void AttachNodes(AddonInventoryExpansion* addon) {
 		var targetNode = addon->RootNode;
 		if (targetNode is null) return;
 		
@@ -21,15 +36,22 @@ public unsafe class InventoryExpansionController() : AddonController<AddonInvent
 			Position = new Vector2(19.0f, 742.0f),
 			Tooltip = "SortaKinda: Sort all Inventories",
 			IsVisible = true,
+			OnClick = () => {
+				System.ModuleController.Sort();
+				
+				sortButton!.HideTooltip();
+				sortButton!.Disable();
+				Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(_ => sortButton!.Enable());
+			},
 		};
-		
-		sortButton.AddEvent(AddonEventType.MouseClick, System.ModuleController.Sort);
 		
 		System.NativeController.AttachToAddon(sortButton, addon, targetNode, NodePosition.AsLastChild);
 	}
 
-	protected override void DetachNodes(AddonInventoryExpansion* addon) {
-		sortButton?.Dispose();
-		sortButton = null;
+	private void DetachNodes(AddonInventoryExpansion* addon) {
+		System.NativeController.DetachFromAddon(sortButton, addon, () => {
+			sortButton?.Dispose();
+			sortButton = null;
+		});
 	}
 }

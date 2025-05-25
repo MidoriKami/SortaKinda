@@ -61,8 +61,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         System.ModuleController.Dispose();
         System.SortingThreadController.Dispose();
         System.CommandManager.Dispose();
-        System.NativeController.Dispose();
         System.AddonControllers.Dispose();
+        System.NativeController.Dispose();
     }
     
     private void OnLogin() {

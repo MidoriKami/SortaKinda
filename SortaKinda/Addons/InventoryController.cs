@@ -1,17 +1,32 @@
-﻿using System.Numerics;
-using Dalamud.Game.Addon.Events;
+﻿using System;
+using System.Numerics;
+using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiToolKit;
 using KamiToolKit.Classes;
-using KamiToolKit.Nodes;
+using KamiToolKit.Nodes.ComponentNodes;
 
 namespace SortaKinda.Addons;
 
-public unsafe class InventoryController() : AddonController<AddonInventoryExpansion>(Service.PluginInterface, "Inventory") {
+public unsafe class InventoryController : AddonController<AddonInventoryExpansion> {
 
 	private CircleButton? sortButton;
-	
-	protected override void AttachNodes(AddonInventoryExpansion* addon) {
+
+	public InventoryController() : base(Service.PluginInterface, "Inventory") {
+		OnAttach += AttachNodes;
+		OnDetach += DetachNodes;
+	}
+
+	public override void Dispose() {
+		OnAttach -= AttachNodes;
+		OnDetach -= DetachNodes;
+		
+		sortButton?.Dispose();
+		
+		base.Dispose();
+	}
+
+	private void AttachNodes(AddonInventoryExpansion* addon) {
 		var targetNode = addon->RootNode;
 		if (targetNode is null) return;
 
@@ -28,14 +43,19 @@ public unsafe class InventoryController() : AddonController<AddonInventoryExpans
 			Tooltip = "SortaKinda: Sort all Inventories",
 			IsVisible = true,
 			Icon = ButtonIcon.Sort,
+			OnClick = () => {
+				System.ModuleController.Sort();
+				
+				sortButton!.HideTooltip();
+				sortButton!.Disable();
+				Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(_ => sortButton!.Enable());
+			},
 		};
-
-		sortButton.AddEvent(AddonEventType.MouseClick, System.ModuleController.Sort);
 
 		System.NativeController.AttachToAddon(sortButton, addon, targetNode, NodePosition.AsLastChild);
 	}
 
-	protected override void DetachNodes(AddonInventoryExpansion* addon) {
+	private void DetachNodes(AddonInventoryExpansion* addon) {
 		var armoryButton = addon->GetNodeById(17);
 		var saddlebagButton = addon->GetNodeById(16);
 		if (armoryButton is not null && saddlebagButton is not null) {
@@ -43,7 +63,9 @@ public unsafe class InventoryController() : AddonController<AddonInventoryExpans
 			saddlebagButton->SetXFloat(33.0f);
 		}
 
-		sortButton?.Dispose();
-		sortButton = null;
+		System.NativeController.DetachFromAddon(sortButton, addon, () => {
+			sortButton?.Dispose();
+			sortButton = null;
+		});
 	}
 }
