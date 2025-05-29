@@ -10,7 +10,7 @@ namespace SortaKinda.Addons;
 
 public unsafe class InventoryController : AddonController<AddonInventoryExpansion> {
 
-	private CircleButton? sortButton;
+	private CircleButtonNode? sortButton;
 
 	public InventoryController() : base(Service.PluginInterface, "Inventory") {
 		OnAttach += AttachNodes;
@@ -37,7 +37,7 @@ public unsafe class InventoryController : AddonController<AddonInventoryExpansio
 			saddlebagButton->SetXFloat(49.0f);
 		}
 		
-		sortButton = new CircleButton {
+		sortButton = new CircleButtonNode {
 			Size = new Vector2(28.0f, 28.0f),
 			Position = new Vector2(19.0f, 414.0f),
 			Tooltip = "SortaKinda: Sort all Inventories",

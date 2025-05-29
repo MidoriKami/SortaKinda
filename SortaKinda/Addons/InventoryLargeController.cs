@@ -10,7 +10,7 @@ namespace SortaKinda.Addons;
 
 public unsafe class InventoryLargeController : AddonController<AddonInventoryExpansion> {
 
-	private TextButton? sortButton;
+	private TextButtonNode? sortButton;
 
 	public InventoryLargeController() : base(Service.PluginInterface, "InventoryLarge") {
 		OnAttach += AttachNodes;
@@ -30,7 +30,7 @@ public unsafe class InventoryLargeController : AddonController<AddonInventoryExp
 		var targetNode = addon->RootNode;
 		if (targetNode is null) return;
 		
-		sortButton = new TextButton {
+		sortButton = new TextButtonNode {
 			Label = "Sort",
 			Size = new Vector2(100.0f, 28.0f),
 			Position = new Vector2(19.0f, 412.0f),

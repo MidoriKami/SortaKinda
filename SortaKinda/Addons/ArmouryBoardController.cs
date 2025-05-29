@@ -10,7 +10,7 @@ namespace SortaKinda.Addons;
 
 public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpansion> {
 
-	private TextButton? sortButton;
+	private TextButtonNode? sortButton;
 
 	public ArmouryBoardController() : base(Service.PluginInterface, "ArmouryBoard") {
 		OnAttach += AttachNodes;
@@ -35,7 +35,7 @@ public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpan
 			inventoryButton->SetXFloat(141.0f);
 		}
 		
-		sortButton = new TextButton {
+		sortButton = new TextButtonNode {
 			Label = "Sort",
 			Size = new Vector2(100.0f, 28.0f),
 			Position = new Vector2(19.0f, 566.0f),
