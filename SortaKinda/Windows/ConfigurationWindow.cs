@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Style;
-using ImGuiNET;
 using KamiLib.Classes;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;

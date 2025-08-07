@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using ImGuiNET;
 using SortaKinda.Classes;
 
 namespace SortaKinda.ViewComponents;
@@ -95,7 +95,7 @@ public class ArmoryInventoryGridView : IDisposable {
             }
 
             ImGui.SetCursorPos(drawPosition + itemSpacing * index++);
-            ImGui.Image(texture.ImGuiHandle, ButtonSize, Vector2.Zero, Vector2.One, selectedTab == tab ? activeColor : inactiveColor);
+            ImGui.Image(texture.Handle, ButtonSize, Vector2.Zero, Vector2.One, selectedTab == tab ? activeColor : inactiveColor);
 
             if (ImGui.IsItemClicked()) {
                 selectedTab = tab;

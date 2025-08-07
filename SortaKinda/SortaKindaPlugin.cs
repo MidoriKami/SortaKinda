@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
 using KamiLib.Window;

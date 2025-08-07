@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiToolKit;
 using KamiToolKit.Classes;
-using KamiToolKit.Nodes.ComponentNodes;
+using KamiToolKit.Nodes;
 
 namespace SortaKinda.Addons;
 
@@ -12,7 +12,7 @@ public unsafe class InventoryLargeController : AddonController<AddonInventoryExp
 
 	private TextButtonNode? sortButton;
 
-	public InventoryLargeController() : base(Service.PluginInterface, "InventoryLarge") {
+	public InventoryLargeController() : base("InventoryLarge") {
 		OnAttach += AttachNodes;
 		OnDetach += DetachNodes;
 	}
@@ -36,22 +36,20 @@ public unsafe class InventoryLargeController : AddonController<AddonInventoryExp
 			Position = new Vector2(19.0f, 412.0f),
 			Tooltip = "SortaKinda: Sort all Inventories",
 			IsVisible = true,
-			OnClick = () => {
-				System.ModuleController.Sort();
-				
-				sortButton!.HideTooltip();
-				sortButton!.Disable();
-				Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(_ => sortButton!.Enable());
-			},
+		};
+
+		sortButton.OnClick = () => {
+			System.ModuleController.Sort();
+
+			sortButton.HideTooltip();
+			sortButton.IsEnabled = false;
+			Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(_ => sortButton.IsEnabled = true);
 		};
 		
-		System.NativeController.AttachToAddon(sortButton, addon, targetNode, NodePosition.AsLastChild);
+		System.NativeController.AttachNode(sortButton, targetNode, NodePosition.AsLastChild);
 	}
 
 	private void DetachNodes(AddonInventoryExpansion* addon) {
-		System.NativeController.DetachFromAddon(sortButton, addon, () => {
-			sortButton?.Dispose();
-			sortButton = null;
-		});
+		System.NativeController.DisposeNode(ref sortButton);
 	}
 }

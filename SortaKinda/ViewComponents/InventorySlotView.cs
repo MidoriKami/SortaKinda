@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
 
@@ -24,7 +24,7 @@ public class InventorySlotView(InventorySlot slot, Vector2 position) {
 
     private void DrawItem() {
         ImGui.SetCursorPos(position);
-        ImGui.Image(Service.TextureProvider.GetFromGameIcon((uint) slot.ExdItem.Icon).GetWrapOrEmpty().ImGuiHandle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
+        ImGui.Image(Service.TextureProvider.GetFromGameIcon((uint) slot.ExdItem.Icon).GetWrapOrEmpty().Handle, ItemSize, Vector2.Zero, Vector2.One, Vector4.One with { W = 0.50f });
     }
 
     private void DrawFrame() {

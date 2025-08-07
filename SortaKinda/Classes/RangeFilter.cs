@@ -1,5 +1,5 @@
-﻿using Dalamud.Interface.Utility;
-using ImGuiNET;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
 
 namespace SortaKinda.Classes;
 

@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 using KamiLib.Classes;
 using KamiLib.Window;
 

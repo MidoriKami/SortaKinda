@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Utility;
-using ImGuiNET;
 using KamiLib.Classes;
 using KamiLib.Window;
 using SortaKinda.Classes;

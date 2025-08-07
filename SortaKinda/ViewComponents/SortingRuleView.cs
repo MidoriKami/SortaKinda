@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Drawing;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
-using ImGuiNET;
 using KamiLib.Classes;
 using KamiLib.Extensions;
 using KamiLib.Window;
@@ -140,7 +140,7 @@ public class ItemTypeFilterTab(SortingRule rule) : IOneColumnRuleConfigurationTa
 
             ImGui.SameLine();
             ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 1.0f * ImGuiHelpers.GlobalScale);
-            ImGui.Image(iconTexture.GetWrapOrEmpty().ImGuiHandle, ImGuiHelpers.ScaledVector2(20.0f, 20.0f));
+            ImGui.Image(iconTexture.GetWrapOrEmpty().Handle, ImGuiHelpers.ScaledVector2(20.0f, 20.0f));
 
             ImGui.SameLine();
             ImGui.TextUnformatted(entryName.ExtractText());

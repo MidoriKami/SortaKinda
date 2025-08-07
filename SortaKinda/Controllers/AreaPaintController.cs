@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Numerics;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using KamiLib.Classes;
 using SortaKinda.Windows;
 

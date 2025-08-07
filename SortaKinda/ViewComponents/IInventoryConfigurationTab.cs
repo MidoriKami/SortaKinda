@@ -1,5 +1,5 @@
-﻿using Dalamud.Interface.Utility.Raii;
-using ImGuiNET;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility.Raii;
 using KamiLib.Classes;
 
 namespace SortaKinda.ViewComponents;
