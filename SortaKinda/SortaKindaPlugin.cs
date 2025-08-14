@@ -140,7 +140,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     }
 
     private static SystemConfig LoadConfig() 
-        => Service.PluginInterface.LoadCharacterFile(Service.ClientState.LocalContentId, "System.config.json", () => new SystemConfig());
+        => Service.PluginInterface.LoadCharacterFile<SystemConfig>(Service.ClientState.LocalContentId, "System.config.json");
 
     private static void SaveConfig()
         => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, "System.config.json", System.SystemConfig);

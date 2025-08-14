@@ -2,6 +2,7 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Style;
+using Dalamud.Interface.Utility.Raii;
 using KamiLib.Classes;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
@@ -89,6 +90,10 @@ public class GeneralConfigurationTab : ITabItem {
     
     public bool Disabled => false;
     
-    public void Draw() 
-        => SortaKindaPlugin.DrawConfig();
+    public void Draw() {
+        ImGuiTweaks.Header("General Settings");
+        using var indent = ImRaii.PushIndent();
+        
+        SortaKindaPlugin.DrawConfig();
+    }
 }

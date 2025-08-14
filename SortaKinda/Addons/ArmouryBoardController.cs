@@ -17,15 +17,6 @@ public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpan
 		OnDetach += DetachNodes;
 	}
 
-	public override void Dispose() {
-		OnAttach -= AttachNodes;
-		OnDetach -= DetachNodes;
-		
-		sortButton?.Dispose();
-		
-		base.Dispose();
-	}
-
 	private void AttachNodes(AddonInventoryExpansion* addon) {
 		var targetNode = addon->RootNode;
 		if (targetNode is null) return;

@@ -10,15 +10,25 @@ public interface IInventoryConfigurationTab : ITabItem {
         if (!table) return;
 
         ImGui.TableNextColumn();
-        using (var configChild = ImRaii.Child("##ConfigChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding)) {
-            if (configChild) System.SortController.Draw();
-        }
+        DrawConfigChild();
         
         ImGui.TableNextColumn();
-        using (var inventoryChild = ImRaii.Child("##InventoryChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding, false, ImGuiWindowFlags.NoMove)) {
-            if (inventoryChild) DrawInventory();
-        }
+        DrawInventoryChild();
     }
 
+    private static void DrawConfigChild() {
+        using var configChild = ImRaii.Child("##ConfigChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding);
+        if (!configChild) return;
+
+        System.SortController.Draw();
+    }
+    
+    private void DrawInventoryChild() {
+        using var inventoryChild = ImRaii.Child("##InventoryChild", ImGui.GetContentRegionAvail() - ImGui.GetStyle().FramePadding, false, ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoScrollbar);
+        if (!inventoryChild) return;
+
+        DrawInventory();
+    }
+    
     void DrawInventory();
 }

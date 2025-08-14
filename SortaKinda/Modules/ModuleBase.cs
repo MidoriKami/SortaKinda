@@ -131,7 +131,7 @@ public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
     protected abstract void Sort(params InventoryType[] inventories);
 
     private T LoadConfig()
-        => Service.PluginInterface.LoadCharacterFile(Service.ClientState.LocalContentId, $"{ModuleName}.config.json", () => new T());
+        => Service.PluginInterface.LoadCharacterFile<T>(Service.ClientState.LocalContentId, $"{ModuleName}.config.json");
 
     private void SaveConfig() 
         => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, $"{ModuleName}.config.json", ModuleConfig);
