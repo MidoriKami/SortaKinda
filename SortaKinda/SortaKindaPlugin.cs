@@ -22,7 +22,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     public SortaKindaPlugin(IDalamudPluginInterface pluginInterface) {
         pluginInterface.Create<Service>();
 
-        System.NativeController = new NativeController(Service.PluginInterface);
+        KamiToolKitLibrary.Initialize(pluginInterface);
+        
         System.SystemConfig = new SystemConfig();
         System.SortingThreadController = new SortingThreadController();
         System.SortController = new SortController();
@@ -62,7 +63,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         System.SortingThreadController.Dispose();
         System.CommandManager.Dispose();
         System.AddonControllers.Dispose();
-        System.NativeController.Dispose();
+        
+        KamiToolKitLibrary.Dispose();
     }
     
     private void OnLogin() {
@@ -83,7 +85,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
 
     private void OnUpdate(IFramework framework) {
         if (Service.ClientState is { IsLoggedIn: false }) return;
-        if (Service.ClientState is not { LocalPlayer.ClassJob.RowId: var classJobId }) return;
+        if (Service.ObjectTable is not { LocalPlayer.ClassJob.RowId: var classJobId }) return;
         
         // Don't update modules if the Retainer transfer window is open
         if (Service.GameGui.GetAddonByName("RetainerItemTransferProgress") != nint.Zero) return;
@@ -140,8 +142,8 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
     }
 
     private static SystemConfig LoadConfig() 
-        => Service.PluginInterface.LoadCharacterFile<SystemConfig>(Service.ClientState.LocalContentId, "System.config.json");
+        => Service.PluginInterface.LoadCharacterFile<SystemConfig>(Service.PlayerState.ContentId, "System.config.json");
 
     private static void SaveConfig()
-        => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, "System.config.json", System.SystemConfig);
+        => Service.PluginInterface.SaveCharacterFile(Service.PlayerState.ContentId, "System.config.json", System.SystemConfig);
 }

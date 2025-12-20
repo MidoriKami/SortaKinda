@@ -131,10 +131,10 @@ public abstract class ModuleBase<T> : IModule where T : IModuleConfig, new() {
     protected abstract void Sort(params InventoryType[] inventories);
 
     private T LoadConfig()
-        => Service.PluginInterface.LoadCharacterFile<T>(Service.ClientState.LocalContentId, $"{ModuleName}.config.json");
+        => Service.PluginInterface.LoadCharacterFile<T>(Service.PlayerState.ContentId, $"{ModuleName}.config.json");
 
     private void SaveConfig() 
-        => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, $"{ModuleName}.config.json", ModuleConfig);
+        => Service.PluginInterface.SaveCharacterFile(Service.PlayerState.ContentId, $"{ModuleName}.config.json", ModuleConfig);
 }
 
 public enum ModuleName {

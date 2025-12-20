@@ -1,20 +1,17 @@
 ﻿using KamiLib.CommandManager;
 using KamiLib.Window;
-using KamiToolKit;
 using SortaKinda.Addons;
 using SortaKinda.Classes;
 using SortaKinda.Controllers;
 
 namespace SortaKinda;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 public static class System {
-	public static ModuleController ModuleController { get; set; }
-	public static SortController SortController { get; set; }
-	public static SystemConfig SystemConfig { get; set; }
-	public static SortingThreadController SortingThreadController { get; set; }
-	public static CommandManager CommandManager { get; set; }
-	public static WindowManager WindowManager { get; set; }
-	public static NativeController NativeController { get; set; }
-	public static AddonControllers AddonControllers { get; set; }
+	public static ModuleController ModuleController { get; set; } = null!;
+	public static SortController SortController { get; set; } = null!;
+	public static SystemConfig SystemConfig { get; set; } = null!;
+	public static SortingThreadController SortingThreadController { get; set; } = null!;
+	public static CommandManager CommandManager { get; set; } = null!;
+	public static WindowManager WindowManager { get; set; } = null!;
+	public static AddonControllers AddonControllers { get; set; } = null!;
 }

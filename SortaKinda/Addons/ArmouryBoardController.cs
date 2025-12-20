@@ -2,8 +2,7 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using KamiToolKit;
-using KamiToolKit.Classes;
+using KamiToolKit.Classes.Controllers;
 using KamiToolKit.Nodes;
 
 namespace SortaKinda.Addons;
@@ -27,7 +26,7 @@ public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpan
 		}
 		
 		sortButton = new TextButtonNode {
-			Label = "Sort",
+			String = "Sort",
 			Size = new Vector2(100.0f, 28.0f),
 			Position = new Vector2(19.0f, 566.0f),
 			Tooltip = "SortaKinda: Sort all Inventories",
@@ -41,7 +40,7 @@ public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpan
 			sortButton.IsEnabled = false;
 			Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(_ => sortButton.IsEnabled = true);
 		};
-		System.NativeController.AttachNode(sortButton, targetNode, NodePosition.AsLastChild);
+		sortButton.AttachNode(targetNode);
 	}
 
 	private void DetachNodes(AddonInventoryExpansion* addon) {
@@ -50,6 +49,6 @@ public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpan
 			inventoryButton->SetXFloat(80.0f);
 		}
 
-		System.NativeController.DisposeNode(ref sortButton);
+		sortButton?.Dispose();
 	}
 }

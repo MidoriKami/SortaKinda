@@ -1,9 +1,19 @@
-﻿<Project Sdk="Dalamud.NET.Sdk/13.0.0">
+﻿<Project Sdk="Dalamud.NET.Sdk/14.0.1">
     <PropertyGroup>
-        <PackageProjectUrl>https://github.com/MidoriKami/SortaKinda.git</PackageProjectUrl>
-        <Version>2.1.1.5</Version>
+        <Version>2.2.0.0</Version>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Author>MidoriKami</Author>
+        <Name>SortaKinda</Name>
+        <InternalName>sortakinda</InternalName>
+        <Punchline>Total customization of your inventory</Punchline>
+        <Description>Sort your inventory however you want and keep it sorted</Description>
+        <RepoUrl>https://github.com/MidoriKami/SortaKinda</RepoUrl>
+        <Tags>utility</Tags>
+        <AcceptsFeedback>false</AcceptsFeedback>
+    </PropertyGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\KamiLib\KamiLib.csproj" />
         <ProjectReference Include="..\KamiToolKit\KamiToolKit.csproj" />

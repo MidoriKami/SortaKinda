@@ -2,8 +2,7 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using KamiToolKit;
-using KamiToolKit.Classes;
+using KamiToolKit.Classes.Controllers;
 using KamiToolKit.Nodes;
 
 namespace SortaKinda.Addons;
@@ -43,8 +42,7 @@ public unsafe class InventoryController : AddonController<AddonInventoryExpansio
 			sortButton.IsEnabled = false;
 			Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(_ => sortButton.IsEnabled = true);
 		};
-
-		System.NativeController.AttachNode(sortButton, targetNode, NodePosition.AsLastChild);
+		sortButton.AttachNode(targetNode);
 	}
 
 	private void DetachNodes(AddonInventoryExpansion* addon) {
@@ -54,7 +52,7 @@ public unsafe class InventoryController : AddonController<AddonInventoryExpansio
 			armoryButton->SetXFloat(33.0f);
 			saddlebagButton->SetXFloat(33.0f);
 		}
-
-		System.NativeController.DisposeNode(ref sortButton);
+		
+		sortButton?.Dispose();
 	}
 }

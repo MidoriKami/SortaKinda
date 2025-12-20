@@ -65,8 +65,8 @@ public class SortController {
     }
     
     private SortingRuleConfig LoadConfig()
-        => Service.PluginInterface.LoadCharacterFile<SortingRuleConfig>(Service.ClientState.LocalContentId, "SortingRules.config.json");
+        => Service.PluginInterface.LoadCharacterFile<SortingRuleConfig>(Service.PlayerState.ContentId, "SortingRules.config.json");
 
     public void SaveConfig() 
-        => Service.PluginInterface.SaveCharacterFile(Service.ClientState.LocalContentId, "SortingRules.config.json", RuleConfig);
+        => Service.PluginInterface.SaveCharacterFile(Service.PlayerState.ContentId, "SortingRules.config.json", RuleConfig);
 }
