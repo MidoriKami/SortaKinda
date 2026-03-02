@@ -24,10 +24,13 @@ public class SortingRuleTooltipView(SortingRule sortingRule) {
         ImGui.Text(sortingRule.Name);
 
         if (sortingRule.Id is not SortController.DefaultId) {
+            // Keep tooltip output accurate for both legacy and new rule formats.
+            sortingRule.MigrateLegacyAdditionalSortModes();
             var itemFiltersString = GetAllowedItemsString();
+            var sortModeString = string.Join(" → ", new[] { $"{sortingRule.SortMode.GetDescription()} ({sortingRule.Direction.GetDescription()})" }.Concat(sortingRule.AdditionalSortRules.Select(sortRule => $"{sortRule.Mode.GetDescription()} ({sortRule.Direction.GetDescription()})")));
 
             ImGui.TextColored(KnownColor.Gray.Vector(), itemFiltersString.IsNullOrEmpty() ? "Any Item" : itemFiltersString);
-            ImGui.TextColored(KnownColor.Gray.Vector(), sortingRule.SortMode.GetDescription());
+            ImGui.TextColored(KnownColor.Gray.Vector(), sortModeString);
         }
 
         ImGui.EndTooltip();

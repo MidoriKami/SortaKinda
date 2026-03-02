@@ -95,6 +95,8 @@ public class TutorialConfiguringInventory : ITabItem {
                                           "The currently selected rule will have a filledin dot next to the color/name of the rule.\n\n" +
                                           "Once you have a rule selected you can 'paint' your inventory slots on the right side of the configuration window. Painted slots do not have to be adjacent to each other.\n\n" +
                                           "Whenever a sort is triggered, items that match the rules of a painted inventory slot will try to be moved into those inventory slots, and then re-ordered according to the rule's settings.\n" +
+                                          "In the Sort Order tab, 'Then by' can be used to add additional sort modes that act as tie-breakers.\n" +
+                                          "Tie-breakers are applied top-to-bottom and each one has its own Asc/Desc direction.\n" +
                                           "Items that don't match a rule but are in a rules inventory slots will be moved out into 'Unsorted' slots.\n\n" +
                                           "You must always have some inventory slots marked as 'Unsorted'.";
 }
@@ -118,6 +120,8 @@ public class TutorialAdvancedSorting : ITabItem {
                                         "this allows you to define rules in such a way that you can have items that match multiple rules always end up in one specific section of your inventory.\n\n" +
                                         "Rules are evaluated from the top of the list (where 'Unsorted' is), to the bottom of the list (where the add new rule button is), " +
                                         "If an item would be allowed by multiple rules, the rule lowest in the list will get the item in the end.\n\n" +
+                                        "Within a single rule, you can also chain sort modes with 'Then by' to get multi-criteria ordering.\n" +
+                                        "For example: Item Type -> Item Id -> Item Level, with independent Asc/Desc at each step.\n\n" +
                                         "You can use this characteristic of SortaKinda to define generalized sorting rules at the top of the list, and more specific sorting rules at the bottom of the list, " +
                                         "any items that match the more specific rules at the bottom will have the items in the end.\n\n" +
                                         "In other words, you can consider the order the rules are in to be a soft-priority system, where the rules on the bottom are more important.";

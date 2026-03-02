@@ -91,6 +91,11 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;
+    // Legacy field kept for config compatibility with builds that only supported additional sort modes without per-mode direction.
+    public List<SortOrderMode> AdditionalSortModes { get; set; } = [];
+    // Additional sort criteria used as tie-breakers after SortMode.
+    // Each entry has its own direction, so tie-breakers can sort independently.
+    public List<AdditionalSortRule> AdditionalSortRules { get; set; } = [];
     public bool InclusiveAnd = false;
 
     public void ShowTooltip() {
@@ -102,7 +107,9 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
         if (y is null) return 0;
         if (x.ExdItem.RowId is 0) return 0;
         if (y.ExdItem.RowId is 0) return 0;
-        if (IsFilterMatch(x.ExdItem, y.ExdItem)) return 0;
+        // Returning 0 means "equal for sorting purposes".
+        // We only do this when all configured sort modes tie.
+        if (IsSortModeChainMatch(x.ExdItem, y.ExdItem)) return 0;
         if (CompareSlots(x, y)) return 1;
         return -1;
     }
@@ -140,23 +147,82 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
                         shouldSwap = true;
                     }
                 }
-                // else if they match according to the default filter, fallback to alphabetical
-                else if (IsFilterMatch(firstItem, secondItem)) {
-                    shouldSwap = ShouldSwap(firstItem, secondItem, SortOrderMode.Alphabetically);
-                }
-                // else they are not the same item, and the filter result doesn't match
+                // else they are not the same item, compare using configured sort chain and fallback ordering
                 else {
-                    shouldSwap = ShouldSwap(firstItem, secondItem, SortMode);
+                    // Primary mode decides first; additional modes are applied only when equal.
+                    shouldSwap = ShouldSwapBySortChain(firstItem, secondItem);
                 }
-                
-                return Direction is SortOrderDirection.Descending ? !shouldSwap : shouldSwap;
+
+                return shouldSwap;
 
             // Something went horribly wrong... best not touch it and walk away.
             default: return false;
         }
     }
     
-    private bool IsFilterMatch(Item firstItem, Item secondItem) => SortMode switch {
+    private bool IsSortModeChainMatch(Item firstItem, Item secondItem) {
+        // Chain match == all configured sort modes report "equal".
+        // This mirrors lexicographic sort behavior where each mode is a tie-breaker.
+        foreach (var sortRule in GetSortModeChain()) {
+            if (!IsSortMatch(firstItem, secondItem, sortRule.Mode)) return false;
+        }
+
+        return true;
+    }
+
+    private IEnumerable<AdditionalSortRule> GetSortModeChain() {
+        // Keep existing behavior: first mode is always the legacy SortMode with the main direction setting.
+        yield return new AdditionalSortRule {
+            Mode = SortMode,
+            Direction = Direction
+        };
+
+        MigrateLegacyAdditionalSortModes();
+        foreach (var sortRule in AdditionalSortRules) {
+            yield return sortRule;
+        }
+    }
+
+    private bool ShouldSwapBySortChain(Item firstItem, Item secondItem) {
+        // Lexicographic compare:
+        // 1) find first mode where values differ
+        // 2) use that mode to decide ordering
+        // 3) if every mode ties, use legacy alphabetical fallback
+        foreach (var sortRule in GetSortModeChain()) {
+            if (!IsSortMatch(firstItem, secondItem, sortRule.Mode)) {
+                var shouldSwap = ShouldSwap(firstItem, secondItem, sortRule.Mode);
+                return sortRule.Direction is SortOrderDirection.Descending ? !shouldSwap : shouldSwap;
+            }
+        }
+
+        // If all configured modes tie, keep previous behavior and fall back to alphabetical.
+        var shouldSwapFallback = ShouldSwap(firstItem, secondItem, SortOrderMode.Alphabetically);
+        return Direction is SortOrderDirection.Descending ? !shouldSwapFallback : shouldSwapFallback;
+    }
+
+    public void MigrateLegacyAdditionalSortModes() {
+        // If there's no legacy data, there's nothing to migrate.
+        if (AdditionalSortModes.Count is 0) return;
+
+        // If new-format rules already exist, treat them as authoritative and discard legacy duplicates.
+        if (AdditionalSortRules.Count is not 0) {
+            AdditionalSortModes.Clear();
+            return;
+        }
+
+        // Legacy entries inherit the current primary direction to preserve old behavior.
+        foreach (var sortMode in AdditionalSortModes) {
+            AdditionalSortRules.Add(new AdditionalSortRule {
+                Mode = sortMode,
+                Direction = Direction
+            });
+        }
+
+        // Clear legacy data after successful migration.
+        AdditionalSortModes.Clear();
+    }
+
+    private static bool IsSortMatch(Item firstItem, Item secondItem, SortOrderMode sortMode) => sortMode switch {
         SortOrderMode.ItemId => firstItem.RowId == secondItem.RowId,
         SortOrderMode.ItemLevel => firstItem.LevelItem.RowId == secondItem.LevelItem.RowId,
         SortOrderMode.Alphabetically => string.Equals(firstItem.Name.ExtractText(), secondItem.Name.ExtractText(), StringComparison.OrdinalIgnoreCase),
@@ -254,4 +320,9 @@ public class SortingFilter {
     public required Func<bool> Active { get; init; }
     
     public required Func<InventorySlot, bool> IsSlotAllowed { get; init; }
+}
+
+public class AdditionalSortRule {
+    public SortOrderMode Mode { get; set; } = SortOrderMode.ItemId;
+    public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
 }

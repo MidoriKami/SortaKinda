@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
@@ -202,27 +203,113 @@ public class ToggleFiltersTab(SortingRule rule) : IOneColumnRuleConfigurationTab
     }
 }
 
-public class SortOrderTab(SortingRule rule) : ITwoColumnRuleConfigurationTab {
+public class SortOrderTab(SortingRule rule) : IRuleConfigurationTab {
+    // UI-local selection used by the "Add Mode" button.
+    // The value is only persisted once added to AdditionalSortRules.
+    private SortOrderMode additionalSortMode = SortOrderMode.ItemId;
+    private SortOrderDirection additionalSortDirection = SortOrderDirection.Ascending;
+
     public string Name => "Sort Order";
     
     public bool Disabled => false;
     
     public SortingRule SortingRule { get; } = rule;
-    
-    public string FirstLabel => "Sort By";
-    
-    public string SecondLabel => "Sort Options";
 
-    public void DrawLeftSideContents() {
+    public void DrawConfigurationTab() {
+        EnsureWindowHeightForSortOrder();
+
+        // Read old config values once before drawing, so old rule exports continue to render correctly.
+        SortingRule.MigrateLegacyAdditionalSortModes();
+
+        var removeIndex = -1;
+        var moveUpIndex = -1;
+        var moveDownIndex = -1;
+
+        using var table = ImRaii.Table("##SortOrderPrimaryTable", 2, ImGuiTableFlags.SizingStretchSame | ImGuiTableFlags.BordersInnerV, ImGui.GetContentRegionAvail());
+        if (!table) return;
+
+        ImGui.TableNextColumn();
+        ImGui.TextUnformatted("Sort By");
+        ImGui.Separator();
+
+        ImGui.TableNextColumn();
+        ImGui.TextUnformatted("Sort Options");
+        ImGui.Separator();
+
+        ImGui.TableNextColumn();
+        DrawLeftSideContents();
+
+        ImGui.TableNextColumn();
+        DrawRightSideContents();
+
+        // Tie-breaker section.
+        ImGui.TableNextRow();
+        ImGui.TableNextColumn();
+        ImGui.Text("Then by");
+        ImGuiComponents.HelpMarker("Additional sort modes are applied in order when earlier modes tie.");
+
+        ImGui.TableNextColumn();
+        ImGuiHelpers.ScaledDummy(1.0f);
+
+        ImGui.TableNextRow();
+        ImGui.TableNextColumn();
+        ImGui.Separator();
+        ImGui.TableNextColumn();
+        ImGui.Separator();
+
+        if (SortingRule.AdditionalSortRules.Count is 0) {
+            ImGui.TableNextRow();
+            ImGui.TableNextColumn();
+            ImGui.TextColored(KnownColor.Orange.Vector(), "No additional modes");
+            ImGui.TableNextColumn();
+            ImGuiHelpers.ScaledDummy(1.0f);
+        }
+
+        for (var index = 0; index < SortingRule.AdditionalSortRules.Count; index++) {
+            ImGui.TableNextRow();
+
+            ImGui.TableNextColumn();
+            DrawAdditionalSortModeLeft(index, ref moveUpIndex, ref moveDownIndex, ref removeIndex);
+
+            ImGui.TableNextColumn();
+            DrawAdditionalSortModeRight(index);
+        }
+
+        ImGui.TableNextRow();
+        ImGui.TableNextColumn();
+        ImGui.Separator();
+        ImGui.TableNextColumn();
+        ImGui.Separator();
+
+        ImGui.TableNextRow();
+        ImGui.TableNextColumn();
+        DrawAdditionalSortAddLeft();
+        ImGui.TableNextColumn();
+        DrawAdditionalSortAddRight();
+
+        // Apply queued list mutations after rendering to avoid mutating during iteration.
+        if (moveUpIndex > 0) {
+            (SortingRule.AdditionalSortRules[moveUpIndex - 1], SortingRule.AdditionalSortRules[moveUpIndex]) = (SortingRule.AdditionalSortRules[moveUpIndex], SortingRule.AdditionalSortRules[moveUpIndex - 1]);
+        }
+
+        if (moveDownIndex >= 0 && moveDownIndex < SortingRule.AdditionalSortRules.Count - 1) {
+            (SortingRule.AdditionalSortRules[moveDownIndex], SortingRule.AdditionalSortRules[moveDownIndex + 1]) = (SortingRule.AdditionalSortRules[moveDownIndex + 1], SortingRule.AdditionalSortRules[moveDownIndex]);
+        }
+
+        if (removeIndex >= 0 && removeIndex < SortingRule.AdditionalSortRules.Count) {
+            SortingRule.AdditionalSortRules.RemoveAt(removeIndex);
+        }
+    }
+
+    private void DrawLeftSideContents() {
         ImGui.Text("Order items using");
         ImGuiComponents.HelpMarker("The primary property of an item to use for ordering");
         var sortMode = SortingRule.SortMode;
         DrawRadioEnum(ref sortMode);
-
         SortingRule.SortMode = sortMode;
     }
 
-    public void DrawRightSideContents() {
+    private void DrawRightSideContents() {
         ImGui.Text("Sort item by");
         ImGuiComponents.HelpMarker("Ascending: A -> Z\nDescending Z -> A");
         var sortDirection = SortingRule.Direction;
@@ -244,6 +331,95 @@ public class SortOrderTab(SortingRule rule) : ITwoColumnRuleConfigurationTab {
             if (ImGui.RadioButton($"{value.GetDescription()}##{configValue.GetType()}", ref isSelected, Convert.ToInt32(value))) {
                 configValue = (T) value;
             }
+        }
+    }
+
+    private void DrawAdditionalSortModeLeft(int index, ref int moveUpIndex, ref int moveDownIndex, ref int removeIndex) {
+        var sortRule = SortingRule.AdditionalSortRules[index];
+        using var _ = ImRaii.PushId(index);
+
+        using (ImRaii.Disabled(index is 0)) {
+            if (ImGuiComponents.IconButton($"##AdditionalUp{index}", FontAwesomeIcon.ArrowUp)) {
+                moveUpIndex = index;
+            }
+        }
+
+        ImGui.SameLine();
+        using (ImRaii.Disabled(index == SortingRule.AdditionalSortRules.Count - 1)) {
+            if (ImGuiComponents.IconButton($"##AdditionalDown{index}", FontAwesomeIcon.ArrowDown)) {
+                moveDownIndex = index;
+            }
+        }
+
+        ImGui.SameLine();
+        if (ImGuiComponents.IconButton($"##AdditionalDelete{index}", FontAwesomeIcon.Trash)) {
+            removeIndex = index;
+        }
+
+        ImGui.SameLine();
+        ImGui.TextUnformatted(sortRule.Mode.GetDescription());
+    }
+
+    private void DrawAdditionalSortModeRight(int index) {
+        // Direction is stored per tie-breaker rule.
+        var direction = SortingRule.AdditionalSortRules[index].Direction;
+        if (ImGui.RadioButton($"Asc##AdditionalAsc{index}", direction is SortOrderDirection.Ascending)) {
+            SortingRule.AdditionalSortRules[index].Direction = SortOrderDirection.Ascending;
+        }
+
+        ImGui.SameLine();
+        if (ImGui.RadioButton($"Desc##AdditionalDesc{index}", direction is SortOrderDirection.Descending)) {
+            SortingRule.AdditionalSortRules[index].Direction = SortOrderDirection.Descending;
+        }
+    }
+
+    private void DrawAdditionalSortAddLeft() {
+        ImGui.SetNextItemWidth(-1.0f);
+        if (ImGui.BeginCombo("##AdditionalSortModeCombo", additionalSortMode.GetDescription())) {
+            foreach (var value in Enum.GetValues<SortOrderMode>()) {
+                if (ImGui.Selectable(value.GetDescription(), value == additionalSortMode)) {
+                    additionalSortMode = value;
+                }
+            }
+            ImGui.EndCombo();
+        }
+    }
+
+    private void DrawAdditionalSortAddRight() {
+        // Direction selected here becomes the default for the next added tie-breaker entry.
+        var newDirection = additionalSortDirection;
+        DrawSortDirectionRadioPair("##NewAdditionalDirection", ref newDirection, true);
+        additionalSortDirection = newDirection;
+
+        var buttonSize = ImGuiHelpers.ScaledVector2(85.0f, 0.0f);
+        ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonSize.X);
+        if (ImGui.Button("Add Mode", buttonSize)) {
+            SortingRule.AdditionalSortRules.Add(new AdditionalSortRule {
+                Mode = additionalSortMode,
+                Direction = additionalSortDirection
+            });
+        }
+    }
+
+    private static void DrawSortDirectionRadioPair(string id, ref SortOrderDirection direction, bool shortLabels) {
+        var ascLabel = shortLabels ? "Asc" : "Ascending";
+        var descLabel = shortLabels ? "Desc" : "Descending";
+
+        if (ImGui.RadioButton($"{ascLabel}##{id}Asc", direction is SortOrderDirection.Ascending)) {
+            direction = SortOrderDirection.Ascending;
+        }
+
+        ImGui.SameLine();
+        if (ImGui.RadioButton($"{descLabel}##{id}Desc", direction is SortOrderDirection.Descending)) {
+            direction = SortOrderDirection.Descending;
+        }
+    }
+
+    private static void EnsureWindowHeightForSortOrder() {
+        var minimumHeight = ImGuiHelpers.ScaledVector2(0.0f, 610.0f).Y;
+        var size = ImGui.GetWindowSize();
+        if (size.Y < minimumHeight) {
+            ImGui.SetWindowSize(new Vector2(size.X, minimumHeight));
         }
     }
 }
