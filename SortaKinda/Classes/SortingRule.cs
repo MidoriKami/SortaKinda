@@ -91,10 +91,7 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     public SortOrderDirection Direction { get; set; } = SortOrderDirection.Ascending;
     public FillMode FillMode { get; set; } = FillMode.Top;
     public SortOrderMode SortMode { get; set; } = SortOrderMode.Alphabetically;
-    // Legacy field kept for config compatibility with builds that only supported additional sort modes without per-mode direction.
     public List<SortOrderMode> AdditionalSortModes { get; set; } = [];
-    // Additional sort criteria used as tie-breakers after SortMode.
-    // Each entry has its own direction, so tie-breakers can sort independently.
     public List<AdditionalSortRule> AdditionalSortRules { get; set; } = [];
     public bool InclusiveAnd = false;
 
@@ -107,8 +104,6 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
         if (y is null) return 0;
         if (x.ExdItem.RowId is 0) return 0;
         if (y.ExdItem.RowId is 0) return 0;
-        // Returning 0 means "equal for sorting purposes".
-        // We only do this when all configured sort modes tie.
         if (IsSortModeChainMatch(x.ExdItem, y.ExdItem)) return 0;
         if (CompareSlots(x, y)) return 1;
         return -1;
@@ -147,9 +142,7 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
                         shouldSwap = true;
                     }
                 }
-                // else they are not the same item, compare using configured sort chain and fallback ordering
                 else {
-                    // Primary mode decides first; additional modes are applied only when equal.
                     shouldSwap = ShouldSwapBySortChain(firstItem, secondItem);
                 }
 
@@ -161,8 +154,6 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     }
     
     private bool IsSortModeChainMatch(Item firstItem, Item secondItem) {
-        // Chain match == all configured sort modes report "equal".
-        // This mirrors lexicographic sort behavior where each mode is a tie-breaker.
         foreach (var sortRule in GetSortModeChain()) {
             if (!IsSortMatch(firstItem, secondItem, sortRule.Mode)) return false;
         }
@@ -171,7 +162,6 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     }
 
     private IEnumerable<AdditionalSortRule> GetSortModeChain() {
-        // Keep existing behavior: first mode is always the legacy SortMode with the main direction setting.
         yield return new AdditionalSortRule {
             Mode = SortMode,
             Direction = Direction
@@ -184,10 +174,6 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
     }
 
     private bool ShouldSwapBySortChain(Item firstItem, Item secondItem) {
-        // Lexicographic compare:
-        // 1) find first mode where values differ
-        // 2) use that mode to decide ordering
-        // 3) if every mode ties, use legacy alphabetical fallback
         foreach (var sortRule in GetSortModeChain()) {
             if (!IsSortMatch(firstItem, secondItem, sortRule.Mode)) {
                 var shouldSwap = ShouldSwap(firstItem, secondItem, sortRule.Mode);
@@ -195,22 +181,23 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
             }
         }
 
-        // If all configured modes tie, keep previous behavior and fall back to alphabetical.
         var shouldSwapFallback = ShouldSwap(firstItem, secondItem, SortOrderMode.Alphabetically);
         return Direction is SortOrderDirection.Descending ? !shouldSwapFallback : shouldSwapFallback;
     }
 
+    /*
+     * Backwards compatibility for older configs that only stored AdditionalSortModes.
+     * New builds store AdditionalSortRules (mode + per-mode direction). When legacy values
+     * are present and no new-format rules exist, migrate and clear the legacy list.
+     */
     public void MigrateLegacyAdditionalSortModes() {
-        // If there's no legacy data, there's nothing to migrate.
         if (AdditionalSortModes.Count is 0) return;
 
-        // If new-format rules already exist, treat them as authoritative and discard legacy duplicates.
         if (AdditionalSortRules.Count is not 0) {
             AdditionalSortModes.Clear();
             return;
         }
 
-        // Legacy entries inherit the current primary direction to preserve old behavior.
         foreach (var sortMode in AdditionalSortModes) {
             AdditionalSortRules.Add(new AdditionalSortRule {
                 Mode = sortMode,
@@ -218,7 +205,6 @@ public unsafe class SortingRule : IComparer<InventorySlot>{
             });
         }
 
-        // Clear legacy data after successful migration.
         AdditionalSortModes.Clear();
     }
 
