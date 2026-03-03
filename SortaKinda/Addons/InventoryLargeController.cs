@@ -2,7 +2,7 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using KamiToolKit.Classes.Controllers;
+using KamiToolKit.Controllers;
 using KamiToolKit.Nodes;
 
 namespace SortaKinda.Addons;
@@ -24,7 +24,7 @@ public unsafe class InventoryLargeController : AddonController<AddonInventoryExp
 			String = "Sort",
 			Size = new Vector2(100.0f, 28.0f),
 			Position = new Vector2(19.0f, 412.0f),
-			Tooltip = "SortaKinda: Sort all Inventories",
+			TextTooltip = "SortaKinda: Sort all Inventories",
 			IsVisible = true,
 		};
 

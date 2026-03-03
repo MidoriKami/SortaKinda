@@ -2,7 +2,7 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using KamiToolKit.Classes.Controllers;
+using KamiToolKit.Controllers;
 using KamiToolKit.Nodes;
 
 namespace SortaKinda.Addons;
@@ -30,7 +30,7 @@ public unsafe class InventoryController : AddonController<AddonInventoryExpansio
 		sortButton = new CircleButtonNode {
 			Size = new Vector2(28.0f, 28.0f),
 			Position = new Vector2(19.0f, 414.0f),
-			Tooltip = "SortaKinda: Sort all Inventories",
+			TextTooltip = "SortaKinda: Sort all Inventories",
 			IsVisible = true,
 			Icon = ButtonIcon.Sort,
 		};
