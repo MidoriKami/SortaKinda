@@ -4,22 +4,10 @@ namespace SortaKinda.Addons;
 
 public class AddonControllers : IDisposable {
 
-	private readonly InventoryExpansionController inventoryExpansionController;
-	private readonly InventoryLargeController inventoryLargeController;
-	private readonly InventoryController inventoryController;
-	private readonly ArmouryBoardController armouryBoardController;
-	
-	public AddonControllers() {
-		inventoryExpansionController = new InventoryExpansionController();
-		inventoryLargeController = new InventoryLargeController();
-		inventoryController = new InventoryController();
-		armouryBoardController = new ArmouryBoardController();
-		
-		inventoryExpansionController.Enable();
-		inventoryLargeController.Enable();
-		inventoryController.Enable();
-		armouryBoardController.Enable();
-	}
+	private readonly InventoryExpansionController inventoryExpansionController = new();
+	private readonly InventoryLargeController inventoryLargeController = new();
+	private readonly InventoryController inventoryController = new();
+	private readonly ArmouryBoardController armouryBoardController = new();
 
 	public void Dispose() {
 		inventoryExpansionController.Dispose();

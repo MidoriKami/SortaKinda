@@ -6,6 +6,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Interface.Windowing;
 using SortaKinda.Classes;
 using SortaKinda.ViewComponents;
 using Window = KamiLib.Window.Window;

@@ -3,6 +3,7 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Interface.Windowing;
 using KamiLib.Classes;
 using KamiLib.CommandManager;
 using KamiLib.Configuration;
@@ -10,6 +11,7 @@ using KamiLib.Window;
 using SortaKinda.Controllers;
 using SortaKinda.Modules;
 using SortaKinda.ViewComponents;
+using Window = KamiLib.Window.Window;
 
 namespace SortaKinda.Windows;
 

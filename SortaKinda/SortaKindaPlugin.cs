@@ -103,7 +103,7 @@ public sealed class SortaKindaPlugin : IDalamudPlugin {
         System.SortingThreadController.Update();
     }
 
-    private void OnZoneChange(ushort e) {
+    private void OnZoneChange(uint u) {
         if (Service.ClientState is { IsLoggedIn: false }) return;
 
         if (System.SystemConfig.SortOnZoneChange) System.ModuleController.Sort();

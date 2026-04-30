@@ -7,14 +7,23 @@ using KamiToolKit.Nodes;
 
 namespace SortaKinda.Addons;
 
-public unsafe class ArmouryBoardController : AddonController<AddonInventoryExpansion> {
+public unsafe class ArmouryBoardController : IDisposable {
 
 	private TextButtonNode? sortButton;
+	private readonly AddonController<AddonInventoryExpansion> addonController;
 
-	public ArmouryBoardController() : base("ArmouryBoard") {
-		OnAttach += AttachNodes;
-		OnDetach += DetachNodes;
+	public ArmouryBoardController() {
+		addonController = new AddonController<AddonInventoryExpansion> {
+			AddonName = "ArmouryBoard", 
+			OnSetup = AttachNodes, 
+			OnFinalize = DetachNodes,
+		};
+		
+		addonController.Enable();
 	}
+
+	public void Dispose()
+		=> addonController.Dispose();
 
 	private void AttachNodes(AddonInventoryExpansion* addon) {
 		var targetNode = addon->RootNode;
