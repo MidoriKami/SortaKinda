@@ -6,16 +6,10 @@
     <PropertyGroup>
         <Author>MidoriKami</Author>
         <Name>SortaKinda</Name>
-        <InternalName>sortakinda</InternalName>
         <Punchline>Total customization of your inventory</Punchline>
         <Description>Sort your inventory however you want and keep it sorted</Description>
         <RepoUrl>https://github.com/MidoriKami/SortaKinda</RepoUrl>
         <Tags>utility</Tags>
         <AcceptsFeedback>false</AcceptsFeedback>
     </PropertyGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\KamiLib\KamiLib.csproj" />
-        <ProjectReference Include="..\KamiToolKit\KamiToolKit.csproj" />
-    </ItemGroup>
 </Project>
