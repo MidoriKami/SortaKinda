@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
+using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
@@ -21,9 +23,7 @@ public static unsafe class InventoryRenderer {
 	public static void DrawInventory(InventoryType inventory) {
 		using var group = ImRaii.Group();
 
-		var drawOptions = new DrawOptions {
-			Scale = 1.33f,
-		};
+		var drawOptions = new DrawOptions();
 
 		using var spacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, ImGuiHelpers.ScaledVector2(6.0f, 6.0f));
 		const int rowSize = 5;
@@ -44,7 +44,7 @@ public static unsafe class InventoryRenderer {
 	/// <param name="inventory">Inventory to draw.</param>
 	/// <param name="slot">Slot index for that inventory.</param>
 	/// <param name="options">Parameters to use to draw slot.</param>
-	public static void DrawInventorySlot(InventoryType inventory, int slot, DrawOptions options) {
+	private static void DrawInventorySlot(InventoryType inventory, int slot, DrawOptions options) {
 		using var group = ImRaii.Group();
 
 		var inventoryItem = inventory.GetItem(slot);
@@ -63,26 +63,27 @@ public static unsafe class InventoryRenderer {
 		ImGui.Image(Services.TextureProvider.GetFromGameIcon(inventoryItem->IconId).GetWrapOrEmpty().Handle, iconSize);
 
 		var slotSet = GetSettingsForSlot(inventory, slot);
+		var outlineColor = GetOutlineColor(options.OutlineColor, slotSet);
 
-		var borderColor = slotSet?.SetColor ?? options.OutlineColor;
-		var hoveredColor = borderColor.Lighten(0.66f);
-
-		var finalOutlineColor = ImGui.IsItemHovered() ? ImGui.GetColorU32(hoveredColor) : ImGui.GetColorU32(borderColor);
+		if (ImGui.IsItemHovered() && slotSet is not null) {
+			ImGui.SetTooltip($"Slot Set: {slotSet.Name}");
+		}
 
 		ImGui.GetWindowDrawList().AddRect(
 			windowPosition + startPosition,
 			windowPosition + startPosition + iconInnerPadding * 2.0f + iconSize,
-			finalOutlineColor,
+			ImGui.GetColorU32(outlineColor),
 			iconSize.X / 8.0f,
 			options.BorderThickness
 		);
 
 		if (ImGui.IsItemClicked() && SlotSetConfiguration.EditingSlotSet is { } editingSlotSet && SlotSetConfiguration.EditModeEnabled) {
-			if (editingSlotSet.SlotIndexes.Contains(slot)) {
-				editingSlotSet.SlotIndexes.Remove(slot);
+			if (editingSlotSet == slotSet && editingSlotSet.SlotIndexes.Remove(slot)) {
+				System.CharacterConfiguration?.Save();
 			}
-			else {
+			else if (slotSet is null) {
 				editingSlotSet.SlotIndexes.Add(slot);
+				System.CharacterConfiguration?.Save();
 			}
 		}
 
@@ -100,5 +101,45 @@ public static unsafe class InventoryRenderer {
 		if (!characterConfiguration.Inventories.TryGetValue(inventory, out var inventoryConfig)) return null;
 
 		return inventoryConfig.SlotSets.FirstOrDefault(set => set.SlotIndexes.Contains(slot));
+	}
+
+	private static Vector4 GetOutlineColor(Vector4 outlineColor, SlotSet? slotSet) {
+		if (ImGui.IsItemHovered()) {
+
+			// If we have a set selected, and any slot is hovered, use the editing sets color.
+			if (SlotSetConfiguration.EditingSlotSet is { } editingSet) {
+				outlineColor = editingSet.SetColor;
+			}
+
+			// Else we hovered a slot, with no editing set selected
+			else {
+				outlineColor = KnownColor.White.Vector();
+			}
+		}
+		else {
+
+			// If we aren't editing a slot set, show the full set color
+			if (SlotSetConfiguration.EditingSlotSet is not {} editingSet) {
+				if (slotSet is not null) {
+					outlineColor = slotSet.SetColor;
+				}
+			}
+
+			// We are editing a slot set,
+			else {
+
+				// This set isn't the one we are editing
+				if (slotSet is not null && slotSet != editingSet) {
+					outlineColor = slotSet.SetColor.Fade(0.66f);
+				}
+
+				// This is the set we are editing
+				else if (slotSet is not null && slotSet == editingSet) {
+					outlineColor = slotSet.SetColor.Fade(0.20f);
+				}
+			}
+		}
+
+		return outlineColor;
 	}
 }

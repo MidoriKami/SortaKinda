@@ -1,10 +1,14 @@
-﻿namespace SortaKinda.Configuration;
+﻿using System.Collections.Generic;
+using SortaKinda.FilterRules;
+using SortaKinda.OrderRules;
+
+namespace SortaKinda.Configuration;
 
 /// <summary>
-/// A singular sorting rule.
+/// A collection of Filter Rules and Ordering Rules.
 /// </summary>
-public record struct RuleSet() {
+public class RuleSet {
 	public string Name = "Name Not Set";
-	public bool AllowItem = true;
-	public int Priority = 0;
+	public List<FilteringRuleBase> FilterRules = [];
+	public List<OrderingRuleBase> OrderingRules = [];
 }
