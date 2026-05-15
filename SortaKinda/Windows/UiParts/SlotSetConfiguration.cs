@@ -204,6 +204,7 @@ public static class SlotSetConfiguration {
 	/// Draws a combo for selecting already defined rulesets, or a notice if none are defined.
 	/// </summary>
 	private static void DrawRuleSetSelectCombo() {
+		if (System.CharacterConfiguration is not { } config) return;
 		if (EditingSlotSet is null) return;
 
 		using var combo = ImRaii.Combo("##RuleSetSelect", EditingSlotSet.Ruleset?.Name ?? "Select a Rule Set");
@@ -217,7 +218,10 @@ public static class SlotSetConfiguration {
 		}
 
 		foreach (var ruleset in ruleSets) {
-			ImGui.Selectable(ruleset.Name, ruleset == EditingSlotSet.Ruleset);
+			if (ImGui.Selectable(ruleset.Name, ruleset == EditingSlotSet.Ruleset)) {
+				EditingSlotSet.Ruleset = ruleset;
+				config.Save();
+			}
 		}
 	}
 

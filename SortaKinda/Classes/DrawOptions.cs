@@ -10,4 +10,5 @@ namespace SortaKinda.Classes;
 public record struct DrawOptions() {
 	public Vector4 OutlineColor { get; set; } = KnownColor.White.Vector() with { W = 0.15f };
 	public float BorderThickness { get; set; } = 2.0f;
+	public float IconAlpha { get; set; } = 0.70f;
 }

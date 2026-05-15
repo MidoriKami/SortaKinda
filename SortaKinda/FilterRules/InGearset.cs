@@ -6,12 +6,7 @@ namespace SortaKinda.FilterRules;
 public unsafe class InGearset : FilteringRuleBase {
 	public override string Label => "In a Gearset";
 
-	public override bool IsItemAllowed(InventoryItem* item)
-		=> AllowGearsetItems && IsItemInGearset(item);
-
-	public bool AllowGearsetItems { get; set; } = true;
-
-	private static bool IsItemInGearset(InventoryItem* item) {
+	protected override bool EvaluateItem(InventoryItem* item) {
 		foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {
 			if (enabledGearsetIndex is 0) continue;
 

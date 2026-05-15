@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.Extensions;
-using SortaKinda.Utilities;
+using SortaKinda.FilterRules;
+using SortaKinda.OrderRules;
 using SortaKinda.Windows;
 
 namespace SortaKinda;
@@ -23,6 +25,26 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 		System.SystemConfiguration = SystemConfiguration.Load();
 
 		System.ConfigWindow = new ConfigWindow();
+
+		System.FilteringRules = Assembly
+	         .GetExecutingAssembly()
+	         .GetTypes()
+	         .Where(type => type.IsSubclassOf(typeof(FilteringRuleBase)))
+	         .Where(type => !type.IsAbstract)
+	         .Select(type => (FilteringRuleBase?)Activator.CreateInstance(type))
+	         .OfType<FilteringRuleBase>()
+	         .OrderBy(rule => rule.Label)
+	         .ToList();
+
+		System.OrderingRules = Assembly
+			.GetExecutingAssembly()
+			.GetTypes()
+			.Where(type => type.IsSubclassOf(typeof(OrderingRuleBase)))
+			.Where(type => !type.IsAbstract)
+			.Select(type => (OrderingRuleBase?)Activator.CreateInstance(type))
+			.OfType<OrderingRuleBase>()
+			.OrderBy(rule => rule.Label)
+			.ToList();
 
 		System.WindowSystem = new WindowSystem("ChillFrames");
 		System.WindowSystem.AddWindow(System.ConfigWindow);

@@ -60,14 +60,18 @@ public static unsafe class InventoryRenderer {
 		var windowPosition = ImGui.GetWindowPos();
 
 		ImGui.SetCursorPos(startPosition + iconInnerPadding);
-		ImGui.Image(Services.TextureProvider.GetFromGameIcon(inventoryItem->IconId).GetWrapOrEmpty().Handle, iconSize);
+		ImGui.Image(Services.TextureProvider.GetFromGameIcon(
+			inventoryItem->IconId).GetWrapOrEmpty().Handle,
+			iconSize,
+			Vector2.Zero,
+			Vector2.One,
+			new Vector4(1.0f, 1.0f, 1.0f, options.IconAlpha)
+		);
 
 		var slotSet = GetSettingsForSlot(inventory, slot);
 		var outlineColor = GetOutlineColor(options.OutlineColor, slotSet);
 
-		if (ImGui.IsItemHovered() && slotSet is not null) {
-			ImGui.SetTooltip($"Slot Set: {slotSet.Name}");
-		}
+		DrawTooltip(slotSet);
 
 		ImGui.GetWindowDrawList().AddRect(
 			windowPosition + startPosition,
@@ -88,6 +92,42 @@ public static unsafe class InventoryRenderer {
 		}
 
 		ImGui.SetCursorPos(startPosition + iconSize + iconInnerPadding * 2.0f);
+	}
+
+	private static void DrawTooltip(SlotSet? slotSet) {
+		if (!ImGui.IsItemHovered() || slotSet is null) return;
+
+		using var tooltipDisposable = ImRaii.Tooltip();
+		using var itemSpacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(2.0f, 1.0f));
+
+		ImGui.Text(slotSet.Name);
+
+		if (slotSet.Ruleset is not { } ruleset) return;
+
+		if (ruleset.FilterRules.Count is not 0) {
+			ImGui.Text("\nFilters:");
+
+			foreach (var filterRule in ruleset.FilterRules) {
+				if (filterRule.IsAllowed) {
+					ImGui.TextColored(KnownColor.Green.Vector(), "\tAllow");
+				}
+				else {
+					ImGui.TextColored(KnownColor.Orange.Vector(), "\tDisallow");
+				}
+
+				ImGui.SameLine();
+
+				ImGui.Text($"- {filterRule.Label}");
+			}
+		}
+
+		if (ruleset.OrderingRules.Count is not 0) {
+			ImGui.Text("\nOrdering:");
+
+			foreach (var orderingRule in ruleset.OrderingRules) {
+				ImGui.Text($"\t{orderingRule.Label}");
+			}
+		}
 	}
 
 	/// <summary>

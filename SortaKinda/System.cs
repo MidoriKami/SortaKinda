@@ -2,15 +2,20 @@
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Configuration;
+using SortaKinda.FilterRules;
+using SortaKinda.OrderRules;
 using SortaKinda.Windows;
 
 namespace SortaKinda;
 
 public class System {
-	public static SystemConfiguration SystemConfiguration = null!;
-	public static CharacterConfiguration? CharacterConfiguration;
-	public static WindowSystem WindowSystem = null!;
-	public static ConfigWindow ConfigWindow = null!;
+	internal static SystemConfiguration SystemConfiguration = null!;
+	internal static CharacterConfiguration? CharacterConfiguration;
+	internal static WindowSystem WindowSystem = null!;
+	internal static ConfigWindow ConfigWindow = null!;
+
+	internal static List<FilteringRuleBase> FilteringRules = [];
+	internal static List<OrderingRuleBase> OrderingRules = [];
 
 	public static readonly List<InventoryType> AllowedInventories = [
 		InventoryType.Inventory1,
