@@ -4,8 +4,6 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 namespace SortaKinda.FilterRules;
 
 public abstract unsafe partial class FilteringRuleBase {
-	public Guid RuleId { get; }
-
 	public abstract string Label { get; }
 
 	/// <summary>

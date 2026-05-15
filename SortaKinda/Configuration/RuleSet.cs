@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
 
@@ -9,6 +10,7 @@ namespace SortaKinda.Configuration;
 /// </summary>
 public class RuleSet {
 	public string Name = "Name Not Set";
+	public Guid RuleSetId = Guid.NewGuid();
 	public List<FilteringRuleBase> FilterRules = [];
 	public List<OrderingRuleBase> OrderingRules = [];
 }

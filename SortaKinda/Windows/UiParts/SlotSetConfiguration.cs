@@ -16,8 +16,8 @@ namespace SortaKinda.Windows.UiParts;
 /// Static class for drawing slot-set configuration ui element.
 /// </summary>
 public static class SlotSetConfiguration {
-	public static SlotSet? EditingSlotSet;
-	public static bool EditModeEnabled;
+	internal static SlotSet? EditingSlotSet;
+	internal static bool EditModeEnabled;
 
 	/// <summary>
 	/// Draws Inventory and Set Configuration.
@@ -33,7 +33,7 @@ public static class SlotSetConfiguration {
 	/// </summary>
 	private static void DrawInventoryChild() {
 		var childSize = new Vector2(250.0f * ImGuiHelpers.GlobalScale, ImGui.GetContentRegionAvail().Y);
-		using var child = ImRaii.Child("Inventory", childSize);
+		using var child = ImRaii.Child("Inventory", childSize, false, ImGuiWindowFlags.NoMove);
 		if (!child) return;
 
 		ImGuiHelpers.ScaledDummy(5.0f);
@@ -207,7 +207,9 @@ public static class SlotSetConfiguration {
 		if (System.CharacterConfiguration is not { } config) return;
 		if (EditingSlotSet is null) return;
 
-		using var combo = ImRaii.Combo("##RuleSetSelect", EditingSlotSet.Ruleset?.Name ?? "Select a Rule Set");
+		var ruleSet = System.SystemConfiguration.RuleSets.FirstOrDefault(ruleset => ruleset.RuleSetId == EditingSlotSet.RuleSetId);
+
+		using var combo = ImRaii.Combo("##RuleSetSelect", ruleSet?.Name ?? "Select a Rule Set");
 		if (!combo) return;
 
 		var ruleSets = System.SystemConfiguration.RuleSets;
@@ -218,8 +220,8 @@ public static class SlotSetConfiguration {
 		}
 
 		foreach (var ruleset in ruleSets) {
-			if (ImGui.Selectable(ruleset.Name, ruleset == EditingSlotSet.Ruleset)) {
-				EditingSlotSet.Ruleset = ruleset;
+			if (ImGui.Selectable(ruleset.Name, ruleset.RuleSetId == EditingSlotSet.RuleSetId)) {
+				EditingSlotSet.RuleSetId = ruleset.RuleSetId;
 				config.Save();
 			}
 		}

@@ -102,12 +102,13 @@ public static unsafe class InventoryRenderer {
 
 		ImGui.Text(slotSet.Name);
 
-		if (slotSet.Ruleset is not { } ruleset) return;
+		var ruleSet = System.SystemConfiguration.RuleSets.FirstOrDefault(ruleset => ruleset.RuleSetId == slotSet.RuleSetId);
+		if (ruleSet is null) return;
 
-		if (ruleset.FilterRules.Count is not 0) {
+		if (ruleSet.FilterRules.Count is not 0) {
 			ImGui.Text("\nFilters:");
 
-			foreach (var filterRule in ruleset.FilterRules) {
+			foreach (var filterRule in ruleSet.FilterRules) {
 				if (filterRule.IsAllowed) {
 					ImGui.TextColored(KnownColor.Green.Vector(), "\tAllow");
 				}
@@ -121,10 +122,10 @@ public static unsafe class InventoryRenderer {
 			}
 		}
 
-		if (ruleset.OrderingRules.Count is not 0) {
+		if (ruleSet.OrderingRules.Count is not 0) {
 			ImGui.Text("\nOrdering:");
 
-			foreach (var orderingRule in ruleset.OrderingRules) {
+			foreach (var orderingRule in ruleSet.OrderingRules) {
 				ImGui.Text($"\t{orderingRule.Label}");
 			}
 		}
