@@ -60,5 +60,7 @@ public class ConfigWindow : Window {
 
 		using var child = ImRaii.Child("TabChild", ImGui.GetContentRegionAvail());
 		if (!child) return;
+
+		GeneralConfiguration.Draw();
 	}
 }
