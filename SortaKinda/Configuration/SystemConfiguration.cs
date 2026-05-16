@@ -26,6 +26,8 @@ public class SystemConfiguration {
 	public static SystemConfiguration Load()
 		=> Config.LoadConfig<SystemConfiguration>("System.config.json");
 
-	public void Save()
-		=> Config.SaveConfig(this, "System.config.json");
+	public void Save() {
+		Services.PluginLog.Debug("Saving System.config.json");
+		Config.SaveConfig(this, "System.config.json");
+	}
 }

@@ -3,8 +3,9 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace SortaKinda.FilterRules;
 
-public unsafe class InGearset : FilteringRuleBase {
-	public override string Label => "In a Gearset";
+public unsafe class GearsetFilter : FilteringRuleBase {
+	public override string Label
+		=> "Gearset";
 
 	protected override bool EvaluateItem(InventoryItem* item) {
 		foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {

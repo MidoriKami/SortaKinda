@@ -11,6 +11,7 @@ namespace SortaKinda.Configuration;
 public class RuleSet {
 	public string Name = "Name Not Set";
 	public Guid RuleSetId = Guid.NewGuid();
+	public bool ReverseFill = false;
 	public List<FilteringRuleBase> FilterRules = [];
 	public List<OrderingRuleBase> OrderingRules = [];
 }

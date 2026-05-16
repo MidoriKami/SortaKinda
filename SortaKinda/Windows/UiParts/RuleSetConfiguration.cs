@@ -7,7 +7,6 @@ using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using SortaKinda.Configuration;
-using SortaKinda.Extensions;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
 
@@ -183,7 +182,7 @@ public static class RuleSetConfiguration {
 			}
 		}
 
-		var childSize = new Vector2(ImGui.GetContentRegionMax().X, ImGui.GetContentRegionAvail().Y * 5.0f / 10.0f);
+		var childSize = new Vector2(ImGui.GetContentRegionMax().X, ImGui.GetContentRegionAvail().Y * 4.0f / 10.0f);
 		using var child = ImRaii.Child("FilterConfig", childSize);
 		if (!child) return;
 
@@ -239,7 +238,15 @@ public static class RuleSetConfiguration {
 			ImGui.TableNextColumn();
 			using (ImRaii.Disabled(!filter.HasConfiguration)) {
 				if (ImGui.Button("Configure", new Vector2(ImGui.GetContentRegionAvail().X, 22.0f * ImGuiHelpers.GlobalScale))) {
-
+					if (System.WindowSystem.Windows.FirstOrDefault(window => window is ConfigurationPopupWindow) is ConfigurationPopupWindow popupConfigWindow) {
+						popupConfigWindow.DrawAction = filter.DrawConfiguration;
+						popupConfigWindow.WindowName = $"{filter.Label} Filter Configuration";
+					}
+					else {
+						System.WindowSystem.AddWindow(new ConfigurationPopupWindow($"{filter.Label} Filter Configuration") {
+							DrawAction = filter.DrawConfiguration,
+						});
+					}
 				}
 			}
 
@@ -268,6 +275,60 @@ public static class RuleSetConfiguration {
 	private static void DrawOrderingConfigChild() {
 		if (selectedRuleSet is null) return;
 
+		DrawOrderingModeConfig();
+		DrawOrderingRulesHeader();
+
+		var footerSpacing = ImGuiHelpers.ScaledVector2(0.0f, 24.0f + ImGui.GetStyle().ItemInnerSpacing.Y * 2.0f);
+		var childSize = ImGui.GetContentRegionAvail() - footerSpacing;
+		using var child = ImRaii.Child("OrderingConfig", childSize);
+		if (!child) return;
+
+		if (selectedRuleSet.OrderingRules.Count is 0) {
+			const string warningText = "No Ordering Rules Defined";
+			var textSize = ImGui.CalcTextSize(warningText);
+
+			ImGuiHelpers.ScaledDummy(5.0f);
+			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f);
+			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
+			return;
+		}
+
+		ImGui.Spacing();
+
+		DrawOrderingRuleTable();
+	}
+
+	private static void DrawOrderingModeConfig() {
+		if (selectedRuleSet is null) return;
+
+		ImGui.Text("Ordering Mode");
+
+		ImGui.SameLine();
+		ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - 24.0f * ImGuiHelpers.GlobalScale);
+
+		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+			ImGui.Text(FontAwesomeIcon.InfoCircle.ToIconString());
+		}
+
+		if (ImGui.IsItemHovered()) {
+			using (ImRaii.Tooltip())
+			using (ImRaii.TextWrapPos(ImGui.GetFontSize() * 36.0f)) {
+				ImGui.Text("When Enabled, fills the inventory slots from End to Beginning");
+			}
+		}
+
+		ImGui.Spacing();
+		ImGui.Separator();
+
+		if (ImGui.Checkbox("Reverse Fill", ref selectedRuleSet.ReverseFill)) {
+			System.SystemConfiguration.Save();
+		}
+		ImGuiHelpers.ScaledDummy(5.0f);
+	}
+
+	private static void DrawOrderingRulesHeader() {
+		if (selectedRuleSet is null) return;
+
 		ImGui.Text("Ordering Rules");
 		ImGui.SameLine();
 		ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - 24.0f * ImGuiHelpers.GlobalScale);
@@ -294,42 +355,28 @@ public static class RuleSetConfiguration {
 			else {
 				System.WindowSystem.AddWindow(new OrderingSelectWindow {
 					OnSelectionConfirm = options => {
+						options.RemoveAll(option
+							=> selectedRuleSet.OrderingRules.Any(existingRule
+								=> existingRule.GetType() == option.GetType()));
+
 						selectedRuleSet.OrderingRules.AddRange(options);
 						System.SystemConfiguration.Save();
 					},
 				});
 			}
 		}
-
-		var footerSpacing = ImGuiHelpers.ScaledVector2(0.0f, 24.0f + ImGui.GetStyle().ItemInnerSpacing.Y * 2.0f);
-		var childSize = ImGui.GetContentRegionAvail() - footerSpacing;
-		using var child = ImRaii.Child("OrderingConfig", childSize);
-		if (!child) return;
-
-		if (selectedRuleSet.OrderingRules.Count is 0) {
-			const string warningText = "No Ordering Rules Defined";
-			var textSize = ImGui.CalcTextSize(warningText);
-
-			ImGuiHelpers.ScaledDummy(5.0f);
-			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f);
-			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
-			return;
-		}
-
-		ImGui.Spacing();
-
-		DrawOrderingRuleTable();
 	}
 
 	private static void DrawOrderingRuleTable() {
 		if (selectedRuleSet is null) return;
 
-		using var table = ImRaii.Table("OrderingRules", 4);
+		using var table = ImRaii.Table("OrderingRules", 5);
 		if (!table) return;
 
 		ImGui.TableSetupColumn("UpButton", ImGuiTableColumnFlags.WidthFixed, 24.0f * ImGuiHelpers.GlobalScale);
 		ImGui.TableSetupColumn("DownButton", ImGuiTableColumnFlags.WidthFixed, 24.0f * ImGuiHelpers.GlobalScale);
 		ImGui.TableSetupColumn("Label", ImGuiTableColumnFlags.WidthStretch);
+		ImGui.TableSetupColumn("ReverseButton", ImGuiTableColumnFlags.WidthFixed, 125.0f * ImGuiHelpers.GlobalScale);
 		ImGui.TableSetupColumn("Delete", ImGuiTableColumnFlags.WidthFixed, 75.0f * ImGuiHelpers.GlobalScale);
 
 		OrderingRuleBase? orderingToRemove = null;
@@ -358,6 +405,12 @@ public static class RuleSetConfiguration {
 			ImGui.TableNextColumn();
 			ImGui.AlignTextToFramePadding();
 			ImGui.Text(ordering.Label);
+
+			ImGui.TableNextColumn();
+			if (ImGui.Button(ordering.ButtonLabel, new Vector2(ImGui.GetContentRegionAvail().X, 22.0f * ImGuiHelpers.GlobalScale))) {
+				ordering.IsReversed = !ordering.IsReversed;
+				System.SystemConfiguration.Save();
+			}
 
 			ImGui.TableNextColumn();
 			using (ImRaii.Disabled(!Services.KeyState.DeleteKeybindPressed)) {

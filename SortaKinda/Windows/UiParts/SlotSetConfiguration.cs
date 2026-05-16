@@ -8,7 +8,6 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using SortaKinda.Classes;
 using SortaKinda.Configuration;
-using SortaKinda.Extensions;
 
 namespace SortaKinda.Windows.UiParts;
 

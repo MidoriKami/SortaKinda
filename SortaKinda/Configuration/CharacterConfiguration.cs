@@ -13,6 +13,8 @@ public class CharacterConfiguration {
 	public static CharacterConfiguration Load()
 		=> Config.LoadCharacterConfig<CharacterConfiguration>("Character.config.json");
 
-	public void Save()
-		=> Config.SaveCharacterConfig(this, "Character.config.json");
+	public void Save() {
+		Services.PluginLog.Debug("Saving Character.config.json");
+		Config.SaveCharacterConfig(this, "Character.config.json");
+	}
 }

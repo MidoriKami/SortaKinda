@@ -7,7 +7,6 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Configuration;
-using SortaKinda.Extensions;
 using SortaKinda.Windows.UiParts;
 
 namespace SortaKinda.Classes;
@@ -100,6 +99,12 @@ public static unsafe class InventoryRenderer {
 		using var tooltipDisposable = ImRaii.Tooltip();
 		using var itemSpacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(2.0f, 1.0f));
 
+		using (ImRaii.PushColor(ImGuiCol.Text, slotSet.SetColor))
+		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+			ImGui.Text(FontAwesomeIcon.Square.ToIconString());
+		}
+
+		ImGui.SameLine();
 		ImGui.Text(slotSet.Name);
 
 		var ruleSet = System.SystemConfiguration.RuleSets.FirstOrDefault(ruleset => ruleset.RuleSetId == slotSet.RuleSetId);
@@ -118,7 +123,7 @@ public static unsafe class InventoryRenderer {
 
 				ImGui.SameLine();
 
-				ImGui.Text($"- {filterRule.Label}");
+				ImGui.Text($"• {filterRule.Label}");
 			}
 		}
 

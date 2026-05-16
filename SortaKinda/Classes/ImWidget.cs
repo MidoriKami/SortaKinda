@@ -3,7 +3,6 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.Extensions;
 
 namespace SortaKinda.Classes;
 

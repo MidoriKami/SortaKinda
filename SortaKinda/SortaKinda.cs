@@ -8,7 +8,6 @@ using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using SortaKinda.Configuration;
-using SortaKinda.Extensions;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
 using SortaKinda.Windows;
