@@ -54,18 +54,6 @@ public static unsafe class InventoryItemExtensions {
 		public bool IsUnique
 			=> item.GetItemProperty(itemData => itemData.IsUnique);
 
-		public ItemOrderModuleSorterItemEntry* SorterItemEntry{
-			get {
-				var inventorySorter = item.GetInventoryType().InventorySorter;
-
-				foreach (var (_, sorterEntry) in inventorySorter->Items.Index()) {
-					if (sorterEntry.Value->Slot == item.Slot) return sorterEntry;
-				}
-
-				return null;
-			}
-		}
-
 		private T GetItemProperty<T>(Func<Item, T> propertyGetter) {
 			if (!ItemUtil.IsNormalItem(item.ItemId)) throw new Exception("Invalid Item Type");
 
