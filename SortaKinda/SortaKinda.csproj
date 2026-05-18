@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
     <PropertyGroup>
-        <Version>2.2.0.1</Version>
+        <Version>3.0.0.0</Version>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -15,9 +15,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\CodeGenerator\CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="KamiToolKit" Version="1.1.18" />
+        <PackageReference Include="KamiToolKit" Version="1.1.18" />
     </ItemGroup>
 </Project>
