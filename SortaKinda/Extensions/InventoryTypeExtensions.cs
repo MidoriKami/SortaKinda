@@ -44,7 +44,7 @@ public static unsafe class InventoryTypeExtensions {
 			InventoryType.SaddleBag1 => "Saddlebag 1",
 			InventoryType.SaddleBag2 => "Saddlebag 2",
 			InventoryType.PremiumSaddleBag1 => "Premium Saddlebag 1",
-			InventoryType.PremiumSaddleBag2 =>  "Premium Saddlebag 2",
+			InventoryType.PremiumSaddleBag2 => "Premium Saddlebag 2",
 			_ => inventory.ToString(),
 		};
 
