@@ -15,4 +15,5 @@ public class Services {
     [PluginService] public static ITextureProvider TextureProvider { get; set; } = null!;
     [PluginService] public static IDataManager DataManager { get; set; } = null!;
     [PluginService] public static IKeyState KeyState { get; set; } = null!;
+    [PluginService] public static IGameInventory GameInventory { get; set; } = null!;
 }

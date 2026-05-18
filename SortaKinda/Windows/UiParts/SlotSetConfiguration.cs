@@ -293,6 +293,7 @@ public static class SlotSetConfiguration {
 		var hsvaColor = new ColorHelpers.HsvaColor(adjustedHue, 1.0f, 1.0f, 1.0f);
 
 		var newSlotSet = new SlotSet {
+			InventoryType = ConfigWindow.SelectedInventory,
 			SetColor = ColorHelpers.HsvToRgb(hsvaColor),
 		};
 

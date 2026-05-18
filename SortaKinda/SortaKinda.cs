@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -7,6 +6,9 @@ using System.Threading.Tasks;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
+using KamiToolKit;
+using SortaKinda.AddonControllers;
+using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
@@ -21,7 +23,10 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 	}
 
 	public Task LoadAsync(CancellationToken cancellationToken) {
+		KamiToolKitLibrary.Initialize(Services.PluginInterface, "SortaKinda");
+
 		System.SystemConfiguration = SystemConfiguration.Load();
+		System.SortingController = new SortingController();
 
 		System.ConfigWindow = new ConfigWindow();
 
@@ -58,6 +63,11 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 			HelpMessage = "Open SortaKinda Config",
 		});
 
+		System.ArmouryBoardController = new ArmouryBoardController();
+		System.InventoryController = new InventoryController();
+		System.InventoryExpansionController = new InventoryExpansionController();
+		System.InventoryLargeController = new InventoryLargeController();
+
 		Services.PluginInterface.UiBuilder.Draw += System.WindowSystem.Draw;
 		Services.PluginInterface.UiBuilder.OpenConfigUi += System.ConfigWindow.Toggle;
 		Services.PluginInterface.UiBuilder.OpenMainUi += System.ConfigWindow.Toggle;
@@ -67,14 +77,13 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 
 		if (Services.ClientState.IsLoggedIn) {
 			OnLogin();
+			System.ConfigWindow.DebugOpen();
 		}
-
-		System.ConfigWindow.DebugOpen();
 
 		return Task.CompletedTask;
 	}
 
-	public ValueTask DisposeAsync() {
+	public async ValueTask DisposeAsync() {
 		try {
 			Services.ClientState.Login -= OnLogin;
 			Services.ClientState.Logout -= OnLogout;
@@ -83,20 +92,29 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 			Services.PluginInterface.UiBuilder.OpenConfigUi -= System.ConfigWindow.Toggle;
 			Services.PluginInterface.UiBuilder.OpenMainUi -= System.ConfigWindow.Toggle;
 
+			System.ArmouryBoardController.Dispose();
+			System.InventoryController.Dispose();
+			System.InventoryExpansionController.Dispose();
+			System.InventoryLargeController.Dispose();
+
 			Services.CommandManager.RemoveHandler("/sortakinda");
 			Services.CommandManager.RemoveHandler("/sorta");
 
             System.WindowSystem.RemoveAllWindows();
 
-			return ValueTask.CompletedTask;
+            System.SortingController.Dispose();
+
+            await Services.Framework.RunOnFrameworkThread(KamiToolKitLibrary.Dispose);
 		}
 		catch (Exception exception) {
-			return ValueTask.FromException(exception);
+			Services.PluginLog.Error(exception, "Exception during Async Dispose of SortaKinda.");
 		}
 	}
 
 	private void OnLogin() {
 		System.CharacterConfiguration = CharacterConfiguration.Load();
+
+		System.SortingController.OnLogin();
 	}
 
 	private void OnLogout(int type, int code) {
@@ -109,6 +127,10 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 		switch (arguments.Split(' ')) {
 			case [ "" ] or []:
 				System.ConfigWindow.Toggle();
+				return;
+
+			case [ "sort" ]:
+				System.SortingController.LaunchSortTask();
 				return;
 		}
 	}

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using SortaKinda.AddonControllers;
+using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
@@ -13,6 +15,11 @@ public class System {
 	internal static CharacterConfiguration? CharacterConfiguration;
 	internal static WindowSystem WindowSystem = null!;
 	internal static ConfigWindow ConfigWindow = null!;
+	internal static SortingController SortingController = null!;
+	internal static ArmouryBoardController ArmouryBoardController = null!;
+	internal static InventoryController InventoryController = null!;
+	internal static InventoryExpansionController InventoryExpansionController = null!;
+	internal static InventoryLargeController InventoryLargeController = null!;
 
 	internal static List<FilteringRuleBase> FilteringRules = [];
 	internal static List<OrderingRuleBase> OrderingRules = [];
@@ -34,5 +41,9 @@ public class System {
 		InventoryType.ArmoryWrist,
 		InventoryType.ArmoryRings,
 		InventoryType.ArmorySoulCrystal,
+		InventoryType.SaddleBag1,
+		InventoryType.SaddleBag2,
+		InventoryType.PremiumSaddleBag1,
+		InventoryType.PremiumSaddleBag2,
 	];
 }

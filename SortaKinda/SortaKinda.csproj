@@ -16,4 +16,8 @@
     <ItemGroup>
         <ProjectReference Include="..\CodeGenerator\CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="KamiToolKit" Version="1.1.18" />
+    </ItemGroup>
 </Project>

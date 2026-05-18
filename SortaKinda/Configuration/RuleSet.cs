@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.Interop;
+using SortaKinda.Classes;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
 
@@ -8,10 +12,27 @@ namespace SortaKinda.Configuration;
 /// <summary>
 /// A collection of Filter Rules and Ordering Rules.
 /// </summary>
-public class RuleSet {
+public unsafe class RuleSet {
 	public string Name = "Name Not Set";
 	public Guid RuleSetId = Guid.NewGuid();
 	public bool ReverseFill = false;
 	public List<FilteringRuleBase> FilterRules = [];
 	public List<OrderingRuleBase> OrderingRules = [];
+
+	public bool IsItemAllowed(InventoryItem* item)
+		=> FilterRules.All(filter => filter.IsItemAllowed(item));
+
+	public int Comparison(ItemSlotInfo left, ItemSlotInfo right)
+		=> Comparison(left.Item, right.Item);
+
+	private int Comparison(Pointer<InventoryItem> left, Pointer<InventoryItem> right) {
+		foreach (var orderingRule in OrderingRules) {
+			var result = orderingRule.Compare(left, right) * (orderingRule.IsReversed ? -1 : 1);
+			if (result is not 0) {
+				return result;
+			}
+		}
+
+		return string.Compare(left.Value->Name, right.Value->Name, StringComparison.OrdinalIgnoreCase);
+	}
 }

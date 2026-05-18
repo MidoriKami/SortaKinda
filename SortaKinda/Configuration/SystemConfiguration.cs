@@ -20,6 +20,8 @@ public class SystemConfiguration {
 	public bool SortOnJobChange = true;
 	public bool SortOnLogin = true;
 
+	public bool EnableSortLogging = false;
+
 	public List<RuleSet> RuleSets = [];
 	public InventoryType LastSelectedInventory = InventoryType.Inventory1;
 

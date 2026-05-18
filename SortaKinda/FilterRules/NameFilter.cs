@@ -90,6 +90,6 @@ public class NameFilter : FilteringRuleBase {
 	protected override unsafe bool EvaluateItem(InventoryItem* item) {
 		var itemName = item->Name;
 
-		return Names.Any(name => Regex.IsMatch(name, itemName));
+		return Names.Any(name => Regex.IsMatch(itemName, name));
 	}
 }

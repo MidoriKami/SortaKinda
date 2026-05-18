@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.Sheets;
 
 namespace SortaKinda.Extensions;
@@ -9,7 +11,7 @@ namespace SortaKinda.Extensions;
 /// Extension Methods for getting relevent data from InventoryItems to enable advanced sorting functions.
 /// This is where most of the heavy lifting will go for item logic.
 /// </summary>
-public static class InventoryItemExtensions {
+public static unsafe class InventoryItemExtensions {
 	extension(ref InventoryItem item) {
 		public uint IconId => ItemUtil.GetBaseId(item.ItemId) switch {
 			{ Kind: ItemKind.Normal, ItemId: var itemId } => Services.DataManager.GetExcelSheet<Item>().GetRow(itemId).Icon,
@@ -51,6 +53,18 @@ public static class InventoryItemExtensions {
 
 		public bool IsUnique
 			=> item.GetItemProperty(itemData => itemData.IsUnique);
+
+		public ItemOrderModuleSorterItemEntry* SorterItemEntry{
+			get {
+				var inventorySorter = item.GetInventoryType().InventorySorter;
+
+				foreach (var (_, sorterEntry) in inventorySorter->Items.Index()) {
+					if (sorterEntry.Value->Slot == item.Slot) return sorterEntry;
+				}
+
+				return null;
+			}
+		}
 
 		private T GetItemProperty<T>(Func<Item, T> propertyGetter) {
 			if (!ItemUtil.IsNormalItem(item.ItemId)) throw new Exception("Invalid Item Type");

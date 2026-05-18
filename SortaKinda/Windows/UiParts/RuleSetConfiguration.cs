@@ -285,11 +285,14 @@ public static class RuleSetConfiguration {
 
 		if (selectedRuleSet.OrderingRules.Count is 0) {
 			const string warningText = "No Ordering Rules Defined";
+			const string warningText2 = "Default behavior is alphabetical";
 			var textSize = ImGui.CalcTextSize(warningText);
+			var textSize2 = ImGui.CalcTextSize(warningText2);
 
-			ImGuiHelpers.ScaledDummy(5.0f);
 			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f);
 			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
+			ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X / 2.0f - textSize2.X / 2.0f);
+			ImGui.TextColored(KnownColor.Orange.Vector(), warningText2);
 			return;
 		}
 

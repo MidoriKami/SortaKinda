@@ -93,6 +93,10 @@ public static unsafe class InventoryRenderer {
 		ImGui.SetCursorPos(startPosition + iconSize + iconInnerPadding * 2.0f);
 	}
 
+	/// <summary>
+	/// Draws a formatted tooltip to give a preview of what slot set is being applied to this slot.
+	/// </summary>
+	/// <param name="slotSet"></param>
 	private static void DrawTooltip(SlotSet? slotSet) {
 		if (!ImGui.IsItemHovered() || slotSet is null) return;
 

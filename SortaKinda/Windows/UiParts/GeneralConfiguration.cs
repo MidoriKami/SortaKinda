@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 
 namespace SortaKinda.Windows.UiParts;
@@ -21,6 +22,12 @@ public static class GeneralConfiguration {
 		configChanged |= ImGui.Checkbox("Sort on Zone Changed", ref config.SortOnZoneChange);
 		configChanged |= ImGui.Checkbox("Sort on Job Changed", ref config.SortOnJobChange);
 		configChanged |= ImGui.Checkbox("Sort on Login", ref config.SortOnLogin);
+
+		ImGuiHelpers.ScaledDummy(10.0f);
+		ImGui.Text("Advanced");
+		ImGui.Separator();
+
+		configChanged |= ImGui.Checkbox("Enable Advanced Logging", ref config.EnableSortLogging);
 
 		if (configChanged) {
 			config.Save();
