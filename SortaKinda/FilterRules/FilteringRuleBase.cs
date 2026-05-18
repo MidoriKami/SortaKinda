@@ -1,8 +1,22 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using System.Text.Json.Serialization;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace SortaKinda.FilterRules;
 
-public abstract unsafe partial class FilteringRuleBase {
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(GearsetFilter), "GearsetFilter")]
+[JsonDerivedType(typeof(ItemUiCategoryFilter), "ItemUiCategoryFilter")]
+[JsonDerivedType(typeof(NameFilter), "NameFilter")]
+[JsonDerivedType(typeof(UntradableFilter), "UntradableFilter")]
+[JsonDerivedType(typeof(UniqueFilter), "UniqueFilter")]
+[JsonDerivedType(typeof(DyeableFilter), "DyeableFilter")]
+[JsonDerivedType(typeof(CollectableFilter), "CollectableFilter")]
+[JsonDerivedType(typeof(RepairableFilter), "RepairableFilter")]
+[JsonDerivedType(typeof(ItemLevelFilter), "ItemLevelFilter")]
+[JsonDerivedType(typeof(VendorPriceFilter), "VendorPriceFilter")]
+[JsonDerivedType(typeof(EquipLevelFilter), "EquipLevelFilter")]
+[JsonDerivedType(typeof(ItemIdFilter), "ItemIdFilter")]
+public abstract unsafe class FilteringRuleBase {
 	/// <summary>
 	/// Gets the label that will be displayed for this filter.
 	/// </summary>

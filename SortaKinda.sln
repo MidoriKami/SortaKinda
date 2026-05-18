@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortaKinda", "SortaKinda\SortaKinda.csproj", "{ED012F22-F994-4178-809F-7CDC44BFF840}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenerator", "CodeGenerator\CodeGenerator.csproj", "{0C43D2F4-B30C-43E9-BEDC-0A140EF769AC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -25,10 +23,6 @@ Global
 		{B1015978-67C0-45C6-955F-018E4B270498}.Debug|x64.Build.0 = Debug|x64
 		{B1015978-67C0-45C6-955F-018E4B270498}.Release|x64.ActiveCfg = Release|x64
 		{B1015978-67C0-45C6-955F-018E4B270498}.Release|x64.Build.0 = Release|x64
-		{0C43D2F4-B30C-43E9-BEDC-0A140EF769AC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0C43D2F4-B30C-43E9-BEDC-0A140EF769AC}.Debug|x64.Build.0 = Debug|Any CPU
-		{0C43D2F4-B30C-43E9-BEDC-0A140EF769AC}.Release|x64.ActiveCfg = Release|Any CPU
-		{0C43D2F4-B30C-43E9-BEDC-0A140EF769AC}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
