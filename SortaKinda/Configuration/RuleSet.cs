@@ -18,9 +18,16 @@ public unsafe class RuleSet {
 	public bool ReverseFill = false;
 	public List<FilteringRuleBase> FilterRules = [];
 	public List<OrderingRuleBase> OrderingRules = [];
+	public bool RequireAll = true;
 
-	public bool IsItemAllowed(InventoryItem* item)
-		=> FilterRules.All(filter => filter.IsItemAllowed(item));
+	public bool IsItemAllowed(InventoryItem* item) {
+		if (RequireAll) {
+			return FilterRules.All(filter => filter.IsItemAllowed(item));
+		}
+		else {
+			return FilterRules.Any(filter => filter.IsItemAllowed(item));
+		}
+	}
 
 	public int Comparison(ItemSlotInfo left, ItemSlotInfo right)
 		=> Comparison(left.Item, right.Item);

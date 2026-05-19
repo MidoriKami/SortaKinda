@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
@@ -129,7 +128,21 @@ public static class RuleSetConfiguration {
 		DrawConfigLabel("Rule Set Name");
 		ImGui.InputText("##Name", ref selectedRuleSet.Name);
 
-		DisplayDebugId();
+		DrawConfigLabel("Filter Mode");
+		var cursorPositon = ImGui.GetCursorPos();
+		var halfWidth = ImGui.GetContentRegionAvail().X / 2.0f - ImGui.GetStyle().ItemSpacing.X / 2.0f;
+
+		if (ImGui.RadioButton("Matches All", selectedRuleSet.RequireAll)) {
+			selectedRuleSet.RequireAll = true;
+			config.Save();
+		}
+
+		ImGui.SameLine(cursorPositon.X + halfWidth);
+
+		if (ImGui.RadioButton("Matches Any", !selectedRuleSet.RequireAll)) {
+			selectedRuleSet.RequireAll = false;
+			config.Save();
+		}
 
 		if (ImGui.IsItemDeactivatedAfterEdit()) {
 			config.Save();
@@ -233,7 +246,7 @@ public static class RuleSetConfiguration {
 
 			ImGui.TableNextColumn();
 			ImGui.AlignTextToFramePadding();
-			ImGui.Text(filter.Label + selectedRuleSet.RuleSetId);
+			ImGui.Text(filter.Label);
 
 			ImGui.TableNextColumn();
 			using (ImRaii.Disabled(!filter.HasConfiguration)) {
@@ -444,13 +457,5 @@ public static class RuleSetConfiguration {
 			selectedRuleSet.OrderingRules.Remove(orderingToRemove);
 			System.SystemConfiguration.Save();
 		}
-	}
-
-	[Conditional("DEBUG")]
-	private static void DisplayDebugId() {
-		if (selectedRuleSet is null) return;
-
-		DrawConfigLabel("Rule Set Id");
-		ImGui.TextColored(KnownColor.Gray.Vector(), selectedRuleSet.RuleSetId.ToString());
 	}
 }
