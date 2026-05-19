@@ -1,17 +1,65 @@
-﻿using KamiLib.CommandManager;
-using KamiLib.Window;
-using SortaKinda.Addons;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using SortaKinda.AddonControllers;
 using SortaKinda.Classes;
-using SortaKinda.Controllers;
+using SortaKinda.Configuration;
+using SortaKinda.FilterRules;
+using SortaKinda.OrderRules;
+using SortaKinda.Windows;
 
 namespace SortaKinda;
 
-public static class System {
-	public static ModuleController ModuleController { get; set; } = null!;
-	public static SortController SortController { get; set; } = null!;
-	public static SystemConfig SystemConfig { get; set; } = null!;
-	public static SortingThreadController SortingThreadController { get; set; } = null!;
-	public static CommandManager CommandManager { get; set; } = null!;
-	public static WindowManager WindowManager { get; set; } = null!;
-	public static AddonControllers AddonControllers { get; set; } = null!;
+public class System {
+	internal static SystemConfiguration SystemConfiguration = null!;
+	internal static CharacterConfiguration? CharacterConfiguration;
+	internal static WindowSystem WindowSystem = null!;
+	internal static ConfigWindow ConfigWindow = null!;
+	internal static SortingController SortingController = null!;
+	internal static ArmouryBoardController ArmouryBoardController = null!;
+	internal static InventoryController InventoryController = null!;
+	internal static InventoryExpansionController InventoryExpansionController = null!;
+	internal static InventoryLargeController InventoryLargeController = null!;
+
+	internal static List<Type> FilteringRuleTypes = [];
+	internal static List<Type> OrderingRuleTypes = [];
+
+	internal static List<FilteringRuleBase> GetFilteringRules()
+		=> FilteringRuleTypes
+		   .Select(type => (FilteringRuleBase?)Activator.CreateInstance(type))
+		   .OfType<FilteringRuleBase>()
+		   .OrderBy(rule => rule.Label)
+		   .ToList();
+
+	internal static List<OrderingRuleBase> GetOrderingRules()
+		=> OrderingRuleTypes
+		   .Select(type => (OrderingRuleBase?)Activator.CreateInstance(type))
+		   .OfType<OrderingRuleBase>()
+		   .OrderBy(rule => rule.Label)
+		   .ToList();
+
+	public static readonly List<InventoryType> AllowedInventories = [
+		InventoryType.Inventory1,
+		InventoryType.Inventory2,
+		InventoryType.Inventory3,
+		InventoryType.Inventory4,
+		InventoryType.ArmoryMainHand,
+		InventoryType.ArmoryHead,
+		InventoryType.ArmoryBody,
+		InventoryType.ArmoryHands,
+		InventoryType.ArmoryLegs,
+		InventoryType.ArmoryFeets,
+		InventoryType.ArmoryOffHand,
+		InventoryType.ArmoryEar,
+		InventoryType.ArmoryNeck,
+		InventoryType.ArmoryWrist,
+		InventoryType.ArmoryRings,
+		InventoryType.ArmorySoulCrystal,
+		InventoryType.SaddleBag1,
+		InventoryType.SaddleBag2,
+		InventoryType.PremiumSaddleBag1,
+		InventoryType.PremiumSaddleBag2,
+	];
 }
