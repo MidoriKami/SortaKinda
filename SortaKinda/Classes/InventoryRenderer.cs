@@ -53,7 +53,7 @@ public static unsafe class InventoryRenderer {
 		var itemSpacing = ImGui.GetStyle().ItemSpacing.X;
 		var regionAvail = (ImGui.GetContentRegionMax().X - itemSpacing * 2.0f - borderPadding * 2.0f) / 5.0f - itemSpacing;
 
-		var iconSize = ImGuiHelpers.ScaledVector2(regionAvail, regionAvail);
+		var iconSize = new Vector2(regionAvail, regionAvail);
 		var iconInnerPadding = ImGuiHelpers.ScaledVector2(borderPadding, borderPadding);
 		var startPosition = ImGui.GetCursorPos();
 		var windowPosition = ImGui.GetWindowPos();
