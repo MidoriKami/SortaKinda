@@ -17,14 +17,30 @@ public unsafe class SortingController :  IDisposable {
 
 	public SortingController() {
 		Services.GameInventory.InventoryChanged += InventoryChanged;
+		Services.ClientState.ClassJobChanged += JobChanged;
+		Services.ClientState.TerritoryChanged += TerritoryChanged;
 	}
 
 	public void Dispose() {
 		Services.GameInventory.InventoryChanged -= InventoryChanged;
+		Services.ClientState.ClassJobChanged -= JobChanged;
+		Services.ClientState.TerritoryChanged -= TerritoryChanged;
 	}
 
 	public void OnLogin() {
 		if (System.SystemConfiguration.SortOnLogin) {
+			LaunchSortTask();
+		}
+	}
+
+	private void JobChanged(uint classJobId) {
+		if (System.SystemConfiguration.SortOnJobChange) {
+			LaunchSortTask();
+		}
+	}
+
+	private void TerritoryChanged(uint obj) {
+		if (System.SystemConfiguration.SortOnZoneChange) {
 			LaunchSortTask();
 		}
 	}
