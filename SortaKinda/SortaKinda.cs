@@ -30,25 +30,19 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 
 		System.ConfigWindow = new ConfigWindow();
 
-		System.FilteringRules = Assembly
-	         .GetExecutingAssembly()
-	         .GetTypes()
-	         .Where(type => type.IsSubclassOf(typeof(FilteringRuleBase)))
-	         .Where(type => !type.IsAbstract)
-	         .Select(type => (FilteringRuleBase?)Activator.CreateInstance(type))
-	         .OfType<FilteringRuleBase>()
-	         .OrderBy(rule => rule.Label)
-	         .ToList();
+		System.OrderingRuleTypes =
+			Assembly.GetExecutingAssembly()
+			        .GetTypes()
+			        .Where(type => type.IsSubclassOf(typeof(OrderingRuleBase)))
+			        .Where(type => !type.IsAbstract)
+			        .ToList();
 
-		System.OrderingRules = Assembly
-			.GetExecutingAssembly()
-			.GetTypes()
-			.Where(type => type.IsSubclassOf(typeof(OrderingRuleBase)))
-			.Where(type => !type.IsAbstract)
-			.Select(type => (OrderingRuleBase?)Activator.CreateInstance(type))
-			.OfType<OrderingRuleBase>()
-			.OrderBy(rule => rule.Label)
-			.ToList();
+		System.FilteringRuleTypes =
+			Assembly.GetExecutingAssembly()
+			        .GetTypes()
+			        .Where(type => type.IsSubclassOf(typeof(FilteringRuleBase)))
+			        .Where(type => !type.IsAbstract)
+			        .ToList();
 
 		System.WindowSystem = new WindowSystem("ChillFrames");
 		System.WindowSystem.AddWindow(System.ConfigWindow);

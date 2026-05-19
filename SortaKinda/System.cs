@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.AddonControllers;
@@ -21,8 +23,22 @@ public class System {
 	internal static InventoryExpansionController InventoryExpansionController = null!;
 	internal static InventoryLargeController InventoryLargeController = null!;
 
-	internal static List<FilteringRuleBase> FilteringRules = [];
-	internal static List<OrderingRuleBase> OrderingRules = [];
+	internal static List<Type> FilteringRuleTypes = [];
+	internal static List<Type> OrderingRuleTypes = [];
+
+	internal static List<FilteringRuleBase> GetFilteringRules()
+		=> FilteringRuleTypes
+		   .Select(type => (FilteringRuleBase?)Activator.CreateInstance(type))
+		   .OfType<FilteringRuleBase>()
+		   .OrderBy(rule => rule.Label)
+		   .ToList();
+
+	internal static List<OrderingRuleBase> GetOrderingRules()
+		=> OrderingRuleTypes
+		   .Select(type => (OrderingRuleBase?)Activator.CreateInstance(type))
+		   .OfType<OrderingRuleBase>()
+		   .OrderBy(rule => rule.Label)
+		   .ToList();
 
 	public static readonly List<InventoryType> AllowedInventories = [
 		InventoryType.Inventory1,

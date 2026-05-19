@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
@@ -23,7 +24,7 @@ public static class RuleSetConfiguration {
 
 	private static void DrawRuleSetListChild() {
 		var childSize = new Vector2(250.0f * ImGuiHelpers.GlobalScale, ImGui.GetContentRegionAvail().Y);
-		using var child = ImRaii.Child("Inventory", childSize);
+		using var child = ImRaii.Child("ListBox", childSize);
 		if (!child) return;
 
 		if (System.SystemConfiguration is not { } config) return;
@@ -32,9 +33,7 @@ public static class RuleSetConfiguration {
 
 		ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 24.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.Y);
 		if (ImGui.Button("Add Rule Set", ImGui.GetContentRegionAvail())) {
-			var newRuleSet = new RuleSet();
-			config.RuleSets.Add(newRuleSet);
-			selectedRuleSet = newRuleSet;
+			config.RuleSets.Add(selectedRuleSet = new RuleSet());
 		}
 	}
 
@@ -87,13 +86,11 @@ public static class RuleSetConfiguration {
 	/// </summary>
 	/// <param name="label"></param>
 	private static void DrawConfigLabel(string label) {
-		var labelSize = ImGui.GetContentRegionMax().X * 3.0f / 10.0f;
-
 		ImGuiHelpers.ScaledDummy(5.0f);
 
 		ImGui.AlignTextToFramePadding();
 		ImGui.Text(label);
-		ImGui.SameLine(labelSize);
+		ImGui.SameLine(ImGui.GetContentRegionMax().X * 3.0f / 10.0f);
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
 	}
 
@@ -132,11 +129,13 @@ public static class RuleSetConfiguration {
 		DrawConfigLabel("Rule Set Name");
 		ImGui.InputText("##Name", ref selectedRuleSet.Name);
 
+		DisplayDebugId();
+
 		if (ImGui.IsItemDeactivatedAfterEdit()) {
 			config.Save();
 		}
 
-		ImGuiHelpers.ScaledDummy(15.0f);
+		ImGuiHelpers.ScaledDummy(10.0f);
 
 		DrawFilterConfigChild();
 		DrawOrderingConfigChild();
@@ -170,6 +169,7 @@ public static class RuleSetConfiguration {
 			}
 			else {
 				System.WindowSystem.AddWindow(new FilterSelectWindow {
+					OptionsList = System.GetFilteringRules(),
 					OnSelectionConfirm = selectedOptions => {
 						selectedOptions.RemoveAll(option
 							=> selectedRuleSet.FilterRules.Any(existingRule
@@ -218,7 +218,7 @@ public static class RuleSetConfiguration {
 		FilteringRuleBase? filterToRemove = null;
 
 		foreach (var (index, filter) in selectedRuleSet.FilterRules.Index()) {
-			using var id = ImRaii.PushId($"{filter.Label}{index}");
+			using var id = ImRaii.PushId($"{selectedRuleSet.RuleSetId.ToString()}{index}");
 
 			ImGui.TableNextRow();
 			ImGui.TableNextColumn();
@@ -233,7 +233,7 @@ public static class RuleSetConfiguration {
 
 			ImGui.TableNextColumn();
 			ImGui.AlignTextToFramePadding();
-			ImGui.Text(filter.Label);
+			ImGui.Text(filter.Label + selectedRuleSet.RuleSetId);
 
 			ImGui.TableNextColumn();
 			using (ImRaii.Disabled(!filter.HasConfiguration)) {
@@ -357,6 +357,7 @@ public static class RuleSetConfiguration {
 			}
 			else {
 				System.WindowSystem.AddWindow(new OrderingSelectWindow {
+					OptionsList = System.GetOrderingRules(),
 					OnSelectionConfirm = options => {
 						options.RemoveAll(option
 							=> selectedRuleSet.OrderingRules.Any(existingRule
@@ -443,5 +444,13 @@ public static class RuleSetConfiguration {
 			selectedRuleSet.OrderingRules.Remove(orderingToRemove);
 			System.SystemConfiguration.Save();
 		}
+	}
+
+	[Conditional("DEBUG")]
+	private static void DisplayDebugId() {
+		if (selectedRuleSet is null) return;
+
+		DrawConfigLabel("Rule Set Id");
+		ImGui.TextColored(KnownColor.Gray.Vector(), selectedRuleSet.RuleSetId.ToString());
 	}
 }

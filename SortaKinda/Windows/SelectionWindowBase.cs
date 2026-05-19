@@ -9,7 +9,7 @@ namespace SortaKinda.Windows;
 
 public abstract class SelectionWindowBase<T> : Window where T : class {
 
-	protected abstract List<T> OptionsList { get; }
+	public required List<T> OptionsList { get; set;  }
 	private readonly List<T> selectedOptions = [];
 
 	public Action<List<T>>? OnSelectionConfirm { get; set; }
