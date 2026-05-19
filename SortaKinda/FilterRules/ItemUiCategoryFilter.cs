@@ -31,7 +31,7 @@ public class ItemUiCategoryFilter : FilteringRuleBase {
 		if (!child) return;
 
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-		if (ImGui.InputTextWithHint("##SearchBar", "Search . . . ", ref searchString)) {
+		if (ImGui.InputTextWithHint("##SearchBar", "Search . . . ", ref searchString, flags: ImGuiInputTextFlags.AutoSelectAll)) {
 			searchRegex = new Regex(searchString, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 		}
 	}
