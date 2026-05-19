@@ -162,7 +162,9 @@ public static class SlotSetConfiguration {
 		if (ImGui.IsItemHovered()) {
 			ImGui.SetTooltip("Choose Inventory Slots on the left to add them to this slot set.\n\n" +
 			                 "Inventory slots can only belong to one set.\n" +
-			                 "If a slot is already assigned to another set, you must first unselect it from that set.");
+			                 "If a slot is already assigned to another set, you must first unselect it from that set.\n\n" +
+			                 "When selecting slots, SortaKinda will remember the order of the slots and fill in that order,\n" +
+			                 "or in reverse order depending on Rule Set configuration");
 		}
 
 		DrawConfigLabel("Priority");
