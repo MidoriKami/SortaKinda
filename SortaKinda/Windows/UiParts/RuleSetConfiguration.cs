@@ -302,7 +302,7 @@ public static class RuleSetConfiguration {
 			var textSize = ImGui.CalcTextSize(warningText);
 			var textSize2 = ImGui.CalcTextSize(warningText2);
 
-			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f);
+			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f - new Vector2(0.0f, textSize2.Y / 2.0f));
 			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
 			ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X / 2.0f - textSize2.X / 2.0f);
 			ImGui.TextColored(KnownColor.Orange.Vector(), warningText2);
