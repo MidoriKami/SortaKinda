@@ -139,15 +139,16 @@ public unsafe class SortingController :  IDisposable {
 					var slots = ruleSet.ReverseFill ? slotSet.SlotIndexes.AsEnumerable().Reverse() : slotSet.SlotIndexes;
 
 					foreach (var slot in slots) {
-						logString.AppendLine($"\t\t\tEvaluating Slot [{slot}]");
-
 						var itemForSlot = inventoryType.GetItem(slot);
+						var adjustedSlotIndex = slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType);
+
+						logString.AppendLine($"\t\t\tEvaluating Slot [{adjustedSlotIndex}]");
 
 						// Check if we have what we want already
 						if (takenItem.Count is not 0) {
 							var firstTakenItem = takenItem.First();
 
-							if (firstTakenItem.VisibleSlotIndex == slot) {
+							if (firstTakenItem.VisibleSlotIndex == adjustedSlotIndex) {
 								logString.AppendLine($"\t\t\t\tSlot already has what we want");
 
 								takenItem.Remove(firstTakenItem);
@@ -167,7 +168,7 @@ public unsafe class SortingController :  IDisposable {
 								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name}");
 
 								SwapInventorySlots(inventoryType, slot, firstTakenItem);
-								logString.AppendLine($"\t\t\t\tSwapping {slot} -> {firstTakenItem.VisibleSlotIndex}");
+								logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstTakenItem.VisibleSlotIndex}");
 								takenItem.Remove(firstTakenItem);
 							}
 							// We don't want this item.
@@ -177,7 +178,7 @@ public unsafe class SortingController :  IDisposable {
 								if (emptyItemSlots.Count is not 0) {
 									var firstEmptySlot = emptyItemSlots.First();
 									SwapInventorySlots(inventoryType, slot, firstEmptySlot);
-									logString.AppendLine($"\t\t\t\tSwapping {slot} -> {firstEmptySlot.VisibleSlotIndex}");
+									logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstEmptySlot.VisibleSlotIndex}");
 									emptyItemSlots.Remove(firstEmptySlot);
 								}
 								else {
@@ -195,7 +196,7 @@ public unsafe class SortingController :  IDisposable {
 								var firstTakenItem = takenItem.First();
 								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name}");
 								SwapInventorySlots(inventoryType, slot, firstTakenItem);
-								logString.AppendLine($"\t\t\t\tSwapping {slot} -> {firstTakenItem.VisibleSlotIndex}");
+								logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstTakenItem.VisibleSlotIndex}");
 								takenItem.Remove(firstTakenItem);
 							}
 						}
