@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
@@ -30,7 +31,7 @@ public abstract class SelectionWindowBase<T> : Window where T : class {
 	}
 
 	private void DrawSelectionChild() {
-		var childSize = new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y - 26.0f - ImGui.GetStyle().ItemSpacing.Y);
+		var childSize = new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y - 26.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.Y);
 		using var child = ImRaii.Child("Selection", childSize);
 		if (!child) return;
 
