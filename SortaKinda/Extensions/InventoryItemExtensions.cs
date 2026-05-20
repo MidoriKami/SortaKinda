@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
@@ -54,10 +53,25 @@ public static unsafe class InventoryItemExtensions {
 		public bool IsUnique
 			=> item.GetItemProperty(itemData => itemData.IsUnique);
 
+		public bool IsGearsetItem
+			=> item.IsInGearset();
+
 		private T GetItemProperty<T>(Func<Item, T> propertyGetter) {
 			if (!ItemUtil.IsNormalItem(item.ItemId)) throw new Exception("Invalid Item Type");
 
 			return propertyGetter(Services.DataManager.GetExcelSheet<Item>().GetRow(item.ItemId));
+		}
+
+		private bool IsInGearset() {
+			foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {
+				if (enabledGearsetIndex is 0) continue;
+
+				foreach (ref var itemInGearset in RaptureGearsetModule.Instance()->Entries[enabledGearsetIndex].Items) {
+					if (itemInGearset.ItemId == item.GetItemId()) return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
