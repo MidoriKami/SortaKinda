@@ -54,7 +54,7 @@ public class NameFilter : FilteringRuleBase {
 
 		ImGui.SameLine();
 		using (ImRaii.Disabled(!addButtonEnabled)) {
-			if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus, ImGui.GetContentRegionAvail())) {
+			if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus, ImGui.GetContentRegionAvail() / ImGuiHelpers.GlobalScale)) {
 				Names.Add(newRegexString);
 				newRegexString = string.Empty;
 				System.SystemConfiguration.Save();
