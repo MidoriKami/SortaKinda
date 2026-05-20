@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dalamud.Game.Inventory;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using SortaKinda.Configuration;
 
 namespace SortaKinda.Classes;
@@ -208,6 +209,12 @@ public unsafe class SortingController :  IDisposable {
 				if (System.SystemConfiguration.EnableSortLogging) {
 					Services.PluginLog.Information(logString.ToString());
 				}
+			});
+
+			// Trigger AgentInventory Update to update various UI's.
+			// Non-networked.
+			Services.Framework.RunOnFrameworkThread(() => {
+				RaptureAtkModule.Instance()->AgentUpdateFlag |= RaptureAtkModule.AgentUpdateFlags.InventoryUpdate;
 			});
 		}
 		catch (Exception e) {
