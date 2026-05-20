@@ -124,7 +124,23 @@ public static class SlotSetConfiguration {
 
 		ImGui.TableNextColumn();
 		if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus)) {
-			AddNewSlotSet();
+			ImGui.OpenPopup("RuleSetSelect");
+		}
+
+		DrawRuleSetSelectPopup();
+	}
+
+	private static void DrawRuleSetSelectPopup() {
+		using var popup = ImRaii.Popup("RuleSetSelect");
+		if (!popup) return;
+
+		foreach (var (index, ruleSet) in System.SystemConfiguration.RuleSets.Index()) {
+			using var id = ImRaii.PushId(index);
+
+			if (ImWidget.DrawColoredSelectable(ruleSet.Color, ruleSet.Name)) {
+				AddNewSlotSet(ruleSet);
+				ImGui.CloseCurrentPopup();
+			}
 		}
 	}
 
@@ -148,12 +164,6 @@ public static class SlotSetConfiguration {
 			return;
 		}
 
-		DrawConfigLabel("Slot Set Name");
-		ImGui.InputText("##Set Name", ref EditingSlotSet.Name);
-		if (ImGui.IsItemDeactivatedAfterEdit()) {
-			config.Save();
-		}
-
 		DrawConfigLabel("Edit Mode");
 		if (ImGui.Button($"{(EditModeEnabled ? "Enabled" : "Disabled")}##EditMode", new Vector2(ImGui.GetContentRegionAvail().X, 24.0f * ImGuiHelpers.GlobalScale))) {
 			EditModeEnabled = !EditModeEnabled;
@@ -174,12 +184,6 @@ public static class SlotSetConfiguration {
 			ImGui.SetTooltip("Slot Sets with higher number will be the ones that get the item after a sort.");
 		}
 
-		if (ImGui.IsItemDeactivatedAfterEdit()) {
-			config.Save();
-		}
-
-		DrawConfigLabel("Color");
-		ImGui.ColorEdit4("##Color", ref EditingSlotSet.SetColor);
 		if (ImGui.IsItemDeactivatedAfterEdit()) {
 			config.Save();
 		}
@@ -208,9 +212,8 @@ public static class SlotSetConfiguration {
 		if (System.CharacterConfiguration is not { } config) return;
 		if (EditingSlotSet is null) return;
 
-		var ruleSet = System.SystemConfiguration.RuleSets.FirstOrDefault(ruleset => ruleset.RuleSetId == EditingSlotSet.RuleSetId);
 
-		using var combo = ImRaii.Combo("##RuleSetSelect", ruleSet?.Name ?? "Select a Rule Set");
+		using var combo = ImRaii.Combo("##RuleSetSelect", EditingSlotSet.RuleSet.Name);
 		if (!combo) return;
 
 		var ruleSets = System.SystemConfiguration.RuleSets;
@@ -220,9 +223,11 @@ public static class SlotSetConfiguration {
 			return;
 		}
 
-		foreach (var ruleset in ruleSets) {
-			if (ImGui.Selectable(ruleset.Name, ruleset.RuleSetId == EditingSlotSet.RuleSetId)) {
-				EditingSlotSet.RuleSetId = ruleset.RuleSetId;
+		foreach (var (index, ruleSet) in ruleSets.Index()) {
+			using var id = ImRaii.PushId(index);
+
+			if (ImWidget.DrawColoredSelectable(ruleSet.Color, ruleSet.Name, ruleSet == EditingSlotSet.RuleSet)) {
+				EditingSlotSet.RuleSet = ruleSet;
 				config.Save();
 			}
 		}
@@ -252,51 +257,34 @@ public static class SlotSetConfiguration {
 		var inventoryConfig = config.Inventories[ConfigWindow.SelectedInventory];
 		var slotSets = inventoryConfig.SlotSets;
 
-		using var combo = ImRaii.Combo("##SlotSetsCombo", EditingSlotSet?.Name ?? "Select a Slot Set to Edit", ImGuiComboFlags.HeightLarge);
+		using var combo = ImRaii.Combo("##SlotSetsCombo", EditingSlotSet?.RuleSet.Name ?? "Select a Slot Set to Edit", ImGuiComboFlags.HeightLarge);
 		if (!combo) return;
 
 		if (slotSets.Count is 0) {
-			if (ImGui.Selectable("Add New SlotSet")) {
-				AddNewSlotSet();
-			}
+			ImGui.Text("No Slot Sets Available");
 			return;
 		}
 
 		foreach (var (index, slotSet) in slotSets.Index()) {
 			using var id = ImRaii.PushId(index);
 
-			var cursorPosition = ImGui.GetCursorPos();
-			if (ImGui.Selectable("##Name", EditingSlotSet == slotSet)) {
+			if (ImWidget.DrawColoredSelectable(slotSet.RuleSet.Color, slotSet.RuleSet.Name, EditingSlotSet == slotSet)) {
 				EditingSlotSet = slotSet;
 				EditModeEnabled = false;
 			}
-
-			ImGui.SameLine();
-			ImGui.SetCursorPos(cursorPosition + new Vector2(5.0f * ImGuiHelpers.GlobalScale, 0.0f));
-
-			using (ImRaii.PushColor(ImGuiCol.Text, slotSet.SetColor))
-			using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
-				ImGui.Text(FontAwesomeIcon.Square.ToIconString());
-			}
-
-			ImGui.SameLine();
-			ImGui.Text(slotSet.Name);
 		}
 	}
 
 	/// <summary>
 	/// Adds a new slot set, clears editing set, and saves new set.
 	/// </summary>
-	private static void AddNewSlotSet() {
+	private static void AddNewSlotSet(RuleSet selectedRuleSet) {
 		if (System.CharacterConfiguration is not { } config) return;
 		var inventoryConfig = config.Inventories[ConfigWindow.SelectedInventory];
 
-		var adjustedHue = 0.07f * inventoryConfig.SlotSets.Count;
-		var hsvaColor = new ColorHelpers.HsvaColor(adjustedHue, 1.0f, 1.0f, 1.0f);
-
 		var newSlotSet = new SlotSet {
 			InventoryType = ConfigWindow.SelectedInventory,
-			SetColor = ColorHelpers.HsvToRgb(hsvaColor),
+			RuleSet = selectedRuleSet,
 		};
 
 		inventoryConfig.SlotSets.Add(newSlotSet);

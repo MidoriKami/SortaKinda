@@ -109,13 +109,11 @@ public unsafe class SortingController :  IDisposable {
 					.OrderByDescending(slotSet => slotSet.Priority);
 
 				foreach (var slotSet in slotSets) {
-					if (slotSet.GetRuleSet() is not { } ruleSet) continue;
-
+					var ruleSet = slotSet.RuleSet;
 					var inventoryType = slotSet.InventoryType;
 
 					logString.AppendLine($"\tInventory Config: {inventoryType}");
-					logString.AppendLine($"\t\tSlot Set: {slotSet.Name}");
-					logString.AppendLine($"\t\tRule Set: {ruleSet.Name}");
+					logString.AppendLine($"\t\tSlot Set: {slotSet.RuleSet.Name}");
 
 					var takenItem = GetInventoryWants(validItemSlots, ruleSet, logString, slotSet);
 
@@ -182,7 +180,7 @@ public unsafe class SortingController :  IDisposable {
 									emptyItemSlots.Remove(firstEmptySlot);
 								}
 								else {
-									Services.PluginLog.Warning($"{adjustedInventoryType} is full, unable to move items out of Slot Set {slotSet.Name}");
+									Services.PluginLog.Warning($"{adjustedInventoryType} is full, unable to move items out of Slot Set {slotSet.RuleSet.Name}");
 								}
 							}
 						}

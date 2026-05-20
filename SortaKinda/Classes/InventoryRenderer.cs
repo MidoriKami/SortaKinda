@@ -103,21 +103,18 @@ public static unsafe class InventoryRenderer {
 		using var tooltipDisposable = ImRaii.Tooltip();
 		using var itemSpacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(2.0f, 1.0f));
 
-		using (ImRaii.PushColor(ImGuiCol.Text, slotSet.SetColor))
+		using (ImRaii.PushColor(ImGuiCol.Text, slotSet.RuleSet.Color))
 		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.Square.ToIconString());
 		}
 
 		ImGui.SameLine();
-		ImGui.Text(slotSet.Name);
+		ImGui.Text(slotSet.RuleSet.Name);
 
-		var ruleSet = System.SystemConfiguration.RuleSets.FirstOrDefault(ruleset => ruleset.RuleSetId == slotSet.RuleSetId);
-		if (ruleSet is null) return;
-
-		if (ruleSet.FilterRules.Count is not 0) {
+		if (slotSet.RuleSet.FilterRules.Count is not 0) {
 			ImGui.Text("\nFilters:");
 
-			foreach (var filterRule in ruleSet.FilterRules) {
+			foreach (var filterRule in slotSet.RuleSet.FilterRules) {
 				if (filterRule.IsAllowed) {
 					ImGui.TextColored(KnownColor.Green.Vector(), "\tAllow");
 				}
@@ -131,10 +128,10 @@ public static unsafe class InventoryRenderer {
 			}
 		}
 
-		if (ruleSet.OrderingRules.Count is not 0) {
+		if (slotSet.RuleSet.OrderingRules.Count is not 0) {
 			ImGui.Text("\nOrdering:");
 
-			foreach (var orderingRule in ruleSet.OrderingRules) {
+			foreach (var orderingRule in slotSet.RuleSet.OrderingRules) {
 				ImGui.Text($"\t{orderingRule.Label}");
 			}
 		}
@@ -158,7 +155,7 @@ public static unsafe class InventoryRenderer {
 
 			// If we have a set selected, and any slot is hovered, use the editing sets color.
 			if (SlotSetConfiguration.EditingSlotSet is { } editingSet) {
-				outlineColor = editingSet.SetColor;
+				outlineColor = editingSet.RuleSet.Color;
 			}
 
 			// Else we hovered a slot, with no editing set selected
@@ -171,7 +168,7 @@ public static unsafe class InventoryRenderer {
 			// If we aren't editing a slot set, show the full set color
 			if (SlotSetConfiguration.EditingSlotSet is not {} editingSet) {
 				if (slotSet is not null) {
-					outlineColor = slotSet.SetColor;
+					outlineColor = slotSet.RuleSet.Color;
 				}
 			}
 
@@ -180,12 +177,12 @@ public static unsafe class InventoryRenderer {
 
 				// This set isn't the one we are editing
 				if (slotSet is not null && slotSet != editingSet) {
-					outlineColor = slotSet.SetColor.Fade(0.66f);
+					outlineColor = slotSet.RuleSet.Color.Fade(0.66f);
 				}
 
 				// This is the set we are editing
 				else if (slotSet is not null && slotSet == editingSet) {
-					outlineColor = slotSet.SetColor.Fade(0.20f);
+					outlineColor = slotSet.RuleSet.Color.Fade(0.20f);
 				}
 			}
 		}

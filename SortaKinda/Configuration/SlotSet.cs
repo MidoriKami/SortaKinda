@@ -12,11 +12,6 @@ namespace SortaKinda.Configuration;
 public class SlotSet {
 	public InventoryType InventoryType;
 	public List<int> SlotIndexes = [];
-	public Guid? RuleSetId;
-	public Vector4 SetColor = Vector4.One;
+	public required RuleSet RuleSet;
 	public int Priority = 0;
-	public string Name = "Name Not Set";
-
-	public RuleSet? GetRuleSet()
-		=> System.SystemConfiguration.RuleSets.FirstOrDefault(set => set.RuleSetId == RuleSetId);
 }

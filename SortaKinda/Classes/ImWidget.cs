@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -10,6 +12,26 @@ namespace SortaKinda.Classes;
 /// Custom widgets and helpers for drawing more advanced ui elements.
 /// </summary>
 public static class ImWidget {
+	public static bool DrawColoredSelectable(Vector4 color, string text, bool isSelected = false) {
+		var cursorPosition = ImGui.GetCursorPos();
+		if (ImGui.Selectable($"##{text}", isSelected)) {
+			return true;
+		}
+
+		ImGui.SameLine();
+		ImGui.SetCursorPos(cursorPosition + new Vector2(5.0f * ImGuiHelpers.GlobalScale, 0.0f));
+
+		using (ImRaii.PushColor(ImGuiCol.Text, color))
+		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+			ImGui.Text(FontAwesomeIcon.Square.ToIconString());
+		}
+
+		ImGui.SameLine();
+		ImGui.Text(text);
+
+		return false;
+	}
+
 	public static void DrawSelector(List<InventoryType> values, ref InventoryType currentValue, float width) {
 		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			if (ImGui.Button(FontAwesomeIcon.CaretLeft.ToIconString())) {

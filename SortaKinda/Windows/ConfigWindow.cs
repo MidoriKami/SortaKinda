@@ -12,8 +12,8 @@ public class ConfigWindow : Window {
 
 	public ConfigWindow() : base("SortaKinda Configuration") {
 		SizeConstraints = new WindowSizeConstraints {
-			MinimumSize = new Vector2(725.0f, 625.0f),
-			MaximumSize = new Vector2(float.MaxValue, 625.0f),
+			MinimumSize = new Vector2(725.0f, 650.0f),
+			MaximumSize = new Vector2(float.MaxValue, 650.0f),
 		};
 
 		SelectedInventory = System.SystemConfiguration.LastSelectedInventory;

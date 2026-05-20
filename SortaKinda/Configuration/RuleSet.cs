@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.Interop;
 using SortaKinda.Classes;
@@ -19,6 +20,7 @@ public unsafe class RuleSet {
 	public List<FilteringRuleBase> FilterRules = [];
 	public List<OrderingRuleBase> OrderingRules = [];
 	public bool RequireAll = true;
+	public Vector4 Color = Vector4.One;
 
 	public bool IsItemAllowed(InventoryItem* item) {
 		if (RequireAll) {

@@ -6,6 +6,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
 using SortaKinda.OrderRules;
@@ -32,7 +33,12 @@ public static class RuleSetConfiguration {
 
 		ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 24.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.Y);
 		if (ImGui.Button("Add Rule Set", ImGui.GetContentRegionAvail())) {
-			config.RuleSets.Add(selectedRuleSet = new RuleSet());
+			var adjustedHue = 0.07f * config.RuleSets.Count;
+			var hsvaColor = new ColorHelpers.HsvaColor(adjustedHue, 1.0f, 1.0f, 1.0f);
+
+			config.RuleSets.Add(selectedRuleSet = new RuleSet {
+				Color = ColorHelpers.HsvToRgb(hsvaColor),
+			});
 		}
 	}
 
@@ -69,7 +75,9 @@ public static class RuleSetConfiguration {
 		if (!list) return;
 
 		foreach (var (index, entry) in config.RuleSets.Index()) {
-			if (ImGui.Selectable($"{entry.Name}##{index}", entry == selectedRuleSet)) {
+			using var id = ImRaii.PushId(index);
+
+			if (ImWidget.DrawColoredSelectable(entry.Color, entry.Name, entry == selectedRuleSet)) {
 				if (entry == selectedRuleSet) {
 					selectedRuleSet = null;
 				}
@@ -127,6 +135,13 @@ public static class RuleSetConfiguration {
 
 		DrawConfigLabel("Rule Set Name");
 		ImGui.InputText("##Name", ref selectedRuleSet.Name);
+
+		DrawConfigLabel("Color");
+		ImGui.ColorEdit4("#Color",  ref selectedRuleSet.Color);
+
+		if (ImGui.IsItemDeactivatedAfterEdit()) {
+			config.Save();
+		}
 
 		DrawConfigLabel("Filter Mode");
 		var cursorPositon = ImGui.GetCursorPos();
