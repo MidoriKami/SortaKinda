@@ -2,16 +2,16 @@
 
 namespace SortaKinda.OrderRules;
 
-public class ItemIdOrdering : OrderingRuleBase {
+public class GearsetOrdering : OrderingRuleBase {
 	public override string Label
-		=> "Item Id";
+		=> "Gearset";
 
 	protected override string NotReversedLabel
-		=> "High";
+		=> "Gearset";
 
 	protected override string ReversedLabel
-		=> "Low";
+		=> "Not";
 
 	public override unsafe int Compare(InventoryItem* left, InventoryItem* right)
-		=> left->ItemId.CompareTo(right->ItemId);
+		=> left->IsGearsetItem.CompareTo(right->IsGearsetItem);
 }

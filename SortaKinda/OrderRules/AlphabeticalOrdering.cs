@@ -7,8 +7,11 @@ public class AlphabeticalOrdering : OrderingRuleBase {
 	public override string Label
 		=> "Alphabetical";
 
-	public override string ButtonLabel
-		=> IsReversed ? "Z → A" : "A → Z";
+ 	protected override string NotReversedLabel
+		=> "A";
+
+	protected override string ReversedLabel
+		=> "Z";
 
 	public override unsafe int Compare(InventoryItem* left, InventoryItem* right)
 		=> string.Compare(left->Name, right->Name, StringComparison.OrdinalIgnoreCase);
