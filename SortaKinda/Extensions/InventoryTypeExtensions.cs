@@ -16,11 +16,14 @@ public static unsafe class InventoryTypeExtensions {
 		/// <returns>The inventory item in that slot, will always be non-null, but will have invalid ItemId if empty.</returns>
 		public InventoryItem* GetItem(int slot) {
 			var itemOrderData = inventory.GetItemOrderData(slot);
+			if (itemOrderData is null) return null;
 
 			var actualInventoryType = inventory.AdjustedInventoryType + itemOrderData->Page;
 			var actualInventorySlot = itemOrderData->Slot;
 
 			var inventoryContainer = InventoryManager.Instance()->GetInventoryContainer(actualInventoryType);
+			if (inventoryContainer is null) return null;
+
 			return inventoryContainer->GetInventorySlot(actualInventorySlot);
 		}
 
