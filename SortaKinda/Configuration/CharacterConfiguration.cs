@@ -14,6 +14,10 @@ public class CharacterConfiguration {
 		=> Config.LoadCharacterConfig<CharacterConfiguration>("Character.config.json");
 
 	public void Save() {
+		if (System.SystemConfiguration.SortOnConfigChange) {
+			System.SortingController.LaunchSortTask();
+		}
+
 		Services.PluginLog.Debug("Saving Character.config.json");
 		Config.SaveCharacterConfig(this, "Character.config.json");
 	}

@@ -20,6 +20,7 @@ public class SystemConfiguration {
 	public bool SortOnJobChange = true;
 	public bool SortOnLogin = true;
 	public bool ReplaceSortContextMenu = true;
+	public bool SortOnConfigChange = true;
 
 	public bool EnableSortLogging = false;
 
@@ -30,6 +31,10 @@ public class SystemConfiguration {
 		=> Config.LoadConfig<SystemConfiguration>("System.config.json");
 
 	public void Save() {
+		if (SortOnConfigChange) {
+			System.SortingController.LaunchSortTask();
+		}
+
 		Services.PluginLog.Debug("Saving System.config.json");
 		Config.SaveConfig(this, "System.config.json");
 	}
