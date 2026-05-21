@@ -94,19 +94,7 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 	private void OnLogin() {
 		System.CharacterConfiguration = CharacterConfiguration.Load();
 
-		// Purge any configurations that are invalid, or can't link to a ruleset.
-		var anyPurged = false;
-		foreach (var (_, inventoryConfig) in System.CharacterConfiguration.Inventories) {
-			var numRemoved = inventoryConfig.SlotSets
-				.RemoveAll(set => set.RuleSetId == Guid.Empty || System.SystemConfiguration.RuleSets
-				    .All(systemSet => systemSet.RuleSetId != set.RuleSetId));
-
-			if (numRemoved > 0) {
-				anyPurged = true;
-			}
-		}
-
-		if (anyPurged) {
+		if (System.CharacterConfiguration.PurgeInvalidSlotSets()) {
 			System.CharacterConfiguration.Save();
 		}
 

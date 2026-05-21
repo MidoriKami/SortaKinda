@@ -59,6 +59,14 @@ public static class RuleSetConfiguration {
 			if (ImGui.Button("Delete", ImGui.GetContentRegionAvail())) {
 				config.RuleSets.Remove(selectedRuleSet);
 				selectedRuleSet = null;
+
+				SlotSetConfiguration.EditingSlotSet = null;
+				SlotSetConfiguration.EditModeEnabled = false;
+
+				if (System.CharacterConfiguration?.PurgeInvalidSlotSets() ?? false) {
+					System.CharacterConfiguration.Save();
+				}
+
 				config.Save();
 			}
 		}
@@ -135,7 +143,7 @@ public static class RuleSetConfiguration {
 		}
 
 		DrawConfigLabel("Rule Set Name");
-		ImGui.InputText("##Name", ref selectedRuleSet.Name);
+		ImGui.InputText("##Name", ref selectedRuleSet.Name, flags: ImGuiInputTextFlags.AutoSelectAll);
 
 		DrawConfigLabel("Color");
 		ImGui.ColorEdit4("#Color",  ref selectedRuleSet.Color);

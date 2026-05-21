@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Utilities;
 
@@ -20,5 +22,20 @@ public class CharacterConfiguration {
 
 		Services.PluginLog.Debug("Saving Character.config.json");
 		Config.SaveCharacterConfig(this, "Character.config.json");
+	}
+
+	public bool PurgeInvalidSlotSets() {
+		var anyPurged = false;
+		foreach (var (_, inventoryConfig) in Inventories) {
+			var numRemoved = inventoryConfig.SlotSets
+			    .RemoveAll(set => set.RuleSetId == Guid.Empty || System.SystemConfiguration.RuleSets
+			        .All(systemSet => systemSet.RuleSetId != set.RuleSetId));
+
+			if (numRemoved > 0) {
+				anyPurged = true;
+			}
+		}
+
+		return anyPurged;
 	}
 }

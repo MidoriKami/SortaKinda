@@ -257,7 +257,7 @@ public static class SlotSetConfiguration {
 		var inventoryConfig = config.Inventories[ConfigWindow.SelectedInventory];
 		var slotSets = inventoryConfig.SlotSets;
 
-		using var combo = ImRaii.Combo("##SlotSetsCombo", EditingSlotSet?.RuleSet?.Name ?? "Select a Slot Set to Edit", ImGuiComboFlags.HeightLarge);
+		using var combo = ImRaii.Combo("##SlotSetsCombo", EditingSlotSet?.RuleSet.Name ?? "Select a Slot Set to Edit", ImGuiComboFlags.HeightLarge);
 		if (!combo) return;
 
 		if (slotSets.Count is 0) {
