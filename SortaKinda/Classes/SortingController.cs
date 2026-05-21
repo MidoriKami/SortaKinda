@@ -261,6 +261,7 @@ public unsafe class SortingController :  IDisposable {
 
 		foreach (var (index, _) in inventorySorter->Items.Index()) {
 			var item = inventorySorter->GetInventoryItem(index);
+			if (item is null) continue;
 
 			if (item->ItemId is 0) {
 
