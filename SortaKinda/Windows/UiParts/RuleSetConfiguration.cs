@@ -39,6 +39,7 @@ public static class RuleSetConfiguration {
 			config.RuleSets.Add(selectedRuleSet = new RuleSet {
 				Color = ColorHelpers.HsvToRgb(hsvaColor),
 			});
+			config.Save();
 		}
 	}
 

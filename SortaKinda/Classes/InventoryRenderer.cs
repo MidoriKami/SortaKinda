@@ -69,6 +69,7 @@ public static unsafe class InventoryRenderer {
 
 		var slotSet = GetSettingsForSlot(inventory, slot);
 		var outlineColor = GetOutlineColor(options.OutlineColor, slotSet);
+		var slotIndex = slotSet?.SlotIndexes.IndexOf(slot);
 
 		DrawTooltip(slotSet);
 
@@ -79,6 +80,16 @@ public static unsafe class InventoryRenderer {
 			iconSize.X / 8.0f,
 			options.BorderThickness
 		);
+
+		if (slotIndex is { } index) {
+			var textString = $"{index + 1}";
+			var textSize = ImGui.CalcTextSize(textString);
+
+			ImGui.SameLine();
+			ImGui.SetCursorPos(startPosition + new Vector2(regionAvail - textSize.X, borderPadding));
+
+			ImWidget.TextOutlined(KnownColor.Black.Vector(), KnownColor.White.Vector(), textString);
+		}
 
 		if (ImGui.IsItemClicked() && SlotSetConfiguration.EditingSlotSet is { } editingSlotSet && SlotSetConfiguration.EditModeEnabled) {
 			if (editingSlotSet == slotSet && editingSlotSet.SlotIndexes.Remove(slot)) {

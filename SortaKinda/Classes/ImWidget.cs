@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -12,6 +13,21 @@ namespace SortaKinda.Classes;
 /// Custom widgets and helpers for drawing more advanced ui elements.
 /// </summary>
 public static class ImWidget {
+	public static void TextOutlined(Vector4 outlineColor, Vector4 textColor, string text) {
+		var startPos = ImGui.GetCursorPos();
+
+		foreach(var x in Enumerable.Range(-1, 3))
+		foreach (var y in Enumerable.Range(-1, 3)) {
+			if (x is 0 && y is 0) continue;
+
+			ImGui.SetCursorPos(startPos + new Vector2(x, y));
+			ImGui.TextColored(outlineColor, text);
+		}
+
+		ImGui.SetCursorPos(startPos);
+		ImGui.TextColored(textColor, text);
+	}
+
 	public static bool DrawColoredSelectable(Vector4 color, string text, bool isSelected = false) {
 		var cursorPosition = ImGui.GetCursorPos();
 		if (ImGui.Selectable($"##{text}", isSelected)) {
