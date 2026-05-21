@@ -57,10 +57,7 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 			HelpMessage = "Open SortaKinda Config",
 		});
 
-		System.ArmouryBoardController = new ArmouryBoardController();
-		System.InventoryController = new InventoryController();
-		System.InventoryExpansionController = new InventoryExpansionController();
-		System.InventoryLargeController = new InventoryLargeController();
+		System.SortingButtonController = new SortingButtonController();
 
 		Services.PluginInterface.UiBuilder.Draw += System.WindowSystem.Draw;
 		Services.PluginInterface.UiBuilder.OpenConfigUi += System.ConfigWindow.Toggle;
@@ -86,10 +83,7 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 			Services.PluginInterface.UiBuilder.OpenConfigUi -= System.ConfigWindow.Toggle;
 			Services.PluginInterface.UiBuilder.OpenMainUi -= System.ConfigWindow.Toggle;
 
-			System.ArmouryBoardController.Dispose();
-			System.InventoryController.Dispose();
-			System.InventoryExpansionController.Dispose();
-			System.InventoryLargeController.Dispose();
+			System.SortingButtonController.Dispose();
 
 			Services.CommandManager.RemoveHandler("/sortakinda");
 			Services.CommandManager.RemoveHandler("/sorta");

@@ -18,10 +18,7 @@ public class System {
 	internal static WindowSystem WindowSystem = null!;
 	internal static ConfigWindow ConfigWindow = null!;
 	internal static SortingController SortingController = null!;
-	internal static ArmouryBoardController ArmouryBoardController = null!;
-	internal static InventoryController InventoryController = null!;
-	internal static InventoryExpansionController InventoryExpansionController = null!;
-	internal static InventoryLargeController InventoryLargeController = null!;
+	internal static SortingButtonController SortingButtonController = null!;
 
 	internal static List<Type> FilteringRuleTypes = [];
 	internal static List<Type> OrderingRuleTypes = [];
