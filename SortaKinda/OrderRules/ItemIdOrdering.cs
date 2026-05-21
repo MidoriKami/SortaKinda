@@ -7,10 +7,10 @@ public class ItemIdOrdering : OrderingRuleBase {
 		=> "Item Id";
 
 	protected override string NotReversedLabel
-		=> "Low";
+		=> "High";
 
 	protected override string ReversedLabel
-		=> "High";
+		=> "Low";
 
 	public override unsafe int Compare(InventoryItem* left, InventoryItem* right)
 		=> right->ItemId.CompareTo(left->ItemId);
