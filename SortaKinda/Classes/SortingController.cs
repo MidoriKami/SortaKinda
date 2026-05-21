@@ -109,7 +109,7 @@ public unsafe class SortingController :  IDisposable {
 		}
 	}
 
-	private void PerformSort() {
+	private static void PerformSort() {
 		var stopwatch = Stopwatch.StartNew();
 
 		try {
@@ -196,7 +196,7 @@ public unsafe class SortingController :  IDisposable {
 							if (takenItems.Count is not 0) {
 								var firstTakenItem = takenItems.First();
 
-								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name}");
+								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name} from slot [{firstTakenItem.VisibleSlotIndex}]");
 
 								SwapInventorySlots(inventoryType, slot, firstTakenItem);
 

@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
-using KamiToolKit;
-using SortaKinda.AddonControllers;
 using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
@@ -23,8 +21,6 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 	}
 
 	public Task LoadAsync(CancellationToken cancellationToken) {
-		KamiToolKitLibrary.Initialize(Services.PluginInterface, "SortaKinda");
-
 		System.SystemConfiguration = SystemConfiguration.Load();
 		System.SortingController = new SortingController();
 
@@ -57,8 +53,6 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 			HelpMessage = "Open SortaKinda Config",
 		});
 
-		System.SortingButtonController = new SortingButtonController();
-
 		Services.PluginInterface.UiBuilder.Draw += System.WindowSystem.Draw;
 		Services.PluginInterface.UiBuilder.OpenConfigUi += System.ConfigWindow.Toggle;
 		Services.PluginInterface.UiBuilder.OpenMainUi += System.ConfigWindow.Toggle;
@@ -74,7 +68,7 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 		return Task.CompletedTask;
 	}
 
-	public async ValueTask DisposeAsync() {
+	public ValueTask DisposeAsync() {
 		try {
 			Services.ClientState.Login -= OnLogin;
 			Services.ClientState.Logout -= OnLogout;
@@ -83,8 +77,6 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 			Services.PluginInterface.UiBuilder.OpenConfigUi -= System.ConfigWindow.Toggle;
 			Services.PluginInterface.UiBuilder.OpenMainUi -= System.ConfigWindow.Toggle;
 
-			System.SortingButtonController.Dispose();
-
 			Services.CommandManager.RemoveHandler("/sortakinda");
 			Services.CommandManager.RemoveHandler("/sorta");
 
@@ -92,10 +84,10 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 
             System.SortingController.Dispose();
 
-            await Services.Framework.RunOnFrameworkThread(KamiToolKitLibrary.Dispose);
+			return ValueTask.CompletedTask;
 		}
 		catch (Exception exception) {
-			Services.PluginLog.Error(exception, "Exception during Async Dispose of SortaKinda.");
+			return ValueTask.FromException(exception);
 		}
 	}
 

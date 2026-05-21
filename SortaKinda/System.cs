@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using SortaKinda.AddonControllers;
 using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
@@ -18,7 +17,6 @@ public class System {
 	internal static WindowSystem WindowSystem = null!;
 	internal static ConfigWindow ConfigWindow = null!;
 	internal static SortingController SortingController = null!;
-	internal static SortingButtonController SortingButtonController = null!;
 
 	internal static List<Type> FilteringRuleTypes = [];
 	internal static List<Type> OrderingRuleTypes = [];
