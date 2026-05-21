@@ -22,6 +22,8 @@ public unsafe class RuleSet {
 	public bool RequireAll = true;
 	public Vector4 Color = Vector4.One;
 
+	public bool IsValid => FilterRules.Count is not 0;
+
 	public bool IsItemAllowed(InventoryItem* item) {
 		if (RequireAll) {
 			return FilterRules.All(filter => filter.IsItemAllowed(item));

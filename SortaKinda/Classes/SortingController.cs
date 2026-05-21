@@ -143,6 +143,10 @@ public unsafe class SortingController :  IDisposable {
 
 				foreach (var slotSet in slotSets) {
 					var ruleSet = slotSet.RuleSet;
+
+					// Skip this slot set, if no filters are defined.
+					if (!ruleSet.IsValid) continue;
+
 					var inventoryType = slotSet.InventoryType;
 
 					logString.AppendLine($"\tInventory Config: {inventoryType}");
@@ -299,14 +303,15 @@ public unsafe class SortingController :  IDisposable {
 			.GroupBy(pair => pair.Key.AdjustedInventoryType)
 			.ToDictionary(
 				pair => pair.Key.AdjustedInventoryType,
-				pair => pair.SelectMany(entry => entry.Value.SlotSets.SelectMany(set => set.SlotIndexes)));
+				pair => pair
+					.SelectMany(entry => entry.Value.SlotSets
+					    .SelectMany(set => set.SlotIndexes)));
 
 		foreach (var (index, _) in inventorySorter->Items.Index()) {
 			var item = inventorySorter->GetInventoryItem(index);
 			if (item is null) continue;
 
 			if (item->ItemId is 0) {
-
 				var isSlotInUse = ruleSetSlots.TryGetValue(adjustedInventoryType, out var slotSetIndexes) && slotSetIndexes.Contains(index);
 
 				// Only allow moving items into slots that are not in use.
