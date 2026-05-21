@@ -13,5 +13,5 @@ public class GearsetOrdering : OrderingRuleBase {
 		=> "Not";
 
 	public override unsafe int Compare(InventoryItem* left, InventoryItem* right)
-		=> left->IsGearsetItem.CompareTo(right->IsGearsetItem);
+		=> right->IsGearsetItem.CompareTo(left->IsGearsetItem);
 }
