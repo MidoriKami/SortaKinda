@@ -13,5 +13,5 @@ public class ItemLevelOrdering : OrderingRuleBase {
 		=> "Low";
 
 	public override unsafe int Compare(InventoryItem* left, InventoryItem* right)
-		=> left->ItemLevel.CompareTo(right->ItemLevel);
+		=> right->ItemLevel.CompareTo(left->ItemLevel);
 }

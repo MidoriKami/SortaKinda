@@ -279,7 +279,7 @@ public unsafe class SortingController :  IDisposable {
 	}
 
 	/// <summary>
-	/// Gets a list of items that this slotset and ruleset wants.
+	/// Gets a list of items that this slot set and ruleset wants.
 	/// </summary>
 	/// <param name="validItemSlots">Items to take from, this is mutated.</param>
 	/// <param name="ruleSet"></param>

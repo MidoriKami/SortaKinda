@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace SortaKinda.Configuration;
@@ -12,6 +11,11 @@ namespace SortaKinda.Configuration;
 public class SlotSet {
 	public InventoryType InventoryType;
 	public List<int> SlotIndexes = [];
-	public required RuleSet RuleSet;
+	public Guid RuleSetId;
 	public int Priority = 0;
+
+	public RuleSet RuleSet
+		=> System.SystemConfiguration.RuleSets
+			.FirstOrDefault(set => set.RuleSetId == RuleSetId)
+				?? throw new Exception($"Rule set {RuleSetId} not found");
 }

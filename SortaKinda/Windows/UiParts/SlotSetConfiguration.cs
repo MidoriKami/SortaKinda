@@ -227,7 +227,7 @@ public static class SlotSetConfiguration {
 			using var id = ImRaii.PushId(index);
 
 			if (ImWidget.DrawColoredSelectable(ruleSet.Color, ruleSet.Name, ruleSet == EditingSlotSet.RuleSet)) {
-				EditingSlotSet.RuleSet = ruleSet;
+				EditingSlotSet.RuleSetId = ruleSet.RuleSetId;
 				config.Save();
 			}
 		}
@@ -257,7 +257,7 @@ public static class SlotSetConfiguration {
 		var inventoryConfig = config.Inventories[ConfigWindow.SelectedInventory];
 		var slotSets = inventoryConfig.SlotSets;
 
-		using var combo = ImRaii.Combo("##SlotSetsCombo", EditingSlotSet?.RuleSet.Name ?? "Select a Slot Set to Edit", ImGuiComboFlags.HeightLarge);
+		using var combo = ImRaii.Combo("##SlotSetsCombo", EditingSlotSet?.RuleSet?.Name ?? "Select a Slot Set to Edit", ImGuiComboFlags.HeightLarge);
 		if (!combo) return;
 
 		if (slotSets.Count is 0) {
@@ -284,7 +284,7 @@ public static class SlotSetConfiguration {
 
 		var newSlotSet = new SlotSet {
 			InventoryType = ConfigWindow.SelectedInventory,
-			RuleSet = selectedRuleSet,
+			RuleSetId = selectedRuleSet.RuleSetId,
 		};
 
 		inventoryConfig.SlotSets.Add(newSlotSet);
