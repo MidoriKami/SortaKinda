@@ -13,6 +13,21 @@ namespace SortaKinda.Classes;
 /// Custom widgets and helpers for drawing more advanced ui elements.
 /// </summary>
 public static class ImWidget {
+	public static void TextCenteredMultiline(Vector4 color, params string[] strings) {
+		if (strings.Length is 0) return;
+
+		var stringHeight = ImGui.CalcTextSize(strings.First()).Y;
+		var totalHeight = (stringHeight + ImGui.GetStyle().ItemSpacing.Y) * strings.Length;
+
+		ImGui.SetCursorPosY(ImGui.GetContentRegionAvail().Y / 2.0f - totalHeight / 2.0f);
+		foreach (var text in strings) {
+			var stringWidth = ImGui.CalcTextSize(text).X;
+
+			ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X / 2.0f - stringWidth / 2.0f);
+			ImGui.TextColored(color, text);
+		}
+	}
+
 	public static void TextOutlined(Vector4 outlineColor, Vector4 textColor, string text) {
 		var startPos = ImGui.GetCursorPos();
 

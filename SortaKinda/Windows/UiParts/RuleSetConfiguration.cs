@@ -133,12 +133,9 @@ public static class RuleSetConfiguration {
 		ImGui.Separator();
 
 		if (selectedRuleSet is null) {
-			const string warningText = "Select or Create a Rule Set on the left";
-			var textSize = ImGui.CalcTextSize(warningText);
-
-			ImGuiHelpers.ScaledDummy(5.0f);
-			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f);
-			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
+			ImWidget.TextCenteredMultiline(KnownColor.Orange.Vector(),
+				"Select or Create a Rule Set on the left"
+			);
 			return;
 		}
 
@@ -224,12 +221,10 @@ public static class RuleSetConfiguration {
 		if (!child) return;
 
 		if (selectedRuleSet.FilterRules.Count is 0) {
-			const string warningText = "No Filtering Rules Defined";
-			var textSize = ImGui.CalcTextSize(warningText);
-
-			ImGuiHelpers.ScaledDummy(5.0f);
-			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f);
-			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
+			ImWidget.TextCenteredMultiline(KnownColor.Orange.Vector(),
+				"No Filtering Rules Defined",
+				"At Least One Filter is Required"
+			);
 			return;
 		}
 
@@ -321,15 +316,10 @@ public static class RuleSetConfiguration {
 		if (!child) return;
 
 		if (selectedRuleSet.OrderingRules.Count is 0) {
-			const string warningText = "No Ordering Rules Defined";
-			const string warningText2 = "Default behavior is alphabetical";
-			var textSize = ImGui.CalcTextSize(warningText);
-			var textSize2 = ImGui.CalcTextSize(warningText2);
-
-			ImGui.SetCursorPos(ImGui.GetContentRegionAvail() / 2.0f - textSize / 2.0f - new Vector2(0.0f, textSize2.Y / 2.0f));
-			ImGui.TextColored(KnownColor.Orange.Vector(), warningText);
-			ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X / 2.0f - textSize2.X / 2.0f);
-			ImGui.TextColored(KnownColor.Orange.Vector(), warningText2);
+			ImWidget.TextCenteredMultiline(KnownColor.Orange.Vector(),
+				"No Ordering Rules Defined",
+				"Default behavior is alphabetical"
+			);
 			return;
 		}
 
