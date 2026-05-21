@@ -134,7 +134,7 @@ public static class SlotSetConfiguration {
 		using var popup = ImRaii.Popup("RuleSetSelect");
 		if (!popup) return;
 
-		foreach (var (index, ruleSet) in System.SystemConfiguration.RuleSets.Index()) {
+		foreach (var (index, ruleSet) in System.SystemConfiguration.RuleSets.OrderBy(entry => entry.Name).Index()) {
 			using var id = ImRaii.PushId(index);
 
 			if (ImWidget.DrawColoredSelectable(ruleSet.Color, ruleSet.Name)) {
