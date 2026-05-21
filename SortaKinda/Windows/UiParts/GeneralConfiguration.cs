@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 
@@ -22,6 +23,11 @@ public static class GeneralConfiguration {
 		configChanged |= ImGui.Checkbox("Sort on Zone Changed", ref config.SortOnZoneChange);
 		configChanged |= ImGui.Checkbox("Sort on Job Changed", ref config.SortOnJobChange);
 		configChanged |= ImGui.Checkbox("Sort on Login", ref config.SortOnLogin);
+
+		configChanged |= ImGui.Checkbox("Replace Sort Context Menu Button", ref config.ReplaceSortContextMenu);
+		ImGuiComponents.HelpMarker(
+			"When right-clicking any inventory and clicking 'Sort', The game will no longer try to sort\n" +
+			"Instead SortaKinda will update its own sorting according to defined rules.");
 
 		ImGuiHelpers.ScaledDummy(10.0f);
 		ImGui.Text("Advanced");

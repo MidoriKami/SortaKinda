@@ -19,6 +19,7 @@ public class SystemConfiguration {
 	public bool SortOnZoneChange = true;
 	public bool SortOnJobChange = true;
 	public bool SortOnLogin = true;
+	public bool ReplaceSortContextMenu = true;
 
 	public bool EnableSortLogging = false;
 

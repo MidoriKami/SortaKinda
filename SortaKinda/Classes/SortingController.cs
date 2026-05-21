@@ -4,11 +4,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dalamud.Game.Agent;
+using Dalamud.Game.Agent.AgentArgTypes;
 using Dalamud.Game.Inventory;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using SortaKinda.Configuration;
+using AgentId = Dalamud.Game.Agent.AgentId;
 
 namespace SortaKinda.Classes;
 
@@ -20,12 +24,14 @@ public unsafe class SortingController :  IDisposable {
 		Services.GameInventory.InventoryChanged += InventoryChanged;
 		Services.ClientState.ClassJobChanged += JobChanged;
 		Services.ClientState.TerritoryChanged += TerritoryChanged;
+		Services.AgentLifecycle.RegisterListener(AgentEvent.PreReceiveEvent, AgentId.InventoryContext, OnContextMenuEvent);
 	}
 
 	public void Dispose() {
 		Services.GameInventory.InventoryChanged -= InventoryChanged;
 		Services.ClientState.ClassJobChanged -= JobChanged;
 		Services.ClientState.TerritoryChanged -= TerritoryChanged;
+		Services.AgentLifecycle.UnregisterListener(OnContextMenuEvent);
 	}
 
 	public void OnLogin() {
@@ -64,6 +70,33 @@ public unsafe class SortingController :  IDisposable {
 
 		if (shouldTriggerSort) {
 			LaunchSortTask();
+		}
+	}
+
+	private void OnContextMenuEvent(AgentEvent type, AgentArgs args) {
+		if (!System.SystemConfiguration.ReplaceSortContextMenu) return;
+		if (args is not AgentReceiveEventArgs receiveEventArgs) return;
+		if (receiveEventArgs.EventKind is not (71 or 72)) return;
+		if (receiveEventArgs.ValueCount < 2) return;
+		if (!receiveEventArgs.AtkValueEnumerable.ElementAt(1).TryGet(out int eventKind)) return;
+
+		//  v17 = Component::GUI::AtkValue_GetInt(&values[1])
+		// 	if ( eventKind == 71 || eventKind == 72 )
+		// 		v18 = this->EventIds[v17 + 8];
+		//	switch ( v18 )
+		//		case 40:
+		//			Do Inventory Sorting
+
+		var agentContext = AgentInventoryContext.Instance();
+		var eventIndex = eventKind + 8;
+		var eventId = agentContext->EventIds[eventIndex];
+
+		// Inventory, Retainer, Armoury, Buddy, PremiumBuddy
+		if (eventId is 40) {
+			Services.PluginLog.Information("SortaKinda has intercepted the Sort command from context menu.");
+			LaunchSortTask();
+			args.PreventOriginal();
+			agentContext->Hide();
 		}
 	}
 
