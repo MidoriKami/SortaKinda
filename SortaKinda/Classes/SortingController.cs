@@ -115,7 +115,7 @@ public unsafe class SortingController :  IDisposable {
 					logString.AppendLine($"\tInventory Config: {inventoryType}");
 					logString.AppendLine($"\t\tSlot Set: {slotSet.RuleSet.Name}");
 
-					var takenItem = GetInventoryWants(validItemSlots, ruleSet, logString, slotSet);
+					var takenItems = GetInventoryWants(validItemSlots, ruleSet, logString, slotSet);
 
 					logString.AppendLine();
 
@@ -123,7 +123,7 @@ public unsafe class SortingController :  IDisposable {
 					//		Remove items that we want from the available pool
 					//
 
-					foreach (var itemSlotInto in takenItem) {
+					foreach (var itemSlotInto in takenItems) {
 						validItemSlots.Remove(itemSlotInto);
 						logString.AppendLine($"\t\t\tTaking: [{itemSlotInto.VisibleSlotIndex}] {itemSlotInto.Item.Value->Name}");
 					}
@@ -138,18 +138,18 @@ public unsafe class SortingController :  IDisposable {
 
 					foreach (var slot in slots) {
 						var itemForSlot = inventoryType.GetItem(slot);
-						var adjustedSlotIndex = slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType);
+						var adjustedSlotIndex = (int)( slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType) );
 
 						logString.AppendLine($"\t\t\tEvaluating Slot [{adjustedSlotIndex}]");
 
 						// Check if we have what we want already
-						if (takenItem.Count is not 0) {
-							var firstTakenItem = takenItem.First();
+						if (takenItems.Count is not 0) {
+							var firstTakenItem = takenItems.First();
 
 							if (firstTakenItem.VisibleSlotIndex == adjustedSlotIndex) {
-								logString.AppendLine($"\t\t\t\tSlot already has what we want");
+								logString.AppendLine("\t\t\t\tSlot already has what we want");
 
-								takenItem.Remove(firstTakenItem);
+								takenItems.Remove(firstTakenItem);
 								logString.AppendLine();
 								continue;
 							}
@@ -160,22 +160,29 @@ public unsafe class SortingController :  IDisposable {
 							logString.AppendLine($"\t\t\t\tSlot is Occupied with {itemForSlot->Name}");
 
 							// Do we have something we want?
-							if (takenItem.Count is not 0) {
-								var firstTakenItem = takenItem.First();
+							if (takenItems.Count is not 0) {
+								var firstTakenItem = takenItems.First();
 
 								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name}");
 
 								SwapInventorySlots(inventoryType, slot, firstTakenItem);
+
+								// If there is an item that we want, at all, but it's in this slot, we just moved it. Update its known position.
+								var outdatedItemInfo = takenItems.FirstOrDefault(item => item.VisibleSlotIndex == adjustedSlotIndex);
+								outdatedItemInfo?.VisibleSlotIndex = firstTakenItem.VisibleSlotIndex;
+
 								logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstTakenItem.VisibleSlotIndex}");
-								takenItem.Remove(firstTakenItem);
+								takenItems.Remove(firstTakenItem);
 							}
 							// We don't want this item.
 							else {
-								logString.AppendLine($"\t\t\t\tWe don't want this item");
+								logString.AppendLine("\t\t\t\tWe don't want this item");
 
 								if (emptyItemSlots.Count is not 0) {
 									var firstEmptySlot = emptyItemSlots.First();
+
 									SwapInventorySlots(inventoryType, slot, firstEmptySlot);
+
 									logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstEmptySlot.VisibleSlotIndex}");
 									emptyItemSlots.Remove(firstEmptySlot);
 								}
@@ -190,12 +197,14 @@ public unsafe class SortingController :  IDisposable {
 							logString.AppendLine("\t\t\t\tSlot is empty");
 
 							// Do we have something we want?
-							if (takenItem.Count is not 0) {
-								var firstTakenItem = takenItem.First();
+							if (takenItems.Count is not 0) {
+								var firstTakenItem = takenItems.First();
 								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name}");
+
 								SwapInventorySlots(inventoryType, slot, firstTakenItem);
+
 								logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstTakenItem.VisibleSlotIndex}");
-								takenItem.Remove(firstTakenItem);
+								takenItems.Remove(firstTakenItem);
 							}
 						}
 
