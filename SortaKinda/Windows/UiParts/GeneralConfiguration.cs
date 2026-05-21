@@ -23,6 +23,7 @@ public static class GeneralConfiguration {
 		configChanged |= ImGui.Checkbox("Sort on Zone Changed", ref config.SortOnZoneChange);
 		configChanged |= ImGui.Checkbox("Sort on Job Changed", ref config.SortOnJobChange);
 		configChanged |= ImGui.Checkbox("Sort on Login", ref config.SortOnLogin);
+		configChanged |= ImGui.Checkbox("Sort on Config Changed", ref config.SortOnConfigChange);
 
 		configChanged |= ImGui.Checkbox("Replace Sort Context Menu Button", ref config.ReplaceSortContextMenu);
 		ImGuiComponents.HelpMarker(
