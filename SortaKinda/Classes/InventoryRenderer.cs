@@ -56,14 +56,6 @@ public static unsafe class InventoryRenderer {
 		if (SlotSetConfiguration.EditingSlotSet is not { } slotSet) return;
 		if (!SlotSetConfiguration.EditModeEnabled) return;
 
-		if (ImGui.IsWindowHovered()) {
-			ImGui.GetWindowDrawList().AddCircleFilled(
-				ImGui.GetMousePos(),
-				4.0f,
-				ImGui.GetColorU32(KnownColor.LightGreen.Vector())
-			);
-		}
-
 		switch (paintingState) {
 			case PaintingState.Waiting: {
 				if (ImGui.IsWindowHovered() && ImGui.IsMouseDragging(ImGuiMouseButton.Left)) {
@@ -76,7 +68,13 @@ public static unsafe class InventoryRenderer {
 
 			case PaintingState.Started: {
 				clickEnd = ImGui.GetMousePos();
-				ImGui.GetWindowDrawList().AddRect(clickStart, clickEnd, ImGui.GetColorU32(slotSet.RuleSet.Color));
+				ImGui.GetWindowDrawList().AddRect(
+					clickStart,
+					clickEnd,
+					ImGui.GetColorU32(slotSet.RuleSet.Color),
+					4.0f,
+					2.0f
+				);
 
 				if (ImGui.IsMouseReleased(ImGuiMouseButton.Left)) {
 					paintingState = PaintingState.Completed;
@@ -92,8 +90,6 @@ public static unsafe class InventoryRenderer {
 				break;
 			}
 		}
-
-		ImGui.SetTooltip(paintingState.ToString());
 	}
 
 	/// <summary>
