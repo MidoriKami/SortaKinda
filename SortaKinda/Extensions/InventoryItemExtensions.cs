@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Numerics;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.Sheets;
+using SortaKinda.Classes;
 
 namespace SortaKinda.Extensions;
 
@@ -61,6 +63,12 @@ public static unsafe class InventoryItemExtensions {
 
 			return propertyGetter(Services.DataManager.GetExcelSheet<Item>().GetRow(item.ItemId));
 		}
+
+		public bool IsWeapon
+			=> item.GetItemProperty(item => item.EquipSlotCategory.RowId is 1 or 2 or 13);
+
+		public bool IsArmor
+			=> item.UiCategory.RowId is 34 or 35 or 36 or 37 or 38 or 40 or 41 or 42 or 43;
 
 		private bool IsInGearset() {
 			foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {
