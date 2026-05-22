@@ -74,7 +74,6 @@ public unsafe class SortingController :  IDisposable {
 	}
 
 	private void OnContextMenuEvent(AgentEvent type, AgentArgs args) {
-		if (!System.SystemConfiguration.ReplaceSortContextMenu) return;
 		if (System.CharacterConfiguration is not { } characterConfiguration) return;
 		if (args is not AgentReceiveEventArgs receiveEventArgs) return;
 		if (receiveEventArgs.EventKind is not (71 or 72)) return;
