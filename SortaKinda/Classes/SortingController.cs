@@ -75,6 +75,7 @@ public unsafe class SortingController :  IDisposable {
 
 	private void OnContextMenuEvent(AgentEvent type, AgentArgs args) {
 		if (!System.SystemConfiguration.ReplaceSortContextMenu) return;
+		if (System.CharacterConfiguration is not { } characterConfiguration) return;
 		if (args is not AgentReceiveEventArgs receiveEventArgs) return;
 		if (receiveEventArgs.EventKind is not (71 or 72)) return;
 		if (receiveEventArgs.ValueCount < 2) return;
@@ -92,12 +93,20 @@ public unsafe class SortingController :  IDisposable {
 		var eventId = agentContext->EventIds[eventIndex];
 
 		// Inventory, Retainer, Armoury, Buddy, PremiumBuddy
-		if (eventId is 40) {
-			Services.PluginLog.Information("SortaKinda has intercepted the Sort command from context menu.");
-			LaunchSortTask();
-			args.PreventOriginal();
-			agentContext->Hide();
-		}
+		if (eventId is not 40) return;
+
+		var targetInventory = agentContext->TargetInventoryId.AdjustedInventoryType;
+
+		var anySlotSetsForInventory = characterConfiguration.Inventories.Values
+			.Any(inventory => inventory.SlotSets
+				.Any(set => set.InventoryType.AdjustedInventoryType == targetInventory));
+
+		if (!anySlotSetsForInventory) return;
+
+		Services.PluginLog.Information("SortaKinda has intercepted the Sort command from context menu.");
+		LaunchSortTask();
+		args.PreventOriginal();
+		agentContext->Hide();
 	}
 
 	public void LaunchSortTask() {
