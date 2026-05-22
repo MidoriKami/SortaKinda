@@ -27,6 +27,8 @@ public static unsafe class InventoryRenderer {
 		using var spacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, ImGuiHelpers.ScaledVector2(6.0f, 6.0f));
 		const int rowSize = 5;
 
+		System.PaintingController.Update();
+
 		foreach (var row in Enumerable.Range(0, inventory.ItemsPerPage / rowSize)) {
 			foreach (var column in Enumerable.Range(0, rowSize)) {
 				DrawInventorySlot(inventory, row * rowSize + column, drawOptions);
@@ -81,7 +83,7 @@ public static unsafe class InventoryRenderer {
 			options.BorderThickness
 		);
 
-		if (slotIndex is { } index) {
+		if (slotIndex is { } index && (SlotSetConfiguration.EditingSlotSet is null || SlotSetConfiguration.EditingSlotSet == slotSet)) {
 			var textString = $"{index + 1}";
 			var textSize = ImGui.CalcTextSize(textString);
 
