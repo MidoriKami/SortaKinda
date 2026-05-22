@@ -29,8 +29,8 @@ public class SystemConfiguration {
 	public static SystemConfiguration Load()
 		=> Config.LoadConfig<SystemConfiguration>("System.config.json");
 
-	public void Save() {
-		if (SortOnConfigChange) {
+	public void Save(bool triggerSort = true) {
+		if (SortOnConfigChange && triggerSort) {
 			System.SortingController.LaunchSortTask();
 		}
 

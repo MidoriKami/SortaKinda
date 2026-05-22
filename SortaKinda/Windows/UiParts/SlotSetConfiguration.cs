@@ -42,7 +42,7 @@ public static class SlotSetConfiguration {
 		// If selection has changed, we need to save the new selection, but also hide any active set we're editing.
 		if (System.SystemConfiguration.LastSelectedInventory != ConfigWindow.SelectedInventory) {
 			System.SystemConfiguration.LastSelectedInventory = ConfigWindow.SelectedInventory;
-			System.SystemConfiguration.Save();
+			System.SystemConfiguration.Save(false);
 
 			EditingSlotSet = null;
 		}
