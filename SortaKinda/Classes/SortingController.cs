@@ -314,6 +314,11 @@ public unsafe class SortingController :  IDisposable {
 		}
 	}
 
+	/// <summary>
+	/// Checks each config to see if this real-slot is reserved for any slot set.
+	/// </summary>
+	/// <param name="inventorySlot">The real-sorter slot index</param>
+	/// <returns>True if the slot is wanted by any slotset.</returns>
 	private static bool IsSlotReserved(int inventorySlot) {
 		if (System.CharacterConfiguration is not { } characterConfig) return false;
 
