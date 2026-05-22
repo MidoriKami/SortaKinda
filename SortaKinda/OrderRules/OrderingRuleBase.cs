@@ -1,4 +1,5 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using System.Text.Json.Serialization;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace SortaKinda.OrderRules;
 
@@ -11,6 +12,7 @@ public abstract unsafe partial class OrderingRuleBase {
 
 	protected abstract string ReversedLabel { get; }
 
+	[JsonIgnore]
 	public string ButtonLabel
 		=> IsReversed ? $"{ReversedLabel} → {NotReversedLabel}" : $"{NotReversedLabel} → {ReversedLabel}";
 
