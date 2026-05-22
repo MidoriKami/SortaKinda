@@ -83,16 +83,6 @@ public static unsafe class InventoryRenderer {
 			options.BorderThickness
 		);
 
-		if (slotIndex is { } index && (SlotSetConfiguration.EditingSlotSet is null || SlotSetConfiguration.EditingSlotSet == slotSet)) {
-			var textString = $"{index + 1}";
-			var textSize = ImGui.CalcTextSize(textString);
-
-			ImGui.SameLine();
-			ImGui.SetCursorPos(startPosition + new Vector2(regionAvail - textSize.X, borderPadding));
-
-			ImWidget.TextOutlined(KnownColor.Black.Vector(), KnownColor.White.Vector(), textString);
-		}
-
 		if (ImGui.IsItemClicked() && SlotSetConfiguration.EditingSlotSet is { } editingSlotSet && SlotSetConfiguration.EditModeEnabled) {
 			if (editingSlotSet == slotSet && editingSlotSet.SlotIndexes.Remove(slot)) {
 				System.CharacterConfiguration?.Save();
@@ -101,6 +91,16 @@ public static unsafe class InventoryRenderer {
 				editingSlotSet.SlotIndexes.Add(slot);
 				System.CharacterConfiguration?.Save();
 			}
+		}
+
+		if (slotIndex is { } index && (SlotSetConfiguration.EditingSlotSet is null || SlotSetConfiguration.EditingSlotSet == slotSet)) {
+			var textString = $"{index + 1}";
+			var textSize = ImGui.CalcTextSize(textString);
+
+			ImGui.SameLine();
+			ImGui.SetCursorPos(startPosition + new Vector2(regionAvail - textSize.X, borderPadding));
+
+			ImWidget.TextOutlined(KnownColor.Black.Vector(), KnownColor.White.Vector(), textString);
 		}
 
 		ImGui.SetCursorPos(startPosition + iconSize + iconInnerPadding * 2.0f);
