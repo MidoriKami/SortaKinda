@@ -274,8 +274,13 @@ public unsafe class SortingController :  IDisposable {
 			Services.PluginLog.Error(e, "Exception in PerformSort");
 		}
 		finally {
+			var sortingResult = $"Sorting Completed in {stopwatch.Elapsed.TotalMilliseconds:F4} ms";
+
 			if (System.SystemConfiguration.EnableSortLogging) {
-				Services.PluginLog.Information($"Sorting Completed in {stopwatch.Elapsed.TotalMilliseconds:F4} ms");
+				Services.PluginLog.Information(sortingResult);
+			}
+			else {
+				Services.PluginLog.Debug(sortingResult);
 			}
 		}
 	}
