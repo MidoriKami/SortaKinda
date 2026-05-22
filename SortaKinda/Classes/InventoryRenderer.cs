@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
@@ -15,6 +17,11 @@ namespace SortaKinda.Classes;
 /// Main class responsible for drawing Inventory's for configuration.
 /// </summary>
 public static unsafe class InventoryRenderer {
+	private static PaintingState paintingState = PaintingState.Waiting;
+	private static Vector2 clickStart = Vector2.Zero;
+	private static Vector2 clickEnd = Vector2.Zero;
+	private static readonly List<int> PaintedSlots = [];
+
 	/// <summary>
 	/// Draws an entire inventory.
 	/// </summary>
@@ -22,12 +29,15 @@ public static unsafe class InventoryRenderer {
 	public static void DrawInventory(InventoryType inventory) {
 		using var group = ImRaii.Group();
 
+		using var inventoryChild = ImRaii.Child("Inventory", ImGui.GetContentRegionAvail());
+		if (!inventoryChild) return;
+
 		var drawOptions = new DrawOptions();
 
 		using var spacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, ImGuiHelpers.ScaledVector2(6.0f, 6.0f));
 		const int rowSize = 5;
 
-		System.PaintingController.Update();
+		UpdatePainting();
 
 		foreach (var row in Enumerable.Range(0, inventory.ItemsPerPage / rowSize)) {
 			foreach (var column in Enumerable.Range(0, rowSize)) {
@@ -37,6 +47,53 @@ public static unsafe class InventoryRenderer {
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Update the drawn box when dragging in the inventory render area.
+	/// </summary>
+	private static void UpdatePainting() {
+		if (SlotSetConfiguration.EditingSlotSet is not { } slotSet) return;
+		if (!SlotSetConfiguration.EditModeEnabled) return;
+
+		if (ImGui.IsWindowHovered()) {
+			ImGui.GetWindowDrawList().AddCircleFilled(
+				ImGui.GetMousePos(),
+				4.0f,
+				ImGui.GetColorU32(KnownColor.LightGreen.Vector())
+			);
+		}
+
+		switch (paintingState) {
+			case PaintingState.Waiting: {
+				if (ImGui.IsWindowHovered() && ImGui.IsMouseDragging(ImGuiMouseButton.Left)) {
+					clickStart = ImGui.GetMousePos();
+					clickEnd = clickStart;
+					paintingState = PaintingState.Started;
+				}
+				break;
+			}
+
+			case PaintingState.Started: {
+				clickEnd = ImGui.GetMousePos();
+				ImGui.GetWindowDrawList().AddRect(clickStart, clickEnd, ImGui.GetColorU32(slotSet.RuleSet.Color));
+
+				if (ImGui.IsMouseReleased(ImGuiMouseButton.Left)) {
+					paintingState = PaintingState.Completed;
+				}
+				break;
+			}
+
+			case PaintingState.Completed: {
+				paintingState = PaintingState.Waiting;
+				PaintedSlots.Clear();
+
+				System.CharacterConfiguration?.Save();
+				break;
+			}
+		}
+
+		ImGui.SetTooltip(paintingState.ToString());
 	}
 
 	/// <summary>
@@ -75,6 +132,8 @@ public static unsafe class InventoryRenderer {
 
 		DrawTooltip(slotSet);
 
+		ProcessPainting(slot, slotSet);
+
 		ImGui.GetWindowDrawList().AddRect(
 			windowPosition + startPosition,
 			windowPosition + startPosition + iconInnerPadding * 2.0f + iconSize,
@@ -82,16 +141,6 @@ public static unsafe class InventoryRenderer {
 			iconSize.X / 8.0f,
 			options.BorderThickness
 		);
-
-		if (ImGui.IsItemClicked() && SlotSetConfiguration.EditingSlotSet is { } editingSlotSet && SlotSetConfiguration.EditModeEnabled) {
-			if (editingSlotSet == slotSet && editingSlotSet.SlotIndexes.Remove(slot)) {
-				System.CharacterConfiguration?.Save();
-			}
-			else if (slotSet is null) {
-				editingSlotSet.SlotIndexes.Add(slot);
-				System.CharacterConfiguration?.Save();
-			}
-		}
 
 		if (slotIndex is { } index && (SlotSetConfiguration.EditingSlotSet is null || SlotSetConfiguration.EditingSlotSet == slotSet)) {
 			var textString = $"{index + 1}";
@@ -104,6 +153,56 @@ public static unsafe class InventoryRenderer {
 		}
 
 		ImGui.SetCursorPos(startPosition + iconSize + iconInnerPadding * 2.0f);
+	}
+
+	/// <summary>
+	/// Processes the click-drag painting for selecting slots.
+	/// </summary>
+	/// <param name="slot"></param>
+	/// <param name="slotSet"></param>
+	private static void ProcessPainting(int slot, SlotSet? slotSet) {
+		if (SlotSetConfiguration.EditingSlotSet is not { } editingSlotSet || !SlotSetConfiguration.EditModeEnabled) return;
+
+		switch (paintingState) {
+			case PaintingState.Waiting:
+				if (ImGui.IsItemClicked()) {
+					if (editingSlotSet == slotSet && editingSlotSet.SlotIndexes.Remove(slot)) {
+						System.CharacterConfiguration?.Save();
+					}
+					else if (slotSet is null) {
+						editingSlotSet.SlotIndexes.Add(slot);
+						System.CharacterConfiguration?.Save();
+					}
+				}
+				break;
+
+			case PaintingState.Started:
+				var itemMin = ImGui.GetItemRectMin();
+				var itemMax = ImGui.GetItemRectMax();
+
+				// If this is the item we clicked on, skip it because it's already changed due to the Waiting case.
+				if (itemMin.X <= clickStart.X && itemMax.X >= clickStart.X &&
+				    itemMin.Y <= clickStart.Y && itemMax.Y >= clickStart.Y) return;
+
+				var mouseMin = new Vector2(Math.Min(clickStart.X, clickEnd.X), Math.Min(clickStart.Y, clickEnd.Y));
+				var mouseMax = new Vector2(Math.Max(clickStart.X, clickEnd.X), Math.Max(clickStart.Y, clickEnd.Y));
+
+				var isIntersecting = itemMin.X <= mouseMax.X && itemMax.X >= mouseMin.X &&
+				                     itemMin.Y <= mouseMax.Y && itemMax.Y >= mouseMin.Y;
+
+				if (isIntersecting && !PaintedSlots.Contains(slot)) {
+					if (slotSet is null) {
+						editingSlotSet.SlotIndexes.Add(slot);
+					}
+					else if (slotSet == editingSlotSet) {
+						editingSlotSet.SlotIndexes.Remove(slot);
+					}
+
+					// Track this so we don't undo it by mistake.
+					PaintedSlots.Add(slot);
+				}
+				break;
+		}
 	}
 
 	/// <summary>
