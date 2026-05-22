@@ -295,27 +295,16 @@ public unsafe class SortingController :  IDisposable {
 		emptyItemSlots = [];
 		validItemSlots = [];
 
-		if (System.CharacterConfiguration is not { } characterConfig) return;
-
 		var inventorySorter = adjustedInventoryType.InventorySorter;
-
-		var ruleSetSlots = characterConfig.Inventories
-			.GroupBy(pair => pair.Key.AdjustedInventoryType)
-			.ToDictionary(
-				pair => pair.Key.AdjustedInventoryType,
-				pair => pair
-					.SelectMany(entry => entry.Value.SlotSets
-					    .SelectMany(set => set.SlotIndexes)));
 
 		foreach (var (index, _) in inventorySorter->Items.Index()) {
 			var item = inventorySorter->GetInventoryItem(index);
 			if (item is null) continue;
 
 			if (item->ItemId is 0) {
-				var isSlotInUse = ruleSetSlots.TryGetValue(adjustedInventoryType, out var slotSetIndexes) && slotSetIndexes.Contains(index);
 
 				// Only allow moving items into slots that are not in use.
-				if (!isSlotInUse) {
+				if (!IsSlotReserved(index)) {
 					emptyItemSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
 				}
 			}
@@ -323,6 +312,22 @@ public unsafe class SortingController :  IDisposable {
 				validItemSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
 			}
 		}
+	}
+
+	private static bool IsSlotReserved(int inventorySlot) {
+		if (System.CharacterConfiguration is not { } characterConfig) return false;
+
+		foreach (var (inventoryType, config) in characterConfig.Inventories) {
+			foreach (var slotSet in config.SlotSets) {
+				foreach (var slot in slotSet.SlotIndexes) {
+					var adjustedSlotIndex = (int)( slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType) );
+
+					if (inventorySlot == adjustedSlotIndex) return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
