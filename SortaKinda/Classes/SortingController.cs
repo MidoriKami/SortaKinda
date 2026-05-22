@@ -317,7 +317,7 @@ public unsafe class SortingController :  IDisposable {
 			if (item->ItemId is 0) {
 
 				// Only allow moving items into slots that are not in use.
-				if (!IsSlotReserved(index)) {
+				if (!IsSlotReserved(adjustedInventoryType, index)) {
 					emptyItemSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
 				}
 			}
@@ -330,12 +330,17 @@ public unsafe class SortingController :  IDisposable {
 	/// <summary>
 	/// Checks each config to see if this real-slot is reserved for any slot set.
 	/// </summary>
+	/// <param name="realInventoryType">The Inventory Sorter Type</param>
 	/// <param name="inventorySlot">The real-sorter slot index</param>
 	/// <returns>True if the slot is wanted by any slotset.</returns>
-	private static bool IsSlotReserved(int inventorySlot) {
+	private static bool IsSlotReserved(InventoryType realInventoryType, int inventorySlot) {
 		if (System.CharacterConfiguration is not { } characterConfig) return false;
 
-		foreach (var (inventoryType, config) in characterConfig.Inventories) {
+		// Limit the reservation check to just configs that are actually using this inventory.
+		var configsForInventory = characterConfig.Inventories
+			.Where(config => config.Key.AdjustedInventoryType == realInventoryType);
+
+		foreach (var (inventoryType, config) in configsForInventory) {
 			foreach (var slotSet in config.SlotSets) {
 				foreach (var slot in slotSet.SlotIndexes) {
 					var adjustedSlotIndex = (int)( slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType) );
