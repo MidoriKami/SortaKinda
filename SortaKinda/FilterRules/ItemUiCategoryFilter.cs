@@ -26,7 +26,7 @@ public class ItemUiCategoryFilter : FilteringRuleBase {
 	}
 
 	private void DrawSearchBar() {
-		var childSize = new Vector2(ImGui.GetContentRegionAvail().X, 26.0f);
+		var childSize = new Vector2(ImGui.GetContentRegionAvail().X, 26.0f * ImGuiHelpers.GlobalScale);
 		using var child = ImRaii.Child("SearchBar", childSize);
 		if (!child) return;
 
