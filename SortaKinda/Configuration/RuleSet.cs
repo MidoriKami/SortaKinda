@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Text.Json.Serialization;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.Interop;
 using SortaKinda.Classes;
@@ -22,7 +23,9 @@ public unsafe class RuleSet {
 	public bool RequireAll = true;
 	public Vector4 Color = Vector4.One;
 
-	public bool IsValid => FilterRules.Count is not 0;
+	[JsonIgnore]
+	public bool IsValid
+		=> FilterRules.Count is not 0;
 
 	public bool IsItemAllowed(InventoryItem* item) {
 		if (RequireAll) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace SortaKinda.Configuration;
@@ -14,6 +15,7 @@ public class SlotSet {
 	public Guid RuleSetId;
 	public int Priority = 0;
 
+	[JsonIgnore]
 	public RuleSet RuleSet
 		=> System.SystemConfiguration.RuleSets
 			.FirstOrDefault(set => set.RuleSetId == RuleSetId)
