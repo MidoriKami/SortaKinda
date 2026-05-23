@@ -32,5 +32,5 @@ public abstract unsafe partial class FilteringRuleBase {
 	/// Public function for evaluating if this item should be allowed.
 	/// </summary>
 	public bool IsItemAllowed(InventoryItem* item)
-		=> EvaluateItem(item) && IsAllowed;
+		=> EvaluateItem(item) == IsAllowed;
 }
