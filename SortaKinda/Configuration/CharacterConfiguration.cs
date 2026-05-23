@@ -24,6 +24,10 @@ public class CharacterConfiguration {
 		Config.SaveCharacterConfig(this, "Character.config.json");
 	}
 
+	/// <summary>
+	/// Removes any slot sets that are using any rulesets that no longer exist.
+	/// </summary>
+	/// <returns>True if a resave is required.</returns>
 	public bool PurgeInvalidSlotSets() {
 		var anyPurged = false;
 		foreach (var (_, inventoryConfig) in Inventories) {

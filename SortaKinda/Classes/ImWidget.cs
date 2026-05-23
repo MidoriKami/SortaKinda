@@ -13,6 +13,12 @@ namespace SortaKinda.Classes;
 /// Custom widgets and helpers for drawing more advanced ui elements.
 /// </summary>
 public static class ImWidget {
+
+	/// <summary>
+	/// Draws multiple stings centered in the current content area.
+	/// </summary>
+	/// <param name="color">Text Color</param>
+	/// <param name="strings">Strings, must be 1 or more.</param>
 	public static void TextCenteredMultiline(Vector4 color, params string[] strings) {
 		if (strings.Length is 0) return;
 
@@ -28,6 +34,12 @@ public static class ImWidget {
 		}
 	}
 
+	/// <summary>
+	/// Draws text 9 times to create an outlined effect.
+	/// </summary>
+	/// <param name="outlineColor">The outline color</param>
+	/// <param name="textColor">The text color</param>
+	/// <param name="text">Text to draw</param>
 	public static void TextOutlined(Vector4 outlineColor, Vector4 textColor, string text) {
 		var startPos = ImGui.GetCursorPos();
 
@@ -43,6 +55,13 @@ public static class ImWidget {
 		ImGui.TextColored(textColor, text);
 	}
 
+	/// <summary>
+	/// Draws a colored box, followed by the text, and works like a ImGui selectable.
+	/// </summary>
+	/// <param name="color">Color of the box</param>
+	/// <param name="text">Label</param>
+	/// <param name="isSelected">If this should be drawn highlighted</param>
+	/// <returns></returns>
 	public static bool DrawColoredSelectable(Vector4 color, string text, bool isSelected = false) {
 		var cursorPosition = ImGui.GetCursorPos();
 		if (ImGui.Selectable($"##{text}", isSelected)) {
@@ -63,6 +82,12 @@ public static class ImWidget {
 		return false;
 	}
 
+	/// <summary>
+	/// Draws a dropdown combo with centered text, and left/right arrows to increment and decrement values.
+	/// </summary>
+	/// <param name="values">Values to display</param>
+	/// <param name="currentValue">Value for the current label</param>
+	/// <param name="width">How large to make center section</param>
 	public static void DrawSelector(List<InventoryType> values, ref InventoryType currentValue, float width) {
 		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			if (ImGui.Button(FontAwesomeIcon.CaretLeft.ToIconString())) {

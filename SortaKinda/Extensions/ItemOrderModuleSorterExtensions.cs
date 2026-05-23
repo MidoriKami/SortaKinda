@@ -5,12 +5,6 @@ namespace SortaKinda.Extensions;
 
 public static unsafe class ItemOrderModuleSorterExtensions {
     extension(ref ItemOrderModuleSorter sorter) {
-        public long GetSlotIndex(ItemOrderModuleSorterItemEntry* entry)
-            => entry->Slot + sorter.ItemsPerPage * entry->Page;
-
-        public InventoryItem* GetInventoryItem(ItemOrderModuleSorterItemEntry* entry)
-            => sorter.GetInventoryItem(sorter.GetSlotIndex(entry));
-
         public InventoryItem* GetInventoryItem(long slotIndex) {
             if (sorter.Items.LongCount <= slotIndex) return null;
 

@@ -73,6 +73,10 @@ public unsafe class SortingController :  IDisposable {
 		}
 	}
 
+	/// <summary>
+	/// Replaces the games native context menu action for `Sort`.
+	/// Will only replace when there are rulesets defined for the clicked inventory.
+	/// </summary>
 	private void OnContextMenuEvent(AgentEvent type, AgentArgs args) {
 		if (System.CharacterConfiguration is not { } characterConfiguration) return;
 		if (args is not AgentReceiveEventArgs receiveEventArgs) return;
@@ -108,15 +112,19 @@ public unsafe class SortingController :  IDisposable {
 		agentContext->Hide();
 	}
 
+	/// <summary>
+	/// Launches the sorting task, will abort if one is in progress.
+	/// </summary>
 	public void LaunchSortTask() {
 		if (sortingTask is null || sortingTask.IsCompleted) {
 			sortingTask = Task.Run(PerformSort);
 		}
-		else {
-			Services.PluginLog.Warning("Sorting Task Not Started, Already Running.");
-		}
 	}
 
+	/// <summary>
+	/// The third-brain of this plugin. The magnum-opus. The Cootie-grass.
+	/// Processes all inventories that have rules in parallel and sorts them in under one frame, or your money back.
+	/// </summary>
 	private static void PerformSort() {
 		var stopwatch = Stopwatch.StartNew();
 

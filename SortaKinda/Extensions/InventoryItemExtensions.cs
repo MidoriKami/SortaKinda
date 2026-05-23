@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Numerics;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.Sheets;
-using SortaKinda.Classes;
 
 namespace SortaKinda.Extensions;
 
 /// <summary>
-/// Extension Methods for getting relevent data from InventoryItems to enable advanced sorting functions.
+/// Extension Methods for getting relevant data from InventoryItems to enable advanced sorting functions.
 /// This is where most of the heavy lifting will go for item logic.
 /// </summary>
 public static unsafe class InventoryItemExtensions {
@@ -58,17 +56,17 @@ public static unsafe class InventoryItemExtensions {
 		public bool IsGearsetItem
 			=> item.IsInGearset();
 
-		private T GetItemProperty<T>(Func<Item, T> propertyGetter) {
-			if (!ItemUtil.IsNormalItem(item.ItemId)) throw new Exception("Invalid Item Type");
-
-			return propertyGetter(Services.DataManager.GetExcelSheet<Item>().GetRow(item.ItemId));
-		}
-
 		public bool IsWeapon
 			=> item.GetItemProperty(item => item.EquipSlotCategory.RowId is 1 or 2 or 13);
 
 		public bool IsArmor
 			=> item.UiCategory.RowId is 34 or 35 or 36 or 37 or 38 or 40 or 41 or 42 or 43;
+
+		private T GetItemProperty<T>(Func<Item, T> propertyGetter) {
+			if (!ItemUtil.IsNormalItem(item.ItemId)) throw new Exception("Invalid Item Type");
+
+			return propertyGetter(Services.DataManager.GetExcelSheet<Item>().GetRow(item.ItemId));
+		}
 
 		private bool IsInGearset() {
 			foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {

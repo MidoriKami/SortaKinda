@@ -17,4 +17,5 @@ public class Services {
     [PluginService] public static IKeyState KeyState { get; set; } = null!;
     [PluginService] public static IGameInventory GameInventory { get; set; } = null!;
     [PluginService] public static IAgentLifecycle AgentLifecycle { get; set; } = null!;
+    [PluginService] public static IChatGui ChatGui { get; set; } = null!;
 }

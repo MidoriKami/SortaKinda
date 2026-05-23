@@ -31,8 +31,11 @@ public static class RuleSetConfiguration {
 
 		DrawRuleSetListBox();
 
-		ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 24.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.Y);
-		if (ImGui.Button("Add Rule Set", ImGui.GetContentRegionAvail())) {
+		var addButtonSize = new Vector2(ImGui.GetContentRegionAvail().X * 5.0f / 10.0f - ImGui.GetStyle().ItemSpacing.X * 2.0f / 3.0f, ImGui.GetContentRegionAvail().Y);
+		var importButtonSize = new Vector2(ImGui.GetContentRegionAvail().X * 2.5f / 10.0f - ImGui.GetStyle().ItemSpacing.X * 2.0f / 3.0f, ImGui.GetContentRegionAvail().Y);
+
+		ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 22.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.Y);
+		if (ImGui.Button("Add Rule Set", addButtonSize)) {
 			var adjustedHue = 0.07f * config.RuleSets.Count;
 			var hsvaColor = new ColorHelpers.HsvaColor(adjustedHue, 1.0f, 1.0f, 1.0f);
 
@@ -40,6 +43,24 @@ public static class RuleSetConfiguration {
 				Color = ColorHelpers.HsvToRgb(hsvaColor),
 			});
 			config.Save();
+		}
+
+		ImGui.SameLine();
+		if (ImGuiComponents.IconButton(FontAwesomeIcon.FileImport, importButtonSize / ImGuiHelpers.GlobalScale)) {
+			PresetManager.LoadFromClipboard();
+		}
+
+		if (ImGui.IsItemHovered()) {
+			ImGui.SetTooltip("Import Ruleset(s) from Clipboard");
+		}
+
+		ImGui.SameLine();
+		if (ImGuiComponents.IconButton(FontAwesomeIcon.FileExport, importButtonSize / ImGuiHelpers.GlobalScale)) {
+			PresetManager.SaveToClipboard();
+		}
+
+		if (ImGui.IsItemHovered()) {
+			ImGui.SetTooltip("Export Ruleset(s) to Clipboard");
 		}
 	}
 

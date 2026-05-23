@@ -4,6 +4,9 @@ using Lumina.Excel.Sheets;
 
 namespace SortaKinda.Classes;
 
+/// <summary>
+/// Helper class for geting the vector color representing item rarity.
+/// </summary>
 public static class RarityColor {
 	public static Vector4 GetRarityColor(uint rarity) {
 		var rarityUiColor = GetItemRarityColorType(rarity);

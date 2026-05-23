@@ -12,9 +12,5 @@ public static class WindowExtensions {
 		[Conditional("DEBUG")]
 		public void DebugOpen()
 			=> window.IsOpen = true;
-
-		[Conditional("DEBUG")]
-		public void DebugToggle()
-			=> window.IsOpen = !window.IsOpen;
 	}
 }
