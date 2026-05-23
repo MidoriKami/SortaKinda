@@ -216,7 +216,7 @@ public static class RuleSetConfiguration {
 			}
 		}
 
-		var childSize = new Vector2(ImGui.GetContentRegionMax().X, ImGui.GetContentRegionAvail().Y * 4.0f / 10.0f);
+		var childSize = new Vector2(ImGui.GetContentRegionMax().X, ImGui.GetContentRegionAvail().Y * 3.55f / 10.0f);
 		using var child = ImRaii.Child("FilterConfig", childSize);
 		if (!child) return;
 
