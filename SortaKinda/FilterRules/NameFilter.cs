@@ -22,6 +22,7 @@ public class NameFilter : FilteringRuleBase {
 
 	private string newRegexString = string.Empty;
 	private bool addButtonEnabled;
+	private bool refocusInput;
 
 	public override bool HasConfiguration
 		=> true;
@@ -37,7 +38,15 @@ public class NameFilter : FilteringRuleBase {
 		if (!child) return;
 
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 22.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X);
-		if (ImGui.InputTextWithHint("##FilterString", "Regex name", ref newRegexString)) {
+
+		if (refocusInput) {
+			ImGui.SetKeyboardFocusHere();
+			refocusInput = false;
+		}
+
+		var textSubmitted = ImGui.InputTextWithHint("##FilterString", "Regex name", ref newRegexString, flags: ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.AutoSelectAll);
+
+		if (ImGui.IsItemEdited()) {
 			try {
 				if (newRegexString is "") {
 					addButtonEnabled = false;
@@ -54,11 +63,16 @@ public class NameFilter : FilteringRuleBase {
 
 		ImGui.SameLine();
 		using (ImRaii.Disabled(!addButtonEnabled)) {
-			if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus, ImGui.GetContentRegionAvail() / ImGuiHelpers.GlobalScale)) {
+			if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus, ImGui.GetContentRegionAvail() / ImGuiHelpers.GlobalScale) || (textSubmitted && addButtonEnabled)) {
 				Names.Add(newRegexString);
 				newRegexString = string.Empty;
 				System.SystemConfiguration.Save();
 			}
+		}
+
+		if (textSubmitted) {
+			refocusInput = true;
+			newRegexString = string.Empty;
 		}
 	}
 
