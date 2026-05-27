@@ -69,11 +69,16 @@ public static unsafe class InventoryItemExtensions {
 		}
 
 		private bool IsInGearset() {
+			var thisItemBaseId = ItemUtil.GetBaseId(item.GetItemId());
+
 			foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {
 				if (enabledGearsetIndex is 0) continue;
 
 				foreach (ref var itemInGearset in RaptureGearsetModule.Instance()->Entries[enabledGearsetIndex].Items) {
-					if (itemInGearset.ItemId == item.GetItemId()) return true;
+					var gearsetItemBaseId = ItemUtil.GetBaseId(itemInGearset.ItemId);
+
+					// For now, we'll ignore HQ.
+					if (thisItemBaseId.ItemId == gearsetItemBaseId.ItemId) return true;
 				}
 			}
 
