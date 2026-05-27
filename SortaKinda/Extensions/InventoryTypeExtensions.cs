@@ -51,6 +51,18 @@ public static unsafe class InventoryTypeExtensions {
 			_ => inventory.ToString(),
 		};
 
+		public string AdjustedName => inventory.AdjustedInventoryType switch {
+			InventoryType.Inventory1 => "Main Inventory",
+			InventoryType.Inventory2 => "Main Inventory",
+			InventoryType.Inventory3 => "Main Inventory",
+			InventoryType.Inventory4 => "Main Inventory",
+			InventoryType.SaddleBag1 => "Saddlebag",
+			InventoryType.SaddleBag2 => "Saddlebag",
+			InventoryType.PremiumSaddleBag1 => "Premium Saddlebag",
+			InventoryType.PremiumSaddleBag2 => "Premium Saddlebag",
+			_ => inventory.Name,
+		};
+
 		/// <summary>
 		/// Get the item entry for a specific slot, to find what item it's actually referring to.
 		/// </summary>
