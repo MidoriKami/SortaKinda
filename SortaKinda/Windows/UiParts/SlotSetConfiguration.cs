@@ -93,8 +93,9 @@ public static class SlotSetConfiguration {
 			using (ImRaii.Tooltip())
 			using (ImRaii.TextWrapPos(ImGui.GetFontSize() * 36.0f)) {
 				ImGui.Text("SortaKinda allows you to define which slots of your inventory will contain which items.\n\n" +
-				           "Start by segmenting your inventory into 'Slot Sets' that you can later assign a " +
-				           "'Rule Set' to define what items will get sorted to these slots.");
+				           "Start by defining a Rule Set that defines what items you want to allow, and what order to sort them into. " +
+				           "Then add a Slot Set with that rule, to define where you want items that match that rule to go into.\n\n" +
+				           "When defining Set Sets, the slots selected will fill in the order they are selected, as indicated by the number in the top right corner of a slot.");
 			}
 		}
 
@@ -133,6 +134,11 @@ public static class SlotSetConfiguration {
 	private static void DrawRuleSetSelectPopup() {
 		using var popup = ImRaii.Popup("RuleSetSelect");
 		if (!popup) return;
+
+		if (System.SystemConfiguration.RuleSets.Count is 0) {
+			ImGui.Text("No Rule Sets Available");
+			return;
+		}
 
 		foreach (var (index, ruleSet) in System.SystemConfiguration.RuleSets.OrderBy(entry => entry.Name).Index()) {
 			using var id = ImRaii.PushId(index);
