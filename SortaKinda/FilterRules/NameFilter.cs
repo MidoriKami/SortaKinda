@@ -82,8 +82,8 @@ public class NameFilter : FilteringRuleBase {
 
 		string? toRemove = null;
 
-		foreach (var option in Names) {
-			using var id = ImRaii.PushId(option);
+		foreach (var (index, option) in Names.Index()) {
+			using var id = ImRaii.PushId($"{option}{index}");
 
 			if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) {
 				toRemove = option;
