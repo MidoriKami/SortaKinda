@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using Dalamud.Interface;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Utilities;
 
@@ -28,6 +31,14 @@ public class SystemConfiguration {
 
 	public static SystemConfiguration Load() {
 		var loadedConfig = Config.LoadConfig<SystemConfiguration>("System.config.json");
+
+		if (loadedConfig.RuleSets.All(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId)) {
+			loadedConfig.RuleSets.Add(new RuleSet {
+				Name = "Unsorted",
+				RuleSetId = SlotSet.IgnoreSlotsId,
+				Color = KnownColor.White.Vector(),
+			});
+		}
 
 		// Remove any invalid filter or orderings.
 		foreach (var ruleSet in loadedConfig.RuleSets) {

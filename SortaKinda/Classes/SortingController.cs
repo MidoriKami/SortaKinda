@@ -191,7 +191,7 @@ public unsafe class SortingController :  IDisposable {
 
 					foreach (var slot in slots) {
 						var itemForSlot = inventoryType.GetItem(slot);
-						var adjustedSlotIndex = (int)( slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType) );
+						var adjustedSlotIndex = inventoryType.GetAdjustedSlotIndex(slot);
 
 						logString.AppendLine($"\t\t\tEvaluating Slot [{adjustedSlotIndex}]");
 
@@ -319,8 +319,11 @@ public unsafe class SortingController :  IDisposable {
 		validItemSlots = [];
 
 		var inventorySorter = adjustedInventoryType.InventorySorter;
+		var unsortedSlots = GetUnsortedSlotsForInventory(adjustedInventoryType);
 
 		foreach (var (index, _) in inventorySorter->Items.Index()) {
+			if (unsortedSlots.Contains(index)) continue;
+
 			var item = inventorySorter->GetInventoryItem(index);
 			if (item is null) continue;
 
@@ -346,21 +349,23 @@ public unsafe class SortingController :  IDisposable {
 	private static bool IsSlotReserved(InventoryType realInventoryType, int inventorySlot) {
 		if (System.CharacterConfiguration is not { } characterConfig) return false;
 
-		// Limit the reservation check to just configs that are actually using this inventory.
-		var configsForInventory = characterConfig.Inventories
-			.Where(config => config.Key.AdjustedInventoryType == realInventoryType);
+		return characterConfig.Inventories
+			.Where(config => config.Key.AdjustedInventoryType == realInventoryType)
+			.Any(pair => pair.Value.SlotSets
+				.SelectMany(set => set.SlotIndexes)
+				.Any(slot => inventorySlot == pair.Key.GetAdjustedSlotIndex(slot))
+			);
+	}
 
-		foreach (var (inventoryType, config) in configsForInventory) {
-			foreach (var slotSet in config.SlotSets) {
-				foreach (var slot in slotSet.SlotIndexes) {
-					var adjustedSlotIndex = (int)( slot + inventoryType.InventorySorter->ItemsPerPage * (inventoryType - inventoryType.AdjustedInventoryType) );
+	private static HashSet<int> GetUnsortedSlotsForInventory(InventoryType realInventoryType) {
+		if (System.CharacterConfiguration is not { } characterConfig) return [];
 
-					if (inventorySlot == adjustedSlotIndex) return true;
-				}
-			}
-		}
-
-		return false;
+		return characterConfig.Inventories
+          .Where(config => config.Key.AdjustedInventoryType == realInventoryType)
+          .SelectMany(config => config.Value.SlotSets)
+          .Where(slotSet => slotSet.RuleSetId == SlotSet.IgnoreSlotsId)
+          .SelectMany(set => set.SlotIndexes)
+          .ToHashSet();
 	}
 
 	/// <summary>

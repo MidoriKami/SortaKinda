@@ -104,7 +104,11 @@ public static class RuleSetConfiguration {
 		using var list = ImRaii.ListBox("RuleSetList", new Vector2(ImGui.GetContentRegionMax().X, ImGui.GetContentRegionMax().Y - footerHeight));
 		if (!list) return;
 
-		foreach (var (index, entry) in config.RuleSets.OrderBy(entry => entry.Name).Index()) {
+		var ruleSets = config.RuleSets
+			.Where(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId)
+			.OrderBy(entry => entry.Name);
+
+		foreach (var (index, entry) in ruleSets.Index()) {
 			using var id = ImRaii.PushId(index);
 
 			if (ImWidget.DrawColoredSelectable(entry.Color, entry.Name, entry == selectedRuleSet)) {

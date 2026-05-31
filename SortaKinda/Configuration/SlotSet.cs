@@ -16,6 +16,10 @@ public class SlotSet {
 	public int Priority = 0;
 
 	[JsonIgnore]
+	public static readonly Guid IgnoreSlotsId
+		= new("4b1a4574-e3fb-51d0-b530-589cb3235ffb");
+
+	[JsonIgnore]
 	public RuleSet RuleSet
 		=> System.SystemConfiguration.RuleSets
 			.FirstOrDefault(set => set.RuleSetId == RuleSetId)

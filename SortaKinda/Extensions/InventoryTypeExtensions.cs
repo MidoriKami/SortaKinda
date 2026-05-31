@@ -27,6 +27,9 @@ public static unsafe class InventoryTypeExtensions {
 			return inventoryContainer->GetInventorySlot(actualInventorySlot);
 		}
 
+		public int GetAdjustedSlotIndex(int slot)
+			=>(int)( slot + inventory.InventorySorter->ItemsPerPage * (inventory - inventory.AdjustedInventoryType) );
+
 		public string Name => inventory switch {
 			InventoryType.Inventory1 => "Inventory 1",
 			InventoryType.Inventory2 => "Inventory 2",
