@@ -145,7 +145,7 @@ public unsafe class SortingController :  IDisposable {
 				logString.AppendLine();
 				logString.AppendLine($"Inventory Group: {inventoryGroup.Key.AdjustedInventoryType}");
 
-				ParseSlotMappings(adjustedInventoryType, out var emptyItemSlots, out var validItemSlots);
+				ParseSlotMappings(adjustedInventoryType, out var emptyItemSlots, out var validItemSlots, out var unassignedSlotss);
 
 				//
 				//		Process Slot Sets
@@ -269,6 +269,72 @@ public unsafe class SortingController :  IDisposable {
 					logString.AppendLine();
 				}
 
+				if (System.SystemConfiguration.EnableUnassignedOrdering) {
+					logString.AppendLine();
+					logString.AppendLine("Beginning Unassigned Ordering");
+
+					// Grab the remaining items, and sort them
+					validItemSlots.Sort(System.SystemConfiguration.UnassignedSlotOrdering.Compare);
+					var takenItems = validItemSlots.Take(unassignedSlotss.Count).ToList();
+
+					foreach (var (slot, inventoryItem, inventoryType) in unassignedSlotss) {
+						var adjustedSlotIndex = inventoryType.GetAdjustedSlotIndex(slot);
+						logString.AppendLine($"\t\t\tEvaluating Slot [{adjustedSlotIndex}]");
+
+						// Check if we have what we want already
+						if (takenItems.Count is not 0) {
+							var firstTakenItem = takenItems.First();
+
+							if (firstTakenItem.VisibleSlotIndex == adjustedSlotIndex) {
+								logString.AppendLine("\t\t\t\tSlot already has what we want");
+
+								takenItems.Remove(firstTakenItem);
+								logString.AppendLine();
+								continue;
+							}
+						}
+
+						// Is this slot occupied?
+						if (inventoryItem.Value->ItemId is not 0) {
+							logString.AppendLine($"\t\t\t\tSlot is Occupied with {inventoryItem.Value->Name}");
+
+							// Do we have something we want?
+							if (takenItems.Count is not 0) {
+								var firstTakenItem = takenItems.First();
+
+								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name} from slot [{firstTakenItem.VisibleSlotIndex}]");
+
+								SwapInventorySlots(inventoryType, slot, firstTakenItem);
+
+								// If there is an item that we want, at all, but it's in this slot, we just moved it. Update its known position.
+								var outdatedItemInfo = takenItems.FirstOrDefault(item => item.VisibleSlotIndex == adjustedSlotIndex);
+								outdatedItemInfo?.VisibleSlotIndex = firstTakenItem.VisibleSlotIndex;
+
+								logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstTakenItem.VisibleSlotIndex}");
+								takenItems.Remove(firstTakenItem);
+							}
+						}
+
+						// This slot is empty!
+						else {
+							logString.AppendLine("\t\t\t\tSlot is empty");
+
+							// Do we have something we want?
+							if (takenItems.Count is not 0) {
+								var firstTakenItem = takenItems.First();
+								logString.AppendLine($"\t\t\t\tWe want {firstTakenItem.Item.Value->Name}");
+
+								SwapInventorySlots(inventoryType, slot, firstTakenItem);
+
+								logString.AppendLine($"\t\t\t\tSwapping {adjustedSlotIndex} -> {firstTakenItem.VisibleSlotIndex}");
+								takenItems.Remove(firstTakenItem);
+							}
+						}
+
+						logString.AppendLine();
+					}
+				}
+
 				if (System.SystemConfiguration.EnableSortLogging) {
 					Services.PluginLog.Information(logString.ToString());
 				}
@@ -314,9 +380,17 @@ public unsafe class SortingController :  IDisposable {
 	/// <param name="adjustedInventoryType">The real inventory type to parse.</param>
 	/// <param name="emptyItemSlots">List of Visible Slot Indexes that have no item.</param>
 	/// <param name="validItemSlots">List of Visible Slot Indexes with valid items.</param>
-	private static void ParseSlotMappings(InventoryType adjustedInventoryType, out List<ItemSlotInfo> emptyItemSlots, out List<ItemSlotInfo> validItemSlots) {
+	/// <param name="unassignedSlots">List of Visible Slot Indexes slots that have no rule sets.</param>
+	private static void ParseSlotMappings(
+		InventoryType adjustedInventoryType,
+		out List<ItemSlotInfo> emptyItemSlots,
+		out List<ItemSlotInfo> validItemSlots,
+		out List<ItemSlotInfo> unassignedSlots
+		)
+	{
 		emptyItemSlots = [];
 		validItemSlots = [];
+		unassignedSlots = [];
 
 		var inventorySorter = adjustedInventoryType.InventorySorter;
 		var unsortedSlots = GetUnsortedSlotsForInventory(adjustedInventoryType);
@@ -327,15 +401,22 @@ public unsafe class SortingController :  IDisposable {
 			var item = inventorySorter->GetInventoryItem(index);
 			if (item is null) continue;
 
-			if (item->ItemId is 0) {
+			var isEmptySlot = item->ItemId is 0;
+			var isReservedSlot = IsSlotReserved(adjustedInventoryType, index);
 
-				// Only allow moving items into slots that are not in use.
-				if (!IsSlotReserved(adjustedInventoryType, index)) {
-					emptyItemSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
-				}
+			// Mark this slot as available for filling with unwanted items
+			if (isEmptySlot && !isReservedSlot) {
+				emptyItemSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
 			}
-			else {
+
+			// Mark this slot has having an item
+			if (!isEmptySlot) {
 				validItemSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
+			}
+
+			// Mark this slot as being rule-less
+			if (!isReservedSlot) {
+				unassignedSlots.Add(new ItemSlotInfo(index, item, adjustedInventoryType));
 			}
 		}
 	}

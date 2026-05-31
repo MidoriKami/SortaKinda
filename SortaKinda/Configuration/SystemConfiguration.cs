@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using Dalamud.Interface;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using SortaKinda.OrderRules;
 using SortaKinda.Utilities;
 
 namespace SortaKinda.Configuration;
@@ -25,6 +26,9 @@ public class SystemConfiguration {
 	public bool SortOnConfigChange = true;
 
 	public bool EnableSortLogging = false;
+
+	public bool EnableUnassignedOrdering = false;
+	public OrderingRuleBase UnassignedSlotOrdering = new AlphabeticalOrdering();
 
 	public List<RuleSet> RuleSets = [];
 	public InventoryType LastSelectedInventory = InventoryType.Inventory1;
