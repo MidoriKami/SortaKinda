@@ -33,6 +33,15 @@ public static class PresetManager {
 					return;
 				}
 
+				// Remove any invalid filter or orderings.
+				foreach (var ruleSet in clipboardData.RuleSets) {
+					ruleSet.FilterRules
+					       .RemoveAll(filter => !filter.IsValid);
+
+					ruleSet.OrderingRules
+					       .RemoveAll(filter => !filter.IsValid);
+				}
+
 				var addedCount = 0;
 				foreach (var rule in clipboardData.RuleSets) {
 					if (System.SystemConfiguration.RuleSets.All(existingRule => existingRule.RuleSetId != rule.RuleSetId)) {
