@@ -3,6 +3,9 @@
 namespace SortaKinda.FilterRules;
 
 public class Anything : FilteringRuleBase {
+	public override bool IsValid
+		=> false;
+
 	public override string Label
 		=> "Anything";
 

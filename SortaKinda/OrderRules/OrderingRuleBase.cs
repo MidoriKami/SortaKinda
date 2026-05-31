@@ -16,5 +16,8 @@ public abstract unsafe partial class OrderingRuleBase {
 	public string ButtonLabel
 		=> IsReversed ? $"{ReversedLabel} → {NotReversedLabel}" : $"{NotReversedLabel} → {ReversedLabel}";
 
+	public virtual bool IsValid
+		=> true;
+
 	public abstract int Compare(InventoryItem* left, InventoryItem* right);
 }

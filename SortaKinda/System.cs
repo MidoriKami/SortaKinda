@@ -25,6 +25,7 @@ public class System {
 		=> FilteringRuleTypes
 		   .Select(type => (FilteringRuleBase?)Activator.CreateInstance(type))
 		   .OfType<FilteringRuleBase>()
+		   .Where(rule => rule.IsValid)
 		   .OrderBy(rule => rule.Label)
 		   .ToList();
 
@@ -32,6 +33,7 @@ public class System {
 		=> OrderingRuleTypes
 		   .Select(type => (OrderingRuleBase?)Activator.CreateInstance(type))
 		   .OfType<OrderingRuleBase>()
+		   .Where(rule => rule.IsValid)
 		   .OrderBy(rule => rule.Label)
 		   .ToList();
 

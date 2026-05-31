@@ -26,8 +26,20 @@ public class SystemConfiguration {
 	public List<RuleSet> RuleSets = [];
 	public InventoryType LastSelectedInventory = InventoryType.Inventory1;
 
-	public static SystemConfiguration Load()
-		=> Config.LoadConfig<SystemConfiguration>("System.config.json");
+	public static SystemConfiguration Load() {
+		var loadedConfig = Config.LoadConfig<SystemConfiguration>("System.config.json");
+
+		// Remove any invalid filter or orderings.
+		foreach (var ruleSet in loadedConfig.RuleSets) {
+			ruleSet.FilterRules
+				.RemoveAll(filter => !filter.IsValid);
+
+			ruleSet.OrderingRules
+			    .RemoveAll(filter => !filter.IsValid);
+		}
+
+		return loadedConfig;
+	}
 
 	public void Save(bool triggerSort = true) {
 		if (SortOnConfigChange && triggerSort) {

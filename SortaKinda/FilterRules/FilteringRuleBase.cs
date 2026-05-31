@@ -16,7 +16,8 @@ public abstract unsafe partial class FilteringRuleBase {
 	/// <summary>
 	/// Set to true to enable the "Configure" button.
 	/// </summary>
-	public virtual bool HasConfiguration => false;
+	public virtual bool HasConfiguration
+		=> false;
 
 	/// <summary>
 	/// Drawn in a popup window to configure this filter.
@@ -33,4 +34,10 @@ public abstract unsafe partial class FilteringRuleBase {
 	/// </summary>
 	public bool IsItemAllowed(InventoryItem* item)
 		=> EvaluateItem(item) == IsAllowed;
+
+	/// <summary>
+	/// Value indicating if this filter rule is a valid rule.
+	/// </summary>
+	public virtual bool IsValid
+		=> true;
 }
