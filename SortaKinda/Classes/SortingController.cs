@@ -241,7 +241,8 @@ public unsafe class SortingController :  IDisposable {
 								}
 								else {
 									Services.PluginLog.Warning($"{adjustedInventoryType} is full, unable to move items out of Slot Set {slotSet.RuleSet.Name}");
-									Services.ChatGui.PrintError($"{adjustedInventoryType.AdjustedName} is full, unable to move items out of Slot Set {slotSet.RuleSet.Name}", "SortaKinda");
+									Services.ChatGui.PrintError($"{adjustedInventoryType.AdjustedName} is full, unable to move items out of Slot Set {slotSet.RuleSet.Name}.", "SortaKinda");
+									Services.ChatGui.PrintError("You have too many slots assigned to slot sets, you must leave some slots unassigned.", "SortaKinda");
 								}
 							}
 						}
