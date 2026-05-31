@@ -7,10 +7,10 @@ public class SellPriceOrdering : OrderingRuleBase {
 		=> "Vendor Sell Price";
 
 	protected override string NotReversedLabel
-		=> "High";
+		=> "Low";
 
 	protected override string ReversedLabel
-		=> "Low";
+		=> "High";
 
 	public override unsafe int Compare(InventoryItem* left, InventoryItem* right)
 		=> left->SellPrice.CompareTo(right->SellPrice);
