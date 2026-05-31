@@ -364,7 +364,7 @@ public unsafe class SortingController :  IDisposable {
           .Where(config => config.Key.AdjustedInventoryType == realInventoryType)
           .SelectMany(config => config.Value.SlotSets)
           .Where(slotSet => slotSet.RuleSetId == SlotSet.IgnoreSlotsId)
-          .SelectMany(set => set.SlotIndexes)
+          .SelectMany(set => set.SlotIndexes.Select(index => set.InventoryType.GetAdjustedSlotIndex(index)))
           .ToHashSet();
 	}
 
