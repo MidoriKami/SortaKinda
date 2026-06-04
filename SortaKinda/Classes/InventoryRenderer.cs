@@ -39,13 +39,12 @@ public static unsafe class InventoryRenderer {
 
 		UpdatePainting();
 
-		foreach (var row in Enumerable.Range(0, inventory.ItemsPerPage / rowSize)) {
-			foreach (var column in Enumerable.Range(0, rowSize)) {
-				DrawInventorySlot(inventory, row * rowSize + column, drawOptions);
-				if (column is not rowSize - 1) {
-					ImGui.SameLine();
-				}
+		foreach (var index in Enumerable.Range(0, inventory.ItemsPerPage)) {
+			if (index % rowSize is not 0) {
+				ImGui.SameLine();
 			}
+
+			DrawInventorySlot(inventory, index, drawOptions);
 		}
 	}
 
