@@ -186,11 +186,9 @@ public static class PresetManager {
 		ImGui.SetClipboardText(Convert.ToBase64String(compressed));
 	}
 
-	private static PresetContainer CreatePresetContainer(IEnumerable<RuleSet> ruleSets) {
-		return new PresetContainer {
-			RuleSets = ruleSets
-				.Where(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId)
-				.ToList(),
-		};
-	}
+	private static PresetContainer CreatePresetContainer(IEnumerable<RuleSet> ruleSets) => new() {
+		RuleSets = ruleSets
+			.Where(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId)
+			.ToList(),
+	};
 }

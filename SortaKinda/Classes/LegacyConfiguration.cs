@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json;
 
+// ReSharper disable CollectionNeverUpdated.Global
+// Reason: Legacy Migration Support.
+
 namespace SortaKinda.Classes;
 
 /// <summary>

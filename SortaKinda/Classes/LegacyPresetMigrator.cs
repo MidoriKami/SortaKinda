@@ -20,6 +20,7 @@ internal static class LegacyPresetMigrator {
 	private const string DefaultRuleId = "Default";
 
 	// Namespace for stable GUIDs when a legacy rule id is not already a GUID string.
+	// Used as a base id that is mutated when importing individual rules.
 	private static readonly Guid LegacyIdNamespace = new("8f4e2c1a-9b3d-4f6e-a5c8-2d7e9f0b1c3a");
 
 	private static readonly JsonSerializerOptions LegacyOptions = new() {
@@ -80,19 +81,15 @@ internal static class LegacyPresetMigrator {
 	private static bool IsImportableLegacyRule(LegacyRule rule)
 		=> !string.IsNullOrWhiteSpace(rule.Id) && !string.Equals(rule.Id, DefaultRuleId, StringComparison.Ordinal);
 
-	private static RuleSet BuildRuleSet(LegacyRule rule) {
-		var ruleSet = new RuleSet {
-			Name = rule.Name,
-			RuleSetId = ParseLegacyId(rule.Id),
-			Color = rule.Color,
-			RequireAll = !rule.InclusiveAnd,
-			ReverseFill = rule.FillMode == 1,
-			FilterRules = BuildFilterRules(rule),
-			OrderingRules = BuildOrderingRules(rule),
-		};
-
-		return ruleSet;
-	}
+	private static RuleSet BuildRuleSet(LegacyRule rule) => new() {
+		Name = rule.Name,
+		RuleSetId = ParseLegacyId(rule.Id),
+		Color = rule.Color,
+		RequireAll = !rule.InclusiveAnd,
+		ReverseFill = rule.FillMode == 1,
+		FilterRules = BuildFilterRules(rule),
+		OrderingRules = BuildOrderingRules(rule),
+	};
 
 	private static List<FilteringRuleBase> BuildFilterRules(LegacyRule rule) {
 		var filters = new List<FilteringRuleBase>();
@@ -204,7 +201,7 @@ internal static class LegacyPresetMigrator {
 			4 => (new ItemIdOrdering(), true),
 			5 => (new ItemUiCategoryOrdering(), false),
 			6 => (new EquipLevelOrdering(), true),
-			_ => (null!, false),
+			_ => (null, false),
 		};
 
 		if (ordering is null) {
@@ -329,8 +326,8 @@ internal static class LegacyPresetMigrator {
 		}
 
 		var hash = MD5.HashData(Encoding.UTF8.GetBytes($"{LegacyIdNamespace:N}:{id}"));
-		hash[6] = (byte)((hash[6] & 0x0F) | 0x30);
-		hash[8] = (byte)((hash[8] & 0x3F) | 0x80);
+		hash[6] = (byte)(hash[6] & 0x0F | 0x30);
+		hash[8] = (byte)(hash[8] & 0x3F | 0x80);
 		return new Guid(hash);
 	}
 
