@@ -188,8 +188,11 @@ public unsafe class SortingController :  IDisposable {
 					//
 
 					var slots = ruleSet.ReverseFill ? slotSet.SlotIndexes.AsEnumerable().Reverse() : slotSet.SlotIndexes;
+					var isError = false;
 
 					foreach (var slot in slots) {
+						if (isError) break;
+
 						var itemForSlot = inventoryType.GetItem(slot);
 						var adjustedSlotIndex = inventoryType.GetAdjustedSlotIndex(slot);
 
@@ -240,9 +243,10 @@ public unsafe class SortingController :  IDisposable {
 									emptyItemSlots.Remove(firstEmptySlot);
 								}
 								else {
-									Services.PluginLog.Warning($"{adjustedInventoryType} is full, unable to move items out of Slot Set {slotSet.RuleSet.Name}");
-									Services.ChatGui.PrintError($"{adjustedInventoryType.AdjustedName} is full, unable to move items out of Slot Set {slotSet.RuleSet.Name}.", "SortaKinda");
-									Services.ChatGui.PrintError("You have too many slots assigned to slot sets, you must leave some slots unassigned.", "SortaKinda");
+									Services.PluginLog.Warning($"Failed to move '{itemForSlot->Name}' from '{slot}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
+									Services.ChatGui.PrintError($"Failed to move '{itemForSlot->Name}' from '{slot}' in '{inventoryType}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
+									Services.ChatGui.PrintError($"There needs to be unassigned slots for items to be moved to. Sorting for {slotSet.RuleSet.Name} has been aborted.", "SortaKinda");
+									isError = true;
 								}
 							}
 						}
