@@ -11,6 +11,7 @@ using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using SortaKinda.Configuration;
 using AgentId = Dalamud.Game.Agent.AgentId;
 
@@ -348,6 +349,7 @@ public unsafe class SortingController :  IDisposable {
 			// Non-networked.
 			Services.Framework.RunOnFrameworkThread(() => {
 				RaptureAtkModule.Instance()->AgentUpdateFlag |= RaptureAtkModule.AgentUpdateFlags.InventoryUpdate;
+				ItemOrderModule.Instance()->HasChanges = true;
 			});
 		}
 		catch (Exception e) {
