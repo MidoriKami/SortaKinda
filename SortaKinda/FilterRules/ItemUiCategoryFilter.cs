@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Dalamud.Bindings.ImGui;
@@ -32,7 +33,17 @@ public class ItemUiCategoryFilter : FilteringRuleBase {
 
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
 		if (ImGui.InputTextWithHint("##SearchBar", "Search . . . ", ref searchString, flags: ImGuiInputTextFlags.AutoSelectAll)) {
-			searchRegex = new Regex(searchString, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+			try {
+				if (searchString is "") {
+					searchRegex = new Regex(string.Empty);
+				}
+				else {
+					searchRegex = new Regex(searchString);
+				}
+			}
+			catch (ArgumentException) {
+				searchRegex = new Regex(string.Empty);
+			}
 		}
 	}
 
