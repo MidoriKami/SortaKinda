@@ -71,10 +71,10 @@ public static unsafe class InventoryItemExtensions {
 		private bool IsInGearset() {
 			var thisItemBaseId = ItemUtil.GetBaseId(item.GetItemId());
 
-			foreach (var enabledGearsetIndex in RaptureGearsetModule.Instance()->EnabledGearsetIndex2EntryIndex) {
-				if (enabledGearsetIndex is 0) continue;
+			foreach (var gearset in RaptureGearsetModule.Instance()->Entries) {
+				if (!gearset.Flags.HasFlag(RaptureGearsetModule.GearsetFlag.Exists)) continue;
 
-				foreach (ref var itemInGearset in RaptureGearsetModule.Instance()->Entries[enabledGearsetIndex].Items) {
+				foreach (ref var itemInGearset in gearset.Items) {
 					var gearsetItemBaseId = ItemUtil.GetBaseId(itemInGearset.ItemId);
 
 					// For now, we'll ignore HQ.
