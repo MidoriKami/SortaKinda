@@ -26,6 +26,7 @@ public class SystemConfiguration {
 	public bool SortOnConfigChange = true;
 
 	public bool EnableSortLogging = false;
+	public bool EnableAbortedSortWarning = true;
 
 	public bool EnableUnassignedOrdering = false;
 	public OrderingRuleBase UnassignedSlotOrdering = new AlphabeticalOrdering();

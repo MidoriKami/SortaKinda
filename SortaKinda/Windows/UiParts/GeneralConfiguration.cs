@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
@@ -30,6 +30,7 @@ public static class GeneralConfiguration {
 		ImGui.Separator();
 
 		configChanged |= ImGui.Checkbox("Enable Advanced Logging", ref config.EnableSortLogging);
+		configChanged |= ImGui.Checkbox("Enable Aborted Sort Warning", ref config.EnableAbortedSortWarning);
 
 		ImGuiHelpers.ScaledDummy(10.0f);
 		ImGui.Text("Unassigned Slot Ordering");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -245,8 +245,12 @@ public unsafe class SortingController :  IDisposable {
 								}
 								else {
 									Services.PluginLog.Warning($"Failed to move '{itemForSlot->Name}' from '{slot}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
-									Services.ChatGui.PrintError($"Failed to move '{itemForSlot->Name}' from '{slot}' in '{inventoryType}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
-									Services.ChatGui.PrintError($"There needs to be unassigned slots for items to be moved to. Sorting for {slotSet.RuleSet.Name} has been aborted.", "SortaKinda");
+									
+									// Only print warnings to the chat if the corresponding configuration is enabled.
+									if (System.SystemConfiguration.EnableAbortedSortWarning) {
+										Services.ChatGui.PrintError($"Failed to move '{itemForSlot->Name}' from '{slot}' in '{inventoryType}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
+										Services.ChatGui.PrintError($"There needs to be unassigned slots for items to be moved to. Sorting for {slotSet.RuleSet.Name} has been aborted.", "SortaKinda");
+									}
 									isError = true;
 								}
 							}
