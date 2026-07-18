@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
@@ -63,7 +64,7 @@ internal static class LegacyPresetMigrator {
 			}
 		}
 		catch (JsonException e) {
-			Services.PluginLog.Error(e, "Failed to parse legacy SortaKinda export.");
+			IPluginLog.Get().Error(e, "Failed to parse legacy SortaKinda export.");
 		}
 
 		return false;
@@ -303,7 +304,7 @@ internal static class LegacyPresetMigrator {
 
 	private static void TryAddValidRegex(List<string> results, string pattern) {
 		if (!IsValidRegexPattern(pattern)) {
-			Services.PluginLog.Warning($"Skipping invalid legacy name regex during import: {pattern}");
+			IPluginLog.Get().Warning($"Skipping invalid legacy name regex during import: {pattern}");
 			return;
 		}
 

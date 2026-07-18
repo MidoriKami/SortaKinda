@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using Dalamud.Interface;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.OrderRules;
 using SortaKinda.Utilities;
@@ -61,7 +62,7 @@ public class SystemConfiguration {
 			System.SortingController.LaunchSortTask();
 		}
 
-		Services.PluginLog.Debug("Saving System.config.json");
+		IPluginLog.Get().Debug("Saving System.config.json");
 		Config.SaveConfig(this, "System.config.json");
 	}
 }

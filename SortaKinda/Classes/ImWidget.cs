@@ -72,7 +72,7 @@ public static class ImWidget {
 		ImGui.SetCursorPos(cursorPosition + new Vector2(5.0f * ImGuiHelpers.GlobalScale, 0.0f));
 
 		using (ImRaii.PushColor(ImGuiCol.Text, color))
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.Square.ToIconString());
 		}
 
@@ -89,7 +89,7 @@ public static class ImWidget {
 	/// <param name="currentValue">Value for the current label</param>
 	/// <param name="width">How large to make center section</param>
 	public static void DrawSelector(List<InventoryType> values, ref InventoryType currentValue, float width) {
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			if (ImGui.Button(FontAwesomeIcon.CaretLeft.ToIconString())) {
 				var currentIndex = values.IndexOf(currentValue);
 				if (currentIndex is 0) {
@@ -129,7 +129,7 @@ public static class ImWidget {
 		ImGui.SameLine();
 		ImGui.SetCursorPos(restorePosition);
 
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			if (ImGui.Button(FontAwesomeIcon.CaretRight.ToIconString())) {
 				var currentIndex = values.IndexOf(currentValue);
 				if (currentIndex == values.Count - 1) {

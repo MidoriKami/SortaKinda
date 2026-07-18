@@ -6,6 +6,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Plugin.Services;
 using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
@@ -76,7 +77,7 @@ public static class RuleSetConfiguration {
 		if (selectedRuleSet is null) return;
 
 		ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 24.0f * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.Y);
-		using (ImRaii.Disabled(!Services.KeyState.DeleteKeybindPressed)) {
+		using (ImRaii.Disabled(!IKeyState.Get().DeleteKeybindPressed)) {
 			if (ImGui.Button("Delete", ImGui.GetContentRegionAvail())) {
 				config.RuleSets.Remove(selectedRuleSet);
 				selectedRuleSet = null;
@@ -92,7 +93,7 @@ public static class RuleSetConfiguration {
 			}
 		}
 
-		if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !Services.KeyState.DeleteKeybindPressed) {
+		if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !IKeyState.Get().DeleteKeybindPressed) {
 			ImGui.SetTooltip("Hold Control + Shift to enable button.");
 		}
 	}
@@ -143,7 +144,7 @@ public static class RuleSetConfiguration {
 		ImGui.SameLine();
 		ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - 24.0f * ImGuiHelpers.GlobalScale);
 
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.InfoCircle.ToIconString());
 		}
 
@@ -207,7 +208,7 @@ public static class RuleSetConfiguration {
 		ImGui.SameLine();
 		ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - 24.0f * ImGuiHelpers.GlobalScale);
 
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.InfoCircle.ToIconString());
 		}
 
@@ -312,13 +313,13 @@ public static class RuleSetConfiguration {
 			}
 
 			ImGui.TableNextColumn();
-			using (ImRaii.Disabled(!Services.KeyState.DeleteKeybindPressed)) {
+			using (ImRaii.Disabled(!IKeyState.Get().DeleteKeybindPressed)) {
 				if (ImGui.Button("Delete", new Vector2(ImGui.GetContentRegionAvail().X, 22.0f * ImGuiHelpers.GlobalScale))) {
 					filterToRemove = filter;
 				}
 			}
 
-			if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !Services.KeyState.DeleteKeybindPressed) {
+			if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !IKeyState.Get().DeleteKeybindPressed) {
 				ImGui.SetTooltip("Hold Control + Shift to enable button.");
 			}
 		}
@@ -361,7 +362,7 @@ public static class RuleSetConfiguration {
 		ImGui.SameLine();
 		ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - 24.0f * ImGuiHelpers.GlobalScale);
 
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.InfoCircle.ToIconString());
 		}
 
@@ -388,7 +389,7 @@ public static class RuleSetConfiguration {
 		ImGui.SameLine();
 		ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X - 24.0f * ImGuiHelpers.GlobalScale);
 
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.InfoCircle.ToIconString());
 		}
 
@@ -469,13 +470,13 @@ public static class RuleSetConfiguration {
 			}
 
 			ImGui.TableNextColumn();
-			using (ImRaii.Disabled(!Services.KeyState.DeleteKeybindPressed)) {
+			using (ImRaii.Disabled(!IKeyState.Get().DeleteKeybindPressed)) {
 				if (ImGui.Button("Delete", new Vector2(ImGui.GetContentRegionAvail().X, 22.0f * ImGuiHelpers.GlobalScale))) {
 					orderingToRemove = ordering;
 				}
 			}
 
-			if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !Services.KeyState.DeleteKeybindPressed) {
+			if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !IKeyState.Get().DeleteKeybindPressed) {
 				ImGui.SetTooltip("Hold Control + Shift to enable button.");
 			}
 		}

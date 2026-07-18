@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using SortaKinda.Configuration;
 
@@ -25,7 +26,7 @@ public static class PresetManager {
 			var uncompressed = Util.DecompressString(decodedString);
 
 			if (uncompressed.IsNullOrEmpty()) {
-				Services.ChatGui.PrintError("[Import] Tried to import sorting rules, but got nothing, try copying the code again.", "SortaKinda");
+				IChatGui.Get().PrintError("[Import] Tried to import sorting rules, but got nothing, try copying the code again.", "SortaKinda");
 				return;
 			}
 
@@ -40,7 +41,7 @@ public static class PresetManager {
 				clipboardData.RuleSets.RemoveAll(ruleSet => ruleSet.RuleSetId == SlotSet.IgnoreSlotsId);
 
 				if (clipboardData.RuleSets.Count is 0) {
-					Services.ChatGui.PrintError("[Import] Tried to import sorting rules, but got nothing, try copying the code again.", "SortaKinda");
+					IChatGui.Get().PrintError("[Import] Tried to import sorting rules, but got nothing, try copying the code again.", "SortaKinda");
 					return;
 				}
 
@@ -61,14 +62,14 @@ public static class PresetManager {
 					}
 				}
 
-				Services.ChatGui.Print($"[Import] Received {clipboardData.RuleSets.Count} sorting rules from clipboard. ", "SortaKinda");
-				Services.ChatGui.Print($"[Import] Added {addedCount} new sorting rules.", "SortaKinda");
+				IChatGui.Get().Print($"[Import] Received {clipboardData.RuleSets.Count} sorting rules from clipboard. ", "SortaKinda");
+				IChatGui.Get().Print($"[Import] Added {addedCount} new sorting rules.", "SortaKinda");
 				System.SystemConfiguration.Save(false);
 			}
 		}
 		catch (Exception e) {
-			Services.PluginLog.Error(e, "Error Parsing Preset");
-			Services.ChatGui.PrintError("[Import] Something went wrong trying to import rulesets, check you copied the code correctly.", "SortaKinda");
+			IPluginLog.Get().Error(e, "Error Parsing Preset");
+			IChatGui.Get().PrintError("[Import] Something went wrong trying to import rulesets, check you copied the code correctly.", "SortaKinda");
 		}
 
 	}
@@ -79,7 +80,7 @@ public static class PresetManager {
 	/// </summary>
 	private static void HandleLegacyImport(string json) {
 		if (!LegacyPresetMigrator.TryParse(json, out var legacyExport)) {
-			Services.ChatGui.PrintError("[Import] Tried to import an older backup code, but couldn't read any rules from it.", "SortaKinda");
+			IChatGui.Get().PrintError("[Import] Tried to import an older backup code, but couldn't read any rules from it.", "SortaKinda");
 			return;
 		}
 
@@ -122,17 +123,17 @@ public static class PresetManager {
 		System.SystemConfiguration.Save(false);
 		CopyToClipboard(importableRuleSets);
 
-		Services.ChatGui.Print("[Import] Detected an older SortaKinda backup code and converted it automatically.", "SortaKinda");
-		Services.ChatGui.Print($"[Import] Added {addedCount} new sorting rules and updated {updatedCount} existing rules (backup contained {migratedRuleSets.Count}).", "SortaKinda");
+		IChatGui.Get().Print("[Import] Detected an older SortaKinda backup code and converted it automatically.", "SortaKinda");
+		IChatGui.Get().Print($"[Import] Added {addedCount} new sorting rules and updated {updatedCount} existing rules (backup contained {migratedRuleSets.Count}).", "SortaKinda");
 
 		foreach (var dropped in droppedRuleSets) {
-			Services.ChatGui.PrintError($"[Import] Rule Set '{dropped.Name}' was dropped because it had no filters. The old 'match all items' behavior is no longer supported.", "SortaKinda");
+			IChatGui.Get().PrintError($"[Import] Rule Set '{dropped.Name}' was dropped because it had no filters. The old 'match all items' behavior is no longer supported.", "SortaKinda");
 		}
 
-		Services.ChatGui.Print("[Import] Replaced the clipboard contents with a new-format backup code.", "SortaKinda");
+		IChatGui.Get().Print("[Import] Replaced the clipboard contents with a new-format backup code.", "SortaKinda");
 
 		if (inventoriesRestored > 0) {
-			Services.ChatGui.Print($"[Import] Restored slot assignments for {inventoriesRestored} inventories.", "SortaKinda");
+			IChatGui.Get().Print($"[Import] Restored slot assignments for {inventoriesRestored} inventories.", "SortaKinda");
 		}
 	}
 
@@ -175,7 +176,7 @@ public static class PresetManager {
 			.Where(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId));
 
 		CopyToClipboard(data.RuleSets);
-		Services.ChatGui.Print($"[Export] Exported {data.RuleSets.Count} rules to clipboard.", "SortaKinda");
+		IChatGui.Get().Print($"[Export] Exported {data.RuleSets.Count} rules to clipboard.", "SortaKinda");
 	}
 
 	private static void CopyToClipboard(IEnumerable<RuleSet> ruleSets) {

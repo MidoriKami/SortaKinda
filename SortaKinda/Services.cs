@@ -1,21 +1,26 @@
-﻿using Dalamud.IoC;
-using Dalamud.Plugin;
+﻿using System;
 using Dalamud.Plugin.Services;
 
 namespace SortaKinda;
 
-public class Services {
-    [PluginService] public static IDalamudPluginInterface PluginInterface { get; set; } = null!;
-    [PluginService] public static IPluginLog PluginLog { get; set; } = null!;
-    [PluginService] public static IReliableFileStorage ReliableFileStorage { get; set; } = null!;
-    [PluginService] public static IFramework Framework { get; set; } = null!;
-    [PluginService] public static IClientState ClientState { get; set; } = null!;
-    [PluginService] public static IPlayerState PlayerState { get; set; } = null!;
-    [PluginService] public static ICommandManager CommandManager { get; set; } = null!;
-    [PluginService] public static ITextureProvider TextureProvider { get; set; } = null!;
-    [PluginService] public static IDataManager DataManager { get; set; } = null!;
-    [PluginService] public static IKeyState KeyState { get; set; } = null!;
-    [PluginService] public static IGameInventory GameInventory { get; set; } = null!;
-    [PluginService] public static IAgentLifecycle AgentLifecycle { get; set; } = null!;
-    [PluginService] public static IChatGui ChatGui { get; set; } = null!;
+/// <summary>
+/// Extension provider for IDalamudService, to add a .Get() method to get an instance of any dalamud service directly from typename.
+/// </summary>
+/// <code>
+/// IPluginLog.Get().Debug(...);
+/// </code>
+public static class ServiceExtension {
+    /// <summary>
+    /// Static class to hold the instance reference.
+    /// </summary>
+    private static class ServiceInstance<T> where T : class, IDalamudService {
+        public static T? Instance => field ??= SortaKinda.PluginInterface.GetService(typeof(T)) as T;
+    }
+
+    /// <summary>
+    /// Extension provider to allow you to .Get() from the interface type.
+    /// </summary>
+    extension<T>(T) where T : class, IDalamudService {
+        public static T Get() => ServiceInstance<T>.Instance ?? throw new InvalidOperationException($"Service {typeof(T).Name} not found.");
+    }
 }

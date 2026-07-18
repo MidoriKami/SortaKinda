@@ -1,4 +1,5 @@
 ﻿using System;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
@@ -13,16 +14,16 @@ namespace SortaKinda.Extensions;
 public static unsafe class InventoryItemExtensions {
 	extension(ref InventoryItem item) {
 		public uint IconId => ItemUtil.GetBaseId(item.ItemId) switch {
-			{ Kind: ItemKind.Normal, ItemId: var itemId } => Services.DataManager.GetExcelSheet<Item>().GetRow(itemId).Icon,
-			{ Kind: ItemKind.Collectible, ItemId: var itemId } => Services.DataManager.GetExcelSheet<Item>().GetRow(itemId).Icon + 500_000u,
-			{ Kind: ItemKind.Hq, ItemId: var itemId } => Services.DataManager.GetExcelSheet<Item>().GetRow(itemId).Icon + 1_000_000u,
-			{ Kind: ItemKind.EventItem, ItemId: var itemId } => Services.DataManager.GetExcelSheet<EventItem>().GetRow(itemId).Icon,
+			{ Kind: ItemKind.Normal, ItemId: var itemId } => IDataManager.Get().GetExcelSheet<Item>().GetRow(itemId).Icon,
+			{ Kind: ItemKind.Collectible, ItemId: var itemId } => IDataManager.Get().GetExcelSheet<Item>().GetRow(itemId).Icon + 500_000u,
+			{ Kind: ItemKind.Hq, ItemId: var itemId } => IDataManager.Get().GetExcelSheet<Item>().GetRow(itemId).Icon + 1_000_000u,
+			{ Kind: ItemKind.EventItem, ItemId: var itemId } => IDataManager.Get().GetExcelSheet<EventItem>().GetRow(itemId).Icon,
 			_ => 0,
 		};
 
 		public string Name => ItemUtil.GetBaseId(item.ItemId) switch {
-			{ Kind: ItemKind.Normal or ItemKind.Collectible or ItemKind.Hq, ItemId: var itemId } => Services.DataManager.GetExcelSheet<Item>().GetRow(itemId).Name.ToString(),
-			{ Kind: ItemKind.EventItem, ItemId: var itemId } => Services.DataManager.GetExcelSheet<EventItem>().GetRow(itemId).Name.ToString(),
+			{ Kind: ItemKind.Normal or ItemKind.Collectible or ItemKind.Hq, ItemId: var itemId } => IDataManager.Get().GetExcelSheet<Item>().GetRow(itemId).Name.ToString(),
+			{ Kind: ItemKind.EventItem, ItemId: var itemId } => IDataManager.Get().GetExcelSheet<EventItem>().GetRow(itemId).Name.ToString(),
 			_ => string.Empty,
 		};
 
@@ -65,7 +66,7 @@ public static unsafe class InventoryItemExtensions {
 		private T GetItemProperty<T>(Func<Item, T> propertyGetter) {
 			if (!ItemUtil.IsNormalItem(item.ItemId)) throw new Exception("Invalid Item Type");
 
-			return propertyGetter(Services.DataManager.GetExcelSheet<Item>().GetRow(item.ItemId));
+			return propertyGetter(IDataManager.Get().GetExcelSheet<Item>().GetRow(item.ItemId));
 		}
 
 		private bool IsInGearset() {

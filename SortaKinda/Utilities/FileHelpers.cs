@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Dalamud.Plugin.Services;
 
 namespace SortaKinda.Utilities;
 
@@ -18,7 +19,7 @@ public static class FileHelpers {
         var fileInfo = new FileInfo(filePath);
         if (fileInfo is { Exists: true }) {
             try {
-                var fileText = Services.ReliableFileStorage.ReadAllTextAsync(fileInfo.FullName).Result;
+                var fileText = IReliableFileStorage.Get().ReadAllTextAsync(fileInfo.FullName).Result;
                 var dataObject = JsonSerializer.Deserialize<T>(fileText, SerializerOptions);
 
                 // If deserialize result is null, create a new instance instead and save it.
@@ -31,7 +32,7 @@ public static class FileHelpers {
             }
             catch (Exception e) {
                 // If there is any kind of error loading the file, generate a new one instead and save it.
-                Services.PluginLog.Error(e, $"Error trying to load file {filePath}, creating a new one instead.");
+                IPluginLog.Get().Error(e, $"Error trying to load file {filePath}, creating a new one instead.");
 
                 SaveFile(defaultObject ?? new T(), filePath);
             }
@@ -46,7 +47,7 @@ public static class FileHelpers {
     public static void SaveFile<T>(T? file, string filePath) {
         try {
             if (file is null) {
-                Services.PluginLog.Error("Null file provided.");
+                IPluginLog.Get().Error("Null file provided.");
                 return;
             }
 
@@ -54,24 +55,24 @@ public static class FileHelpers {
 
             if (FileSavingTasks.TryGetValue(filePath, out var task)) {
                 if (task.IsCompleted) {
-                    FileSavingTasks[filePath] = Services.ReliableFileStorage.WriteAllTextAsync(filePath, fileText);
+                    FileSavingTasks[filePath] = IReliableFileStorage.Get().WriteAllTextAsync(filePath, fileText);
                 }
                 else if (task.IsFaulted) {
                     throw task.Exception;
                 }
                 else if (task.Status is TaskStatus.Running) {
-                    Services.PluginLog.Debug($"File save for {filePath} in progress, trying again.");
-                    Services.Framework.RunOnTick(() => {
+                    IPluginLog.Get().Debug($"File save for {filePath} in progress, trying again.");
+                    IFramework.Get().RunOnTick(() => {
                         SaveFile(file, filePath); // try again
                     });
                 }
             }
             else {
-                FileSavingTasks[filePath] = Services.ReliableFileStorage.WriteAllTextAsync(filePath, fileText);
+                FileSavingTasks[filePath] = IReliableFileStorage.Get().WriteAllTextAsync(filePath, fileText);
             }
         }
         catch (Exception e) {
-            Services.PluginLog.Error(e, $"Error trying to save file {filePath}");
+            IPluginLog.Get().Error(e, $"Error trying to save file {filePath}");
         }
     }
 
@@ -79,7 +80,7 @@ public static class FileHelpers {
         var fileInfo = new FileInfo(filePath);
         if (fileInfo is { Exists: true }) {
             try {
-                var dataObject = Services.ReliableFileStorage.ReadAllBytesAsync(fileInfo.FullName).Result;
+                var dataObject = IReliableFileStorage.Get().ReadAllBytesAsync(fileInfo.FullName).Result;
 
                 // If deserialize result is null, create a new instance instead and save it.
                 if (dataObject.Length != length) {
@@ -91,7 +92,7 @@ public static class FileHelpers {
             }
             catch (Exception e) {
                 // If there is any kind of error loading the file, generate a new one instead and save it.
-                Services.PluginLog.Error(e, $"Error trying to load file {filePath}, creating a new one instead.");
+                IPluginLog.Get().Error(e, $"Error trying to load file {filePath}, creating a new one instead.");
 
                 SaveFile(new byte[length], filePath);
             }
@@ -107,29 +108,29 @@ public static class FileHelpers {
         try {
             if (FileSavingTasks.TryGetValue(filePath, out var task)) {
                 if (task.IsCompleted) {
-                    FileSavingTasks[filePath] = Services.ReliableFileStorage.WriteAllBytesAsync(filePath, data);
+                    FileSavingTasks[filePath] = IReliableFileStorage.Get().WriteAllBytesAsync(filePath, data);
                 }
                 else if (task.IsFaulted) {
                     throw task.Exception;
                 }
                 else if (task.Status is TaskStatus.Running) {
-                    Services.PluginLog.Debug($"File save for {filePath} in progress, trying again.");
-                    Services.Framework.RunOnTick(() => {
+                    IPluginLog.Get().Debug($"File save for {filePath} in progress, trying again.");
+                    IFramework.Get().RunOnTick(() => {
                         SaveBinaryFile(data, filePath); // try again
                     });
                 }
             }
             else {
-                FileSavingTasks[filePath] = Services.ReliableFileStorage.WriteAllBytesAsync(filePath, data);
+                FileSavingTasks[filePath] = IReliableFileStorage.Get().WriteAllBytesAsync(filePath, data);
             }
         }
         catch (Exception e) {
-            Services.PluginLog.Error(e, $"Error trying to save binary data {filePath}");
+            IPluginLog.Get().Error(e, $"Error trying to save binary data {filePath}");
         }
     }
 
     public static FileInfo GetFileInfo(params string[] path) {
-        var directory = Services.PluginInterface.ConfigDirectory;
+        var directory = SortaKinda.PluginInterface.ConfigDirectory;
 
         for (var index = 0; index < path.Length - 1; index++) {
             directory = new DirectoryInfo(Path.Combine(directory.FullName, path[index]));
@@ -142,10 +143,10 @@ public static class FileHelpers {
     }
 
     public static string GetCharacterPath() {
-        if (!Services.ClientState.IsLoggedIn) {
+        if (!IClientState.Get().IsLoggedIn) {
             throw new Exception("Character is not logged in.");
         }
 
-        return Services.PlayerState.ContentId.ToString("X");
+        return IPlayerState.Get().ContentId.ToString("X");
     }
 }

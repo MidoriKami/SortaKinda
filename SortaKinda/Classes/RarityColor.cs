@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Binary;
 using System.Numerics;
+using Dalamud.Plugin.Services;
 using Lumina.Excel.Sheets;
 
 namespace SortaKinda.Classes;
@@ -11,7 +12,7 @@ public static class RarityColor {
 	public static Vector4 GetRarityColor(uint rarity) {
 		var rarityUiColor = GetItemRarityColorType(rarity);
 
-		var rawColor = Services.DataManager.GetExcelSheet<UIColor>().TryGetRow(rarityUiColor, out var color)
+		var rawColor = IDataManager.Get().GetExcelSheet<UIColor>().TryGetRow(rarityUiColor, out var color)
 			               ? BinaryPrimitives.ReverseEndianness(color.Dark) | 0xFF000000 : 0xFFFFFFFF;
 
 		return UintToVector4(rawColor);

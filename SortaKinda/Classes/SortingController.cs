@@ -8,6 +8,7 @@ using Dalamud.Game.Agent;
 using Dalamud.Game.Agent.AgentArgTypes;
 using Dalamud.Game.Inventory;
 using Dalamud.Game.Inventory.InventoryEventArgTypes;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -22,17 +23,17 @@ public unsafe class SortingController :  IDisposable {
 	private Task? sortingTask;
 
 	public SortingController() {
-		Services.GameInventory.InventoryChanged += InventoryChanged;
-		Services.ClientState.ClassJobChanged += JobChanged;
-		Services.ClientState.TerritoryChanged += TerritoryChanged;
-		Services.AgentLifecycle.RegisterListener(AgentEvent.PreReceiveEvent, AgentId.InventoryContext, OnContextMenuEvent);
+		IGameInventory.Get().InventoryChanged += InventoryChanged;
+		IClientState.Get().ClassJobChanged += JobChanged;
+		IClientState.Get().TerritoryChanged += TerritoryChanged;
+		IAgentLifecycle.Get().RegisterListener(AgentEvent.PreReceiveEvent, AgentId.InventoryContext, OnContextMenuEvent);
 	}
 
 	public void Dispose() {
-		Services.GameInventory.InventoryChanged -= InventoryChanged;
-		Services.ClientState.ClassJobChanged -= JobChanged;
-		Services.ClientState.TerritoryChanged -= TerritoryChanged;
-		Services.AgentLifecycle.UnregisterListener(OnContextMenuEvent);
+		IGameInventory.Get().InventoryChanged -= InventoryChanged;
+		IClientState.Get().ClassJobChanged -= JobChanged;
+		IClientState.Get().TerritoryChanged -= TerritoryChanged;
+		IAgentLifecycle.Get().UnregisterListener(OnContextMenuEvent);
 	}
 
 	public void OnLogin() {
@@ -107,7 +108,7 @@ public unsafe class SortingController :  IDisposable {
 
 		if (!anySlotSetsForInventory) return;
 
-		Services.PluginLog.Information("SortaKinda has intercepted the Sort command from context menu.");
+		IPluginLog.Get().Information("SortaKinda has intercepted the Sort command from context menu.");
 		LaunchSortTask();
 		args.PreventOriginal();
 		agentContext->Hide();
@@ -244,9 +245,9 @@ public unsafe class SortingController :  IDisposable {
 									emptyItemSlots.Remove(firstEmptySlot);
 								}
 								else {
-									Services.PluginLog.Warning($"Failed to move '{itemForSlot->Name}' from '{slot}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
-									Services.ChatGui.PrintError($"Failed to move '{itemForSlot->Name}' from '{slot}' in '{inventoryType}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
-									Services.ChatGui.PrintError($"There needs to be unassigned slots for items to be moved to. Sorting for {slotSet.RuleSet.Name} has been aborted.", "SortaKinda");
+									IPluginLog.Get().Warning($"Failed to move '{itemForSlot->Name}' from '{slot}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
+									IChatGui.Get().PrintError($"Failed to move '{itemForSlot->Name}' from '{slot}' in '{inventoryType}' to an empty slot in {adjustedInventoryType.AdjustedName} for {slotSet.RuleSet.Name}.");
+									IChatGui.Get().PrintError($"There needs to be unassigned slots for items to be moved to. Sorting for {slotSet.RuleSet.Name} has been aborted.", "SortaKinda");
 									isError = true;
 								}
 							}
@@ -341,28 +342,28 @@ public unsafe class SortingController :  IDisposable {
 				}
 
 				if (System.SystemConfiguration.EnableSortLogging) {
-					Services.PluginLog.Information(logString.ToString());
+					IPluginLog.Get().Information(logString.ToString());
 				}
 			});
 
 			// Trigger AgentInventory Update to update various UI's.
 			// Non-networked.
-			Services.Framework.RunOnFrameworkThread(() => {
+			IFramework.Get().RunOnFrameworkThread(() => {
 				RaptureAtkModule.Instance()->AgentUpdateFlag |= RaptureAtkModule.AgentUpdateFlags.InventoryUpdate;
 				ItemOrderModule.Instance()->HasChanges = true;
 			});
 		}
 		catch (Exception e) {
-			Services.PluginLog.Error(e, "Exception in PerformSort");
+			IPluginLog.Get().Error(e, "Exception in PerformSort");
 		}
 		finally {
 			var sortingResult = $"Sorting Completed in {stopwatch.Elapsed.TotalMilliseconds:F4} ms";
 
 			if (System.SystemConfiguration.EnableSortLogging) {
-				Services.PluginLog.Information(sortingResult);
+				IPluginLog.Get().Information(sortingResult);
 			}
 			else {
-				Services.PluginLog.Debug(sortingResult);
+				IPluginLog.Get().Debug(sortingResult);
 			}
 		}
 	}

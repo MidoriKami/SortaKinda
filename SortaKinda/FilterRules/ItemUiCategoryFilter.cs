@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.Sheets;
 
@@ -51,7 +52,7 @@ public class ItemUiCategoryFilter : FilteringRuleBase {
 		using var resultChild = ImRaii.Child("Results", ImGui.GetContentRegionAvail());
 		if (!resultChild) return;
 
-		foreach (var result in Services.DataManager.GetExcelSheet<ItemUICategory>()) {
+		foreach (var result in IDataManager.Get().GetExcelSheet<ItemUICategory>()) {
 			if (result.Icon is 0) continue;
 			if (!searchRegex.IsMatch(result.Name.ToString())) continue;
 
@@ -64,7 +65,7 @@ public class ItemUiCategoryFilter : FilteringRuleBase {
 			}
 
 			ImGui.SetCursorPos(cursorPosition);
-			ImGui.Image(Services.TextureProvider.GetFromGameIcon(result.Icon).GetWrapOrEmpty().Handle, ImGuiHelpers.ScaledVector2(24.0f, 24.0f));
+			ImGui.Image(ITextureProvider.Get().GetFromGameIcon(result.Icon).GetWrapOrEmpty().Handle, ImGuiHelpers.ScaledVector2(24.0f, 24.0f));
 
 			ImGui.SameLine();
 			ImGui.AlignTextToFramePadding();

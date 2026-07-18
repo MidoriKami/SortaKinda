@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
+using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using SortaKinda.Classes;
 using SortaKinda.Configuration;
 using SortaKinda.FilterRules;
@@ -15,10 +17,7 @@ using SortaKinda.Windows;
 namespace SortaKinda;
 
 public sealed class SortaKinda : IAsyncDalamudPlugin {
-
-	public SortaKinda(IDalamudPluginInterface pluginInterface) {
-		pluginInterface.Create<Services>();
-	}
+    [PluginService] internal static IDalamudPluginInterface PluginInterface { get; set; } = null!;
 
 	public Task LoadAsync(CancellationToken cancellationToken) {
 		System.SystemConfiguration = SystemConfiguration.Load();
@@ -43,24 +42,24 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 		System.WindowSystem = new WindowSystem("ChillFrames");
 		System.WindowSystem.AddWindow(System.ConfigWindow);
 
-		Services.CommandManager.AddHandler("/sortakinda", new CommandInfo(OnCommand) {
+		ICommandManager.Get().AddHandler("/sortakinda", new CommandInfo(OnCommand) {
 			ShowInHelp = true,
 			HelpMessage = "Open SortaKinda Config",
 		});
 
-		Services.CommandManager.AddHandler("/sorta", new CommandInfo(OnCommand) {
+		ICommandManager.Get().AddHandler("/sorta", new CommandInfo(OnCommand) {
 			ShowInHelp = true,
 			HelpMessage = "Open SortaKinda Config",
 		});
 
-		Services.PluginInterface.UiBuilder.Draw += System.WindowSystem.Draw;
-		Services.PluginInterface.UiBuilder.OpenConfigUi += System.ConfigWindow.Toggle;
-		Services.PluginInterface.UiBuilder.OpenMainUi += System.ConfigWindow.Toggle;
+		PluginInterface.UiBuilder.Draw += System.WindowSystem.Draw;
+		PluginInterface.UiBuilder.OpenConfigUi += System.ConfigWindow.Toggle;
+		PluginInterface.UiBuilder.OpenMainUi += System.ConfigWindow.Toggle;
 
-		Services.ClientState.Login += OnLogin;
-		Services.ClientState.Logout += OnLogout;
+		IClientState.Get().Login += OnLogin;
+		IClientState.Get().Logout += OnLogout;
 
-		if (Services.ClientState.IsLoggedIn) {
+		if (IClientState.Get().IsLoggedIn) {
 			OnLogin();
 			System.ConfigWindow.DebugOpen();
 		}
@@ -70,15 +69,15 @@ public sealed class SortaKinda : IAsyncDalamudPlugin {
 
 	public ValueTask DisposeAsync() {
 		try {
-			Services.ClientState.Login -= OnLogin;
-			Services.ClientState.Logout -= OnLogout;
+			IClientState.Get().Login -= OnLogin;
+			IClientState.Get().Logout -= OnLogout;
 
-			Services.PluginInterface.UiBuilder.Draw -= System.WindowSystem.Draw;
-			Services.PluginInterface.UiBuilder.OpenConfigUi -= System.ConfigWindow.Toggle;
-			Services.PluginInterface.UiBuilder.OpenMainUi -= System.ConfigWindow.Toggle;
+			PluginInterface.UiBuilder.Draw -= System.WindowSystem.Draw;
+			PluginInterface.UiBuilder.OpenConfigUi -= System.ConfigWindow.Toggle;
+			PluginInterface.UiBuilder.OpenMainUi -= System.ConfigWindow.Toggle;
 
-			Services.CommandManager.RemoveHandler("/sortakinda");
-			Services.CommandManager.RemoveHandler("/sorta");
+			ICommandManager.Get().RemoveHandler("/sortakinda");
+			ICommandManager.Get().RemoveHandler("/sorta");
 
             System.WindowSystem.RemoveAllWindows();
 

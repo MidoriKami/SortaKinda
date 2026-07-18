@@ -7,6 +7,7 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Configuration;
 using SortaKinda.Windows.UiParts;
@@ -113,7 +114,7 @@ public static unsafe class InventoryRenderer {
 		var windowPosition = ImGui.GetWindowPos();
 
 		ImGui.SetCursorPos(startPosition + iconInnerPadding);
-		ImGui.Image(Services.TextureProvider.GetFromGameIcon(
+		ImGui.Image(ITextureProvider.Get().GetFromGameIcon(
 			inventoryItem->IconId).GetWrapOrEmpty().Handle,
 			iconSize,
 			Vector2.Zero,
@@ -211,7 +212,7 @@ public static unsafe class InventoryRenderer {
 		using var itemSpacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(2.0f, 1.0f));
 
 		using (ImRaii.PushColor(ImGuiCol.Text, slotSet.RuleSet.Color))
-		using (Services.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
+		using (SortaKinda.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push()) {
 			ImGui.Text(FontAwesomeIcon.Square.ToIconString());
 		}
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SortaKinda.Utilities;
 
@@ -20,7 +21,7 @@ public class CharacterConfiguration {
 			System.SortingController.LaunchSortTask();
 		}
 
-		Services.PluginLog.Debug("Saving Character.config.json");
+		IPluginLog.Get().Debug("Saving Character.config.json");
 		Config.SaveCharacterConfig(this, "Character.config.json");
 	}
 
