@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dalamud.Excel.Sheets;
 using Dalamud.Game.Agent;
 using Dalamud.Game.Agent.AgentArgTypes;
 using Dalamud.Game.Inventory;
@@ -13,6 +14,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using Lumina.Excel;
 using SortaKinda.Configuration;
 using AgentId = Dalamud.Game.Agent.AgentId;
 
@@ -42,13 +44,13 @@ public unsafe class SortingController :  IDisposable {
 		}
 	}
 
-	private void JobChanged(uint classJobId) {
+	private void JobChanged(RowRef<ClassJob> classJob) {
 		if (System.SystemConfiguration.SortOnJobChange) {
 			LaunchSortTask();
 		}
 	}
 
-	private void TerritoryChanged(uint obj) {
+	private void TerritoryChanged(RowRef<TerritoryType> rowRef) {
 		if (System.SystemConfiguration.SortOnZoneChange) {
 			LaunchSortTask();
 		}

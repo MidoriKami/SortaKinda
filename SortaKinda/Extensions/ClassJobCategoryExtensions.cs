@@ -1,11 +1,11 @@
-﻿using Lumina.Excel.Sheets;
-using ExcelPage = Lumina.Excel.ExcelPage;
+﻿using Dalamud.Excel.Sheets;
+using Lumina.Excel;
 
 namespace SortaKinda.Extensions;
 
 public static unsafe class ClassJobCategoryExtensions {
     extension(ClassJobCategory row) {
-        public Lumina.Excel.Collection<bool> ClassesJobs
+        public Collection<bool> ClassesJobs
             => new(row.ExcelPage, parentOffset: row.RowOffset, offset: row.RowOffset, &ClassJobCtor, size: row.ExcelPage.Module.GetSheet<ClassJob>().Count);
 
         /// <summary>

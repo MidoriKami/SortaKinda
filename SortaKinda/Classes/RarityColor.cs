@@ -1,7 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.Numerics;
 using Dalamud.Plugin.Services;
-using Lumina.Excel.Sheets;
+using Dalamud.Excel.Sheets;
 
 namespace SortaKinda.Classes;
 

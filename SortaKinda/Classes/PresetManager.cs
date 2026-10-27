@@ -188,8 +188,6 @@ public static class PresetManager {
 	}
 
 	private static PresetContainer CreatePresetContainer(IEnumerable<RuleSet> ruleSets) => new() {
-		RuleSets = ruleSets
-			.Where(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId)
-			.ToList(),
+		RuleSets = [ .. ruleSets.Where(ruleSet => ruleSet.RuleSetId != SlotSet.IgnoreSlotsId) ],
 	};
 }

@@ -3,7 +3,7 @@ using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using Lumina.Excel.Sheets;
+using Dalamud.Excel.Sheets;
 
 namespace SortaKinda.Extensions;
 
